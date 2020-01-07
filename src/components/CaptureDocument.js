@@ -9,9 +9,13 @@ import {
     Text,
     View,
     ActivityIndicator,
-    Platform
+    Platform,
+    TouchableOpacity
 } from 'react-native'
-import { RNCamera } from 'react-native-camera-divided'
+import SelfieMask from './SelfieMask'
+import ImageEditor from '@react-native-community/image-editor'
+import { RNCamera } from 'react-native-camera'
+import RNFS from 'react-native-fs'
 
 const { width, height } = Dimensions.get('window')
 
@@ -57,16 +61,23 @@ export default function CaptureDocument(props) {
             onCapture,
         } = props
 
-        let image = await camera.current.takePictureAsync()
-
-        if (autoCrop) {
-            // Calculate screen to image ratio to crop
-            const ratio = image.width / width
-
-            image = await cropImage(image, ratio)
-        }
-        onCapture(image)
-        calculateNextStep()
+        let image = await camera.current.takePictureAsync({
+            quality: 0.7,
+            orientation: 'portrait',
+            base64: true,
+            width: 1080,
+            fixOrientation: true
+        }).then(async data => {
+            if (document.crop) {
+                setButtonDisabled(false)
+                image = data
+            } else {
+                image = `data:image/jpeg;base64,${data.base64}`
+                if (document.autoCrop) image = await cropImage(data)
+            }
+            onCapture(image)
+            calculateNextStep()
+        })
     }
 
     const calculateNextStep = () => {
@@ -79,16 +90,27 @@ export default function CaptureDocument(props) {
         }
     }
 
-    const cropImage = async (image, ratio) => {
-        const {
-            previewAreaX,
-            previewAreaY,
-            previewAreaWidth,
-            previewAreaHeight,
-        } = previewArea
+    const cropImage = async data => {
+        const ratio = data.width / width
+        const cropData = {
+            offset: {
+                x: previewArea.previewAreaX * ratio,
+                y: previewArea.previewAreaY,
+            },
+            size: {
+                height: 1080,
+                width: 1080,
+            },
+        }
 
-        return
+        const src = await ImageEditor.cropImage(data.uri, cropData).then(
+            // eslint-disable-next-line no-return-await
+            async path => await RNFS.readFile(path, 'base64')
+        )
+
+        return `data:image/jpeg;base64,${src}`
     }
+
 
     const flipCamera = async () => {
         setCameraType(
@@ -118,10 +140,10 @@ export default function CaptureDocument(props) {
             <RNCamera
                 ref={camera}
                 style={styles.preview}
-                captureAudio={false}
                 type={cameraType}
+                captureAudio={false}
                 ratio="16:9">
-                <View style={[styles.topArea, styles.backDrop]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent'} ]}>
                     {steps.length > 1 && (
                         <Text style={styles.topText}>
                             {steps[currentStep].title}
@@ -150,26 +172,34 @@ export default function CaptureDocument(props) {
                         style={styles.previewArea}
                         onLayout={setPreviewPosition}>
                         <View style={[styles.previewSide, styles.backDrop]} />
+                        <View
+                            style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>
+                            <SelfieMask />
+                        </View>
                         <View style={[styles.previewSide, styles.backDrop]} />
                     </View>
                 )}
-                <View style={[styles.bottomArea, styles.backDrop]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent'} ]}>
                     <Text style={styles.bottomText}>
                         {steps[currentStep].description}
                     </Text>
                 </View>
-                <View style={[styles.bottomBar, styles.backDrop]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent'} ]}>
                     {buttonDisabled ? (
                         <ActivityIndicator color="white" style={styles.spinner} />
                     ) : (
-                        <Button
+                        <TouchableOpacity
                             style={styles.takePhotoButton}
                             disabled={buttonDisabled}
-                            title="Take"
-                            onPress={() => takePicture()}/>
+                            onPress={() => takePicture()}>
+                        <Text>asd</Text>
+                            </TouchableOpacity>
                     )}
                 </View>
-                <View style={[styles.poweredBy, styles.backDrop]}>
+                <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <Text style={styles.poweredByText}>Powered By Amani</Text>
                 </View>
             </RNCamera>
@@ -225,8 +255,9 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         alignItems: 'center',
         backgroundColor: 'white',
+        borderRadius: 50,
         paddingHorizontal: width * 0.04,
-        marginBottom: height * 0.02,
+        paddingVertical: height * 0.02,
     },
     previewArea: {
         flexDirection: 'row',
