@@ -30,6 +30,8 @@ const MainScreen = (props) => {
     )
 
     if (!availableDocuments) {
+        api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
+
         const authData = props.authData
         const customerInformations = props.customerInformations
         api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
