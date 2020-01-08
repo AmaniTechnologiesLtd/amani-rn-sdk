@@ -7,14 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "react-native-camera-divided": "npm:react-native-camera@3.15.0",
-    "react-native-svg-divided": "npm:react-native-svg@^9.13.6",
-    "@react-native-community/image-editor-divided": "npm:@react-native-community/image-editor@^2.2.0",
-    "axios-divided": "npm:axios@^0.19.0",
-    "react-native-fs-divided": "npm:react-native-fs@^2.16.2",
-    "react-native-image-crop-picker-divided": "npm:react-native-image-crop-picker@^0.26.1"
+    "axios": "npm:axios@^0.19.0"
   },
   "peerDependencies": {
+    "react-native-camera": "npm:react-native-camera@3.15.0",
+    "react-native-svg": "npm:react-native-svg@^9.13.6",
+    "@react-native-community/image-editor": "npm:@react-native-community/image-editor@^2.2.0",
     "react": "16.12.0",
     "react-native": "0.61.5"
   },
