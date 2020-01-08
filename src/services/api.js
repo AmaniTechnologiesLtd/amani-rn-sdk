@@ -1,3 +1,4 @@
+// Global dependencies
 import axios from 'axios'
 
 axios.defaults.baseURL = 'https://tr.amani.ai'
@@ -15,7 +16,7 @@ export default {
                 'content-type': 'application/json',
             },
         }),
-        createCustomer: params =>
+    createCustomer: params =>
         axios.post('/api/v1/customer/', params.customerData, {
             headers: {
                 'content-type': 'application/json',
