@@ -1,26 +1,30 @@
 // Global dependencies
 import axios from 'axios'
 
-axios.defaults.baseURL = 'https://tr.amani.ai'
+const servers = {
+    tr: 'https://tr.amani.ai',
+    uae: 'https://uae.amani.ai'
+}
 
 export default {
-    login: params =>
-        axios.post('/api/v1/user/login/', params, {
+    setBaseUrl: param => axios.defaults.baseURL = servers[param],
+    login: param =>
+        axios.post('/api/v1/user/login/', param, {
             headers: {
                 'content-type': 'application/json',
             },
         }),
-    smsVerification: params =>
-        axios.post('/api/v1/user/verify/', params, {
+    smsVerification: param =>
+        axios.post('/api/v1/user/verify/', param, {
             headers: {
                 'content-type': 'application/json',
             },
         }),
-    createCustomer: params =>
-        axios.post('/api/v1/customer/', params.customerData, {
+    createCustomer: param =>
+        axios.post('/api/v1/customer/', param.customerData, {
             headers: {
                 'content-type': 'application/json',
-                'Authorization': `Token ${params.smsToken}`,
+                'Authorization': `Token ${param.smsToken}`,
             },
         }),
     sendDocument: (token, documentData) =>
