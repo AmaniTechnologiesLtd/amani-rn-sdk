@@ -1,3 +1,4 @@
-import App from './src/App'
+// Local files
+import Mainscreen from './src/Mainscreen'
 
-export default App
+export default Mainscreen
