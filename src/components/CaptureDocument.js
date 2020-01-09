@@ -14,6 +14,7 @@ import {
 import ImageEditor from '@react-native-community/image-editor'
 import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
+import Signature from 'react-native-signature-canvas'
 
 // Local files
 import SelfieMask from './SelfieMask'
@@ -24,7 +25,8 @@ const { width, height } = Dimensions.get('window')
 export default function CaptureDocument(props) {
     const {
         document,
-        document: { steps, aspectRatio, cameraFacing }
+        document: { steps, aspectRatio, cameraFacing, autoCrop },
+        onCapture
     } = props
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [currentStep, setCurrentStep] = useState(0)
@@ -38,6 +40,11 @@ export default function CaptureDocument(props) {
         previewAreaHeight: null,
     })
     const camera = useRef(null)
+
+    const goBack = async () => {
+        const { onClearDocument } = props
+        onClearDocument(null)
+    }
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
@@ -55,10 +62,6 @@ export default function CaptureDocument(props) {
 
     const takePicture = async () => {
         setButtonDisabled(true)
-        const {
-            document: { autoCrop },
-            onCapture,
-        } = props
 
         let image = await camera.current.takePictureAsync({
             quality: 0.7,
@@ -109,11 +112,6 @@ export default function CaptureDocument(props) {
         return `data:image/jpeg;base64,${src}`
     }
 
-    const goBack = async () => {
-        const { onClearDocument } = props
-        onClearDocument(null)
-    }
-
     const setPreviewPosition = event => {
         setPreviewArea({
             previewAreaWidth: width,
@@ -123,8 +121,34 @@ export default function CaptureDocument(props) {
         })
     }
 
+    const handleSignature = signature => {
+        onCapture(signature)
+        calculateNextStep()
+    }
+
+    if (document.id === 'SG') {
+        return (
+            <View style={styles.signatureContainer}>
+            <StatusBar barStyle="light-content" backgroundColor="#4630BE" />
+                <View style={{ flex: 0.07}}>
+                    <TouchableOpacity
+                        style={{ marginHorizontal: 20 }}
+                        onPress={() => goBack()}>
+                        <Image style={styles.backArrow} resizeMode="contain" source={backArrow} />
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flex: 0.93 }}>
+                    <Signature
+                        onOK={handleSignature}
+                        onEmpty
+                    />
+                </View>
+            </View>
+        )
+    }
+
     return (
-        <View style={styles.container}>
+        <View style={styles.cameraContainer}>
             <StatusBar hidden />
             <RNCamera
                 ref={camera}
@@ -203,10 +227,18 @@ export default function CaptureDocument(props) {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    cameraContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    selfieContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    signatureContainer: {
+        flex: 1,
+        backgroundColor: '#4630BE'
     },
     preview: {
         position: 'absolute',
@@ -267,10 +299,6 @@ const styles = StyleSheet.create({
     previewMiddle: {
         borderColor: 'white',
         borderWidth: 2,
-    },
-    selfieContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     poweredBy: {
         paddingBottom: 10,
