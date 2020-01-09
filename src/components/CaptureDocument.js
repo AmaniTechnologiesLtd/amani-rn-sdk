@@ -8,7 +8,6 @@ import {
     Text,
     View,
     Image,
-    ActivityIndicator,
     TouchableOpacity
 } from 'react-native'
 import ImageEditor from '@react-native-community/image-editor'
@@ -210,13 +209,11 @@ export default function CaptureDocument(props) {
                     </Text>
                 </View>
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    {buttonDisabled ? (<ActivityIndicator style={styles.buttonLoader} color="white" />) :
-                        (
-                            <TouchableOpacity
-                                style={styles.takePhotoButton}
-                                disabled={buttonDisabled}
-                                onPress={() => takePicture()} />
-                        )}
+                    <TouchableOpacity
+                        style={[styles.takePhotoButton, {backgroundColor: buttonDisabled ? '#9e9e9e': 'white'}]}
+                        disabled={buttonDisabled}
+                        onPress={() => takePicture()}
+                    />
                 </View>
                 <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <Text style={{ color: 'white' }}>Powered By Amani</Text>
@@ -280,7 +277,6 @@ const styles = StyleSheet.create({
     takePhotoButton: {
         alignSelf: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'white',
         borderRadius: 50,
         paddingHorizontal: width * 0.06,
         paddingVertical: height * 0.03,
