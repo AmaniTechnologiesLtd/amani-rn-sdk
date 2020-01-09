@@ -1,6 +1,6 @@
 // Global dependencies
 import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image, StatusBar } from 'react-native'
 import AmazingCropper from 'react-native-amazing-cropper'
 import RNFS from 'react-native-fs'
 
@@ -135,6 +135,7 @@ const MainScreen = (props) => {
 
     return (
         <View style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="transparent" />
             {documents.map((document) => {
                 if (availableDocuments.includes(document.id)) {
                     return (
