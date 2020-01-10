@@ -1,6 +1,8 @@
 // Global dependencies
 import React, { useState, useEffect, useReducer } from 'react'
 import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image, StatusBar } from 'react-native'
+import DocumentPicker from 'react-native-document-picker'
+import RNFS from 'react-native-fs'
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
@@ -92,6 +94,15 @@ const MainScreen = (props) => {
         setFiles([...files, capture])
     }
 
+    const pickAndTransformPdf = async () => {
+        setIsStepsFinished(true)
+        const file = await DocumentPicker.pick({
+            type: [DocumentPicker.types.pdf]
+        })
+        const source = await RNFS.readFile(file.uri, 'base64')
+        setFiles([...files, `data:application/pdf;base64,${source}`])
+    }
+
     if (!availableDocuments) {
         return (
             <View style={styles.container}>
@@ -107,6 +118,7 @@ const MainScreen = (props) => {
                 onCapture={documentCaptured}
                 onClearDocument={setSelectedDocument}
                 onStepsFinished={setIsStepsFinished}
+                takePdfFile={pickAndTransformPdf}
             />
         )
     }

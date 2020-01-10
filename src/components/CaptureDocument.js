@@ -18,7 +18,6 @@ import Signature from 'react-native-signature-canvas'
 
 // Local files
 import SelfieMask from './SelfieMask'
-import backArrow from '../../assets/back-arrow.png'
 
 const { width, height } = Dimensions.get('window')
 
@@ -141,17 +140,16 @@ export default function CaptureDocument(props) {
 
     if (cropDocument) {
         return (
-            <View style={{ flex: 1}}>
+            <View style={styles.manualCropContainer}>
                 <StatusBar hidden />
                 <CropView
                     sourceUrl={cropDocument.uri}
-                    style={styles.manualCropContainer}
+                    style={{flex: 1}}
                     ref={cropViewRef}
-                    aspectRatio={{width: 16, height: 9}}
                     onImageCrop={res => handleManualCrop(res.uri)}
                 />
                 <View style={styles.manualCropFooter}>
-                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={() => goBack()}>
+                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={goBack}>
                         <Text style={styles.manualCropButtonText}> Back </Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.manualCropFooterButton} onPress={() => cropViewRef.current.saveImage(100)}>
@@ -169,8 +167,8 @@ export default function CaptureDocument(props) {
                 <View style={{ flex: 0.07}}>
                     <TouchableOpacity
                         style={{ paddingHorizontal: 20 }}
-                        onPress={() => goBack()}>
-                        <Image style={styles.backArrow} resizeMode="contain" source={backArrow} />
+                        onPress={goBack}>
+                        <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 0.93 }}>
@@ -196,9 +194,16 @@ export default function CaptureDocument(props) {
                     <View style={styles.topBar}>
                         <TouchableOpacity
                             style={{ paddingHorizontal: 20 }}
-                            onPress={() => goBack()}>
-                            <Image style={styles.backArrow} resizeMode="contain" source={backArrow} />
+                            onPress={goBack}>
+                            <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
                         </TouchableOpacity>
+                        {document.options.includes('fileUpload') && (
+                            <TouchableOpacity
+                                style={{ paddingHorizontal: 20 }}
+                                onPress={() => props.takePdfFile()}>
+                                <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/up.png')} />
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <View >
                         <Text style={styles.topBarText}>{document.title}</Text>
@@ -249,7 +254,7 @@ export default function CaptureDocument(props) {
                     <TouchableOpacity
                         style={[styles.takePhotoButton, {backgroundColor: buttonDisabled ? '#9e9e9e': 'white'}]}
                         disabled={buttonDisabled}
-                        onPress={() => takePicture()}
+                        onPress={takePicture}
                     />
                 </View>
                 <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
@@ -276,7 +281,7 @@ const styles = StyleSheet.create({
     },
     manualCropContainer: {
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: 'black',
     },
     manualCropFooter: {
         flexDirection: 'row',
@@ -340,8 +345,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: height * 0.025
     },
-    backArrow: {
+    backArrowIcon: {
         width: width * 0.035,
+        height: height * 0.1,
+        marginTop: -(height * 0.015)
+    },
+    fileUploadIcon: {
+        width: width * 0.07,
         height: height * 0.1,
         marginTop: -(height * 0.015)
     },
