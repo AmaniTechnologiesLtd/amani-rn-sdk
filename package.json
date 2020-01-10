@@ -4,15 +4,16 @@
   "description": "Amani Ai SDK",
   "main": "index.js",
   "dependencies": {
-    "axios": "npm:axios@^0.19.0"
+    "axios": "^0.19.0"
   },
   "peerDependencies": {
-    "react": "16.12.0",
-    "react-native": "0.61.5",
-    "react-native-camera": "npm:react-native-camera@3.15.0",
+    "react": "^16.12.0",
+    "react-native": "^0.61.5",
+    "react-native-camera": "^3.15.0",
     "react-native-webview": "^8.0.3",
-    "react-native-svg": "npm:react-native-svg@^9.13.6",
-    "@react-native-community/image-editor": "npm:@react-native-community/image-editor@^2.2.0",
+    "react-native-image-crop-tools": "^1.2.2",
+    "react-native-svg": "^9.13.6",
+    "@react-native-community/image-editor": "^2.2.0",
     "react-native-signature-canvas": "git+https://git@github.com/ozkanonur/react-native-signature-canvas"
   },
   "author": "Onur Ozkan",
