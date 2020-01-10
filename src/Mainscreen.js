@@ -1,8 +1,6 @@
 // Global dependencies
 import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image } from 'react-native'
-import AmazingCropper from 'react-native-amazing-cropper'
-import RNFS from 'react-native-fs'
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image, StatusBar } from 'react-native'
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
@@ -94,31 +92,11 @@ const MainScreen = (props) => {
         setFiles([...files, capture])
     }
 
-    const onDone = async (croppedImageUri) => {
-        const src = await RNFS.readFile(croppedImageUri, 'base64')
-        setFiles([`data:image/jpeg;base64,${src}`])
-        setIsStepsFinished(true)
-    }
-
     if (!availableDocuments) {
         return (
             <View style={styles.container}>
                 <ActivityIndicator color="black" />
             </View>
-        )
-    }
-
-    if (cropDocument) {
-        return (
-            <AmazingCropper
-                onDone={onDone}
-                onCancel={() => setCropDocument(null)}
-                imageUri={cropDocument.uri}
-                imageWidth={cropDocument.width}
-                imageHeight={cropDocument.height}
-                NOT_SELECTED_AREA_OPACITY={0.45}
-                BORDER_WIDTH={20}
-            />
         )
     }
 
@@ -135,6 +113,7 @@ const MainScreen = (props) => {
 
     return (
         <View style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="transparent" />
             {documents.map((document) => {
                 if (availableDocuments.includes(document.id)) {
                     return (

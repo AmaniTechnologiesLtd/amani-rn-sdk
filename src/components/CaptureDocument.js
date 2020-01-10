@@ -8,12 +8,13 @@ import {
     Text,
     View,
     Image,
-    ActivityIndicator,
     TouchableOpacity
 } from 'react-native'
-import ImageEditor from '@react-native-community/image-editor'
 import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
+import { CropView } from 'react-native-image-crop-tools'
+import ImageEditor from '@react-native-community/image-editor'
+import Signature from 'react-native-signature-canvas'
 
 // Local files
 import SelfieMask from './SelfieMask'
@@ -22,22 +23,35 @@ import backArrow from '../../assets/back-arrow.png'
 const { width, height } = Dimensions.get('window')
 
 export default function CaptureDocument(props) {
+
     const {
         document,
-        document: { steps, aspectRatio, cameraFacing }
+        document: { steps, aspectRatio, cameraFacing, autoCrop },
+        onCapture
     } = props
-    const [buttonDisabled, setButtonDisabled] = useState(false)
-    const [currentStep, setCurrentStep] = useState(0)
+
     const [cameraType] = useState(
         cameraFacing === 'environment' ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front
     )
+
     const [previewArea, setPreviewArea] = useState({
         previewAreaX: null,
         previewAreaY: null,
         previewAreaWidth: null,
         previewAreaHeight: null,
     })
+
+    const [buttonDisabled, setButtonDisabled] = useState(false)
+    const [currentStep, setCurrentStep] = useState(0)
+    const [cropDocument, setCropDocument] = useState(null)
+
     const camera = useRef(null)
+    const cropViewRef = useRef()
+
+    const goBack = async () => {
+        const { onClearDocument } = props
+        onClearDocument(null)
+    }
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
@@ -55,10 +69,6 @@ export default function CaptureDocument(props) {
 
     const takePicture = async () => {
         setButtonDisabled(true)
-        const {
-            document: { autoCrop },
-            onCapture,
-        } = props
 
         let image = await camera.current.takePictureAsync({
             quality: 0.7,
@@ -69,13 +79,13 @@ export default function CaptureDocument(props) {
         }).then(async data => {
             if (document.crop) {
                 setButtonDisabled(false)
-                image = data
+                setCropDocument(data)
             } else {
                 image = `data:image/jpeg;base64,${data.base64}`
-                if (autoCrop) image = await cropImage(data)
+                if (autoCrop) image = await handleAutoCrop(data)
+                onCapture(image)
+                calculateNextStep()
             }
-            onCapture(image)
-            calculateNextStep()
         })
     }
 
@@ -84,12 +94,21 @@ export default function CaptureDocument(props) {
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
             setButtonDisabled(false)
-        } else if (!document.crop) {
+        } else {
             onStepsFinished(true)
         }
     }
 
-    const cropImage = async data => {
+    const setPreviewPosition = event => {
+        setPreviewArea({
+            previewAreaWidth: width,
+            previewAreaHeight: width * 0.63 + 50,
+            previewAreaX: event.nativeEvent.layout.x,
+            previewAreaY: event.nativeEvent.layout.y,
+        })
+    }
+
+    const handleAutoCrop = async data => {
         const ratio = width / data.width
         const cropData = {
             offset: {
@@ -109,22 +128,63 @@ export default function CaptureDocument(props) {
         return `data:image/jpeg;base64,${src}`
     }
 
-    const goBack = async () => {
-        const { onClearDocument } = props
-        onClearDocument(null)
+    const handleSignature = signature => {
+        onCapture(signature)
+        calculateNextStep()
     }
 
-    const setPreviewPosition = event => {
-        setPreviewArea({
-            previewAreaWidth: width,
-            previewAreaHeight: width * 0.63 + 50,
-            previewAreaX: event.nativeEvent.layout.x,
-            previewAreaY: event.nativeEvent.layout.y,
-        })
+    const handleManualCrop = async croppedImageUri => {
+        const src = await RNFS.readFile(croppedImageUri, 'base64')
+        onCapture(`data:image/jpeg;base64,${src}`)
+        calculateNextStep()
+    }
+
+    if (cropDocument) {
+        return (
+            <View style={{ flex: 1}}>
+                <StatusBar hidden />
+                <CropView
+                    sourceUrl={cropDocument.uri}
+                    style={styles.manualCropContainer}
+                    ref={cropViewRef}
+                    aspectRatio={{width: 16, height: 9}}
+                    onImageCrop={res => handleManualCrop(res.uri)}
+                />
+                <View style={styles.manualCropFooter}>
+                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={() => goBack()}>
+                        <Text style={styles.manualCropButtonText}> Back </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={() => cropViewRef.current.saveImage(100)}>
+                        <Text style={styles.manualCropButtonText}> Crop </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
+
+    if (document.id === 'SG') {
+        return (
+            <View style={styles.signatureContainer}>
+            <StatusBar barStyle="light-content" backgroundColor="#4630BE" />
+                <View style={{ flex: 0.07}}>
+                    <TouchableOpacity
+                        style={{ paddingHorizontal: 20 }}
+                        onPress={() => goBack()}>
+                        <Image style={styles.backArrow} resizeMode="contain" source={backArrow} />
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flex: 0.93 }}>
+                    <Signature
+                        onOK={handleSignature}
+                        onEmpty
+                    />
+                </View>
+            </View>
+        )
     }
 
     return (
-        <View style={styles.container}>
+        <View style={styles.cameraContainer}>
             <StatusBar hidden />
             <RNCamera
                 ref={camera}
@@ -135,7 +195,7 @@ export default function CaptureDocument(props) {
                 <View style={{ backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
                     <View style={styles.topBar}>
                         <TouchableOpacity
-                            style={{ marginHorizontal: 20 }}
+                            style={{ paddingHorizontal: 20 }}
                             onPress={() => goBack()}>
                             <Image style={styles.backArrow} resizeMode="contain" source={backArrow} />
                         </TouchableOpacity>
@@ -186,13 +246,11 @@ export default function CaptureDocument(props) {
                     </Text>
                 </View>
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    {buttonDisabled ? (<ActivityIndicator style={styles.buttonLoader} color="white" />) :
-                        (
-                            <TouchableOpacity
-                                style={styles.takePhotoButton}
-                                disabled={buttonDisabled}
-                                onPress={() => takePicture()} />
-                        )}
+                    <TouchableOpacity
+                        style={[styles.takePhotoButton, {backgroundColor: buttonDisabled ? '#9e9e9e': 'white'}]}
+                        disabled={buttonDisabled}
+                        onPress={() => takePicture()}
+                    />
                 </View>
                 <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <Text style={{ color: 'white' }}>Powered By Amani</Text>
@@ -203,10 +261,34 @@ export default function CaptureDocument(props) {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    cameraContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    selfieContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    signatureContainer: {
+        flex: 1,
+        backgroundColor: '#4630BE'
+    },
+    manualCropContainer: {
+        flex: 1,
+        backgroundColor: 'black'
+    },
+    manualCropFooter: {
+        flexDirection: 'row',
+        backgroundColor: '#4630BE'
+    },
+    manualCropFooterButton: {
+        width: '50%',
+        padding: 20
+    },
+    manualCropButtonText: {
+        textAlign: 'center',
+        color: 'white'
     },
     preview: {
         position: 'absolute',
@@ -248,7 +330,6 @@ const styles = StyleSheet.create({
     takePhotoButton: {
         alignSelf: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'white',
         borderRadius: 50,
         paddingHorizontal: width * 0.06,
         paddingVertical: height * 0.03,
@@ -267,10 +348,6 @@ const styles = StyleSheet.create({
     previewMiddle: {
         borderColor: 'white',
         borderWidth: 2,
-    },
-    selfieContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     poweredBy: {
         paddingBottom: 10,

@@ -108,8 +108,8 @@ export const initialDocuments = [
         ],
         type: 'image',
         captureVideo: false,
-        cameraFacing: 'environment',
-        crop: true,
+        cameraFacing: null,
+        crop: false,
         autoCrop: false,
     },
     {
