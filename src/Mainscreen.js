@@ -94,13 +94,15 @@ const MainScreen = (props) => {
         setFiles([...files, capture])
     }
 
-    const pickAndTransformPdf = async () => {
-        setIsStepsFinished(true)
-        const file = await DocumentPicker.pick({
+    const pickAndTransformPdf = () => {
+        DocumentPicker.pick({
             type: [DocumentPicker.types.pdf]
+        }).then(file => {
+            RNFS.readFile(file.uri, 'base64').then(source => {
+                setFiles([`data:application/pdf;base64,${source}`])
+                setIsStepsFinished(true)
+            })
         })
-        const source = await RNFS.readFile(file.uri, 'base64')
-        setFiles([...files, `data:application/pdf;base64,${source}`])
     }
 
     if (!availableDocuments) {
