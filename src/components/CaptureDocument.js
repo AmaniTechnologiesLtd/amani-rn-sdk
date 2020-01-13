@@ -8,13 +8,15 @@ import {
     Text,
     View,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
 import { CropView } from 'react-native-image-crop-tools'
 import ImageEditor from '@react-native-community/image-editor'
 import Signature from 'react-native-signature-canvas'
+import DocumentPicker from 'react-native-document-picker'
 
 // Local files
 import SelfieMask from './SelfieMask'
@@ -43,6 +45,7 @@ export default function CaptureDocument(props) {
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [currentStep, setCurrentStep] = useState(0)
     const [cropDocument, setCropDocument] = useState(null)
+    const [isProcessStarted, setIsProcessStarted] = useState(false)
 
     const camera = useRef(null)
     const cropViewRef = useRef()
@@ -68,7 +71,6 @@ export default function CaptureDocument(props) {
 
     const takePicture = async () => {
         setButtonDisabled(true)
-
         let image = await camera.current.takePictureAsync({
             quality: 0.7,
             orientation: 'portrait',
@@ -85,6 +87,18 @@ export default function CaptureDocument(props) {
                 onCapture(image)
                 calculateNextStep()
             }
+        })
+    }
+
+    const pickAndTransformPdf = () => {
+        setIsProcessStarted(true)
+        DocumentPicker.pick({
+            type: [DocumentPicker.types.pdf]
+        }).then(file => {
+            RNFS.readFile(file.uri, 'base64').then(source => {
+                onCapture(`data:application/pdf;base64,${source}`)
+                calculateNextStep()
+            })
         })
     }
 
@@ -128,6 +142,7 @@ export default function CaptureDocument(props) {
     }
 
     const handleSignature = signature => {
+        setIsProcessStarted(true)
         onCapture(signature)
         calculateNextStep()
     }
@@ -136,6 +151,15 @@ export default function CaptureDocument(props) {
         const src = await RNFS.readFile(croppedImageUri, 'base64')
         onCapture(`data:image/jpeg;base64,${src}`)
         calculateNextStep()
+    }
+
+    if (isProcessStarted) {
+        return (
+            <View style={styles.cameraContainer}>
+                <StatusBar barStyle="light-content" backgroundColor="black" />
+                <ActivityIndicator color="white" size="large" />
+            </View>
+        )
     }
 
     if (cropDocument) {
@@ -163,7 +187,7 @@ export default function CaptureDocument(props) {
     if (document.id === 'SG') {
         return (
             <View style={styles.signatureContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#4630BE" />
+            <StatusBar hidden />
                 <View style={{ flex: 0.07}}>
                     <TouchableOpacity
                         style={{ paddingHorizontal: 20 }}
@@ -200,7 +224,7 @@ export default function CaptureDocument(props) {
                         {document.options.includes('fileUpload') && (
                             <TouchableOpacity
                                 style={{ paddingHorizontal: 20 }}
-                                onPress={() => props.takePdfFile()}>
+                                onPress={() => pickAndTransformPdf()}>
                                 <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/up.png')} />
                             </TouchableOpacity>
                         )}
@@ -268,6 +292,7 @@ export default function CaptureDocument(props) {
 const styles = StyleSheet.create({
     cameraContainer: {
         flex: 1,
+        backgroundColor: 'black',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -277,7 +302,7 @@ const styles = StyleSheet.create({
     },
     signatureContainer: {
         flex: 1,
-        backgroundColor: '#4630BE'
+        backgroundColor: 'black'
     },
     manualCropContainer: {
         flex: 1,
@@ -285,7 +310,7 @@ const styles = StyleSheet.create({
     },
     manualCropFooter: {
         flexDirection: 'row',
-        backgroundColor: '#4630BE'
+        backgroundColor: 'black'
     },
     manualCropFooterButton: {
         width: '50%',
