@@ -1,8 +1,6 @@
 // Global dependencies
 import React, { useState, useEffect, useReducer } from 'react'
 import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image, StatusBar } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
-import RNFS from 'react-native-fs'
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
@@ -94,21 +92,10 @@ const MainScreen = (props) => {
         setFiles([...files, capture])
     }
 
-    const pickAndTransformPdf = () => {
-        DocumentPicker.pick({
-            type: [DocumentPicker.types.pdf]
-        }).then(file => {
-            RNFS.readFile(file.uri, 'base64').then(source => {
-                setFiles([`data:application/pdf;base64,${source}`])
-                setIsStepsFinished(true)
-            })
-        })
-    }
-
     if (!availableDocuments) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator color="black" />
+                <ActivityIndicator color="white" />
             </View>
         )
     }
@@ -120,36 +107,39 @@ const MainScreen = (props) => {
                 onCapture={documentCaptured}
                 onClearDocument={setSelectedDocument}
                 onStepsFinished={setIsStepsFinished}
-                takePdfFile={pickAndTransformPdf}
             />
         )
     }
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-            {documents.map((document) => {
-                if (availableDocuments.includes(document.id)) {
-                    return (
-                        <TouchableOpacity
-                            style={styles.moduleButton}
-                            key={document.id}
-                            onPress={() => setSelectedDocument(document)}
-                        >
-                            <View style={styles.moduleContainer}>
-                                <View style={styles.moduleTitleContainer}>
-                                    <Text style={styles.moduleTitle}>{document.title}</Text>
+            <StatusBar barStyle="light-content" backgroundColor="black" />
+            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Select a Document Type</Text>
+
+            <View style={styles.modulesContainer}>
+                {documents.map((document) => {
+                    if (availableDocuments.includes(document.id)) {
+                        return (
+                            <TouchableOpacity
+                                style={styles.moduleButton}
+                                key={document.id}
+                                onPress={() => setSelectedDocument(document)}
+                            >
+                                <View style={styles.moduleContainer}>
+                                    <View style={styles.moduleTitleContainer}>
+                                        <Text style={styles.moduleTitle}>{document.title}</Text>
+                                    </View>
+                                    <View style={styles.moduleStatusContainer}>
+                                        {document.passed !== null &&
+                                            handleCurrentModalStatus(document.passed)
+                                        }
+                                    </View>
                                 </View>
-                                <View style={styles.moduleStatusContainer}>
-                                    {document.passed !== null &&
-                                        handleCurrentModalStatus(document.passed)
-                                    }
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                }
-            })}
+                            </TouchableOpacity>
+                        )
+                    }
+                })}
+            </View>
         </View>
     )
 }
@@ -157,6 +147,10 @@ const MainScreen = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+    },
+    modulesContainer: {
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -168,18 +162,17 @@ const styles = StyleSheet.create({
         height: height * 0.055,
         paddingHorizontal: 20,
         justifyContent: 'center',
-        borderRadius: 15,
         marginHorizontal: width * 0.03,
-        marginVertical: height * 0.0035,
+        marginBottom: height * 0.002,
         backgroundColor: '#212121'
     },
     moduleTitleContainer: {
         width: '90%',
-        flexDirection: 'row',
-        alignItems: 'center'
+        justifyContent: 'center',
     },
     moduleTitle: {
         color: '#eee',
+        fontSize: width * 0.04,
         width: '100%'
     },
     moduleStatusContainer: {
