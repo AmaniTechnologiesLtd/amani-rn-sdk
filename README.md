@@ -4,6 +4,16 @@ amani-ai-sdk is a library that brings amani artifical intelligence modules toget
 
 ## Installation
 
+By yarn:
+```bash
+yarn add https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
+```
+
+or NPM:
+```bash
+npm install https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
+```
+
 ### Required dependencies:
 
 | Name | Recommended Version |
@@ -20,19 +30,19 @@ amani-ai-sdk is a library that brings amani artifical intelligence modules toget
 To get all of these by single command run the following command:
 
 ```bash
-    yarn add https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+yarn add https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
 ```
 
 or
 
 ```bash
-    npm install https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+npm install https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
 ```
 
 If your React Native version is below the 0.60,  to link all these dependencies to your project, please run command below.
 
 ```bash
-    react-native link
+react-native link
 ```
 
 ## Android Configuration
@@ -41,29 +51,29 @@ If your React Native version is below the 0.60,  to link all these dependencies 
 
 android/app/src/main/AndroidManifest.xml:
 ```xml
-    <uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.CAMERA" />
 ```
 
 android/settings.gradle:
 ```gradle
-    include ':react-native-fs'
-    project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+include ':react-native-fs'
+project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
 ```
 
 android/app/build.gradle:
 ```gradle
-    android {
+android {
+    ...
+    defaultConfig {
         ...
-        defaultConfig {
-            ...
-            missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this line
-        }
+        missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this line
     }
+}
 ```
 
 android/app/src/main/java/[...]/MainApplication.java:
 ```java
-    import com.rnfs.RNFSPackage;
+import com.rnfs.RNFSPackage;
 ```
 
 
@@ -71,34 +81,34 @@ android/app/src/main/java/[...]/MainApplication.java:
 
 ### Append these code lines to shown paths
 
-ios/[...]/Info.plist
+ios/[...]/Info.plist:
 ```xml
-    <!-- Required with iOS 10 and higher -->
-    <key>NSCameraUsageDescription</key>
-    <string>Your message to user when the camera is accessed for the first time</string>
+<!-- Required with iOS 10 and higher -->
+<key>NSCameraUsageDescription</key>
+<string>Your message to user when the camera is accessed for the first time</string>
 
-    <!-- Required with iOS 11 and higher: include this only if you are planning to use the camera roll -->
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Your message to user when the photo library is accessed for the first time</string>
+<!-- Required with iOS 11 and higher: include this only if you are planning to use the camera roll -->
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Your message to user when the photo library is accessed for the first time</string>
 
-    <!-- Include this only if you are planning to use the camera roll -->
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Your message to user when the photo library is accessed for the first time</string>
+<!-- Include this only if you are planning to use the camera roll -->
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Your message to user when the photo library is accessed for the first time</string>
 
-    <!-- Include this only if you are planning to use the microphone for video recording -->
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Your message to user when the microphone is accessed for the first time</string>
+<!-- Include this only if you are planning to use the microphone for video recording -->
+<key>NSMicrophoneUsageDescription</key>
+<string>Your message to user when the microphone is accessed for the first time</string>
 ```
 
-ios/Podfile
+ios/Podfile:
 ```ruby
-    pod 'RNFS', :path => '../node_modules/react-native-fs'
+pod 'RNFS', :path => '../node_modules/react-native-fs'
 ```
 
 Install pod dependencies by running:
 
 ```bash
-    cd ios && pod install
+cd ios && pod install
 ```
 
 ## Integration
@@ -110,18 +120,18 @@ Install pod dependencies by running:
 | server | false | string | tr |
 
 ```js
-    import AmaniAi from 'amani-ai-sdk'
-    // These given values are all fake, they all just to show usage of this package.
-    const authValues = {
-        appKey: 'exampleAppKey',
-        appPassword: 'exampleAppPasword'
-    }
+import AmaniAi from 'amani-ai-sdk'
+// These given values are all fake, they all just to show usage of this package.
+const authValues = {
+    appKey: 'exampleAppKey',
+    appPassword: 'exampleAppPasword'
+}
 
-    const customer = {
-        name: 'example name',
-        email: 'example@mail.com',
-        phone: '+0123456789'
-    }
+const customer = {
+    name: 'example name',
+    email: 'example@mail.com',
+    phone: '+0123456789'
+}
 
-    return <AmaniAi authData={authValues} customerInformations={customer} server="uae" />
+return <AmaniAi authData={authValues} customerInformations={customer} server="uae" />
 ```
