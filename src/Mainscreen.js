@@ -1,6 +1,16 @@
 // Global dependencies
 import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image, StatusBar } from 'react-native'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    ActivityIndicator,
+    Dimensions,
+    StyleSheet,
+    Image,
+    StatusBar,
+    BackHandler
+} from 'react-native'
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
@@ -9,7 +19,7 @@ import documentsReducer, { initialDocuments } from './store/documents'
 
 const { width, height } = Dimensions.get('window')
 
-const MainScreen = (props) => {
+const MainScreen = props => {
     const [availableDocuments, setAvailableDocuments] = useState(null)
     const [documents] = useReducer(documentsReducer, initialDocuments)
     const [selectedDocument, setSelectedDocument] = useState(null)
@@ -19,32 +29,51 @@ const MainScreen = (props) => {
     const [isStepsFinished, setIsStepsFinished] = useState(false)
     const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
 
-    useEffect(
-        () => {
-            if (isStepsFinished) handleSendDocumentsRequest()
-            setIsStepsFinished(false)
-        },
-        [isStepsFinished]
-    )
+    const { onExit, onCreateCustomer } = props
 
-    if (!availableDocuments) {
-        api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
 
-        const authData = props.authData
-        const customerInformations = props.customerInformations
-        api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
-            api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
-                const formData = {
-                    customerData: customerInformations,
-                    smsToken: sRes.data.token
-                }
-                api.createCustomer(formData).then(async (tRes) => {
-                    setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                    setAvailableDocuments(sRes.data.available_documents)
-                })
+    const goBack = async () => {
+        const callbackData = []
+        availableDocuments.forEach(element => {
+            callbackData.push({
+                 [element]: documents.find(document => document.id === element).passed
             })
         })
+        onExit(callbackData)
     }
+
+    useEffect(() => {
+        if (!availableDocuments) {
+            api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
+            const authData = props.authData
+            const customerInformations = props.customerInformations
+            api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
+                api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
+                    const formData = {
+                        customerData: customerInformations,
+                        smsToken: sRes.data.token
+                    }
+                    api.createCustomer(formData).then(async (tRes) => {
+                        setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
+                        setAvailableDocuments(sRes.data.available_documents)
+                        onCreateCustomer({ id: tRes.data.id })
+                    })
+                })
+            })
+            return
+        }
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            goBack()
+        })
+
+        return () => backHandler.remove()
+    }, [availableDocuments])
+
+    useEffect(() => {
+            if (isStepsFinished) handleSendDocumentsRequest()
+            setIsStepsFinished(false)
+    }, [isStepsFinished])
 
     const handleSendDocumentsRequest = async () => {
         selectedDocument.passed = 'loading'
