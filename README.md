@@ -118,6 +118,9 @@ cd ios && pod install
 | authData | true | object | - |
 | customerInformations | true | object | - |
 | server | false | string | tr |
+| onCreateCustomer | false | callback function | - |
+| onExit | false | callback function | - |
+
 
 ```js
 import AmaniAi from 'amani-ai-sdk'
@@ -133,5 +136,13 @@ const customer = {
     phone: '+0123456789'
 }
 
-return <AmaniAi authData={authValues} customerInformations={customer} server="uae" />
+return (
+    <AmaniAi
+        server="uae"
+        authData={authValues}
+        customerInformations={customer}
+        onCreateCustomer={customer => console.log(customer)}
+        onExit={values => console.log(values)}
+    />
+)
 ```
