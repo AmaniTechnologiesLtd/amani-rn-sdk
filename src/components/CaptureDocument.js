@@ -221,16 +221,16 @@ export default function CaptureDocument(props) {
                             onPress={goBack}>
                             <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
                         </TouchableOpacity>
-                        {document.options.includes('fileUpload') && (
+                        <Text style={styles.topBarText}>{document.title}</Text>
+                        {document.options.includes('fileUpload') ?
                             <TouchableOpacity
                                 style={{ paddingHorizontal: 20 }}
                                 onPress={() => pickAndTransformPdf()}>
                                 <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/up.png')} />
                             </TouchableOpacity>
-                        )}
-                    </View>
-                    <View >
-                        <Text style={styles.topBarText}>{document.title}</Text>
+                            :
+                            <View style={{flex: 0.15}} />
+                        }
                     </View>
                 </View>
 
@@ -275,11 +275,20 @@ export default function CaptureDocument(props) {
                     </Text>
                 </View>
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    <TouchableOpacity
-                        style={[styles.takePhotoButton, {backgroundColor: buttonDisabled ? '#9e9e9e': 'white'}]}
-                        disabled={buttonDisabled}
-                        onPress={takePicture}
+                <TouchableOpacity
+                    style={styles.takePhotoButtonCircle}
+                    disabled={buttonDisabled}
+                    onPress={takePicture}>
+                    <View style={[
+                            styles.takePhotoButton,
+                            {
+                                backgroundColor: buttonDisabled
+                                    ? '#9e9e9e'
+                                    : 'white',
+                            },
+                        ]}
                     />
+                </TouchableOpacity>
                 </View>
                 <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <Text style={{ color: 'white' }}>Powered By Amani</Text>
@@ -331,12 +340,14 @@ const styles = StyleSheet.create({
     topBar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
     },
     topBarText: {
         color: 'white',
         fontSize: 20,
         textAlign: 'center',
+        flex: 1,
+        alignItems: 'center',
+        paddingVertical: height * 0.022,
         fontWeight: '500',
     },
     topArea: {
@@ -357,13 +368,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: '7%',
         textAlign: 'center',
     },
-    takePhotoButton: {
-        alignSelf: 'flex-end',
+    takePhotoButtonCircle: {
         alignItems: 'center',
+        alignSelf: 'flex-end',
+        borderRadius: 50,
+        padding: 3,
+        borderWidth: 1,
+        borderColor: 'white',
+        marginBottom: height * 0.02
+    },
+    takePhotoButton: {
         borderRadius: 50,
         paddingHorizontal: width * 0.06,
         paddingVertical: height * 0.03,
-        marginBottom: height * 0.007
     },
     buttonLoader: {
         alignSelf: 'flex-end',
