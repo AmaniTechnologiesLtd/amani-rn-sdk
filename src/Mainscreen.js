@@ -23,6 +23,7 @@ const MainScreen = props => {
     const [availableDocuments, setAvailableDocuments] = useState(null)
     const [documents] = useReducer(documentsReducer, initialDocuments)
     const [selectedDocument, setSelectedDocument] = useState(null)
+    const [corners, setCorners] = useState(null)
     const [files, setFiles] = useState([])
 
     const [cropDocument, setCropDocument] = useState(null)
@@ -82,6 +83,7 @@ const MainScreen = props => {
         const requestData = new FormData()
         requestData.append('type', selectedDocument.id)
         requestData.append('customer_token', tokens.customer)
+        if (corners) requestData.append('corners', corners.toString())
         files.map((x) => {
             requestData.append('files[]', x)
             return true
@@ -103,6 +105,7 @@ const MainScreen = props => {
         }
 
         setFiles([])
+        setCorners([])
     }
 
     const handleCurrentModalStatus = isPassed => {
@@ -134,6 +137,7 @@ const MainScreen = props => {
             <CaptureDocument
                 document={selectedDocument}
                 onCapture={documentCaptured}
+                onManualCropCorners={setCorners}
                 onClearDocument={setSelectedDocument}
                 onStepsFinished={setIsStepsFinished}
             />
