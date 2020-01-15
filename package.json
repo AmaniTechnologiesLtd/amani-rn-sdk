@@ -11,11 +11,9 @@
     "react-native": "^0.61.5",
     "react-native-camera": "^3.15.0",
     "react-native-webview": "^8.0.3",
-    "react-native-image-crop-tools": "^1.2.2",
     "react-native-svg": "^9.13.6",
     "@react-native-community/image-editor": "^2.2.0",
-    "react-native-document-picker": "^3.2.4",
-    "react-native-signature-canvas": "git+https://git@github.com/ozkanonur/react-native-signature-canvas"
+    "react-native-document-picker": "^3.2.4"
   },
   "author": "Onur Ozkan",
   "license": "ISC"
