@@ -13,7 +13,8 @@
     "react-native-webview": "^8.0.3",
     "react-native-svg": "^9.13.6",
     "@react-native-community/image-editor": "^2.2.0",
-    "react-native-document-picker": "^3.2.4"
+    "react-native-document-picker": "^3.2.4",
+    "react-native-fs": "2.16.2"
   },
   "author": "Onur Ozkan",
   "license": "ISC"
