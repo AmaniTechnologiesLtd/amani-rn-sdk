@@ -2,24 +2,25 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet,
+    View,
+    Text,
     StatusBar,
+    Image,
+    Alert,
     BackHandler,
     Dimensions,
-    Text,
-    View,
-    Image,
     TouchableOpacity,
     ActivityIndicator
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
-import { CropView } from 'react-native-image-crop-tools'
 import ImageEditor from '@react-native-community/image-editor'
 import DocumentPicker from 'react-native-document-picker'
 
 // Local files
 import SelfieMask from './SelfieMask'
 import SignatureDraw from './SignatureDraw'
+import ImageCropper from './ImageCropper'
 
 const { width, height } = Dimensions.get('window')
 
@@ -28,7 +29,8 @@ export default function CaptureDocument(props) {
     const {
         document,
         document: { steps, aspectRatio, cameraFacing, autoCrop },
-        onCapture
+        onCapture,
+        onManualCropCorners
     } = props
 
     const [cameraType] = useState(
@@ -44,11 +46,10 @@ export default function CaptureDocument(props) {
 
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [currentStep, setCurrentStep] = useState(0)
-    const [cropDocument, setCropDocument] = useState(null)
     const [isProcessStarted, setIsProcessStarted] = useState(false)
+    const [imageCrop, setImageCrop] = useState(null)
 
     const camera = useRef(null)
-    const cropViewRef = useRef()
 
     const goBack = async () => {
         const { onClearDocument } = props
@@ -80,7 +81,7 @@ export default function CaptureDocument(props) {
         }).then(async data => {
             if (document.crop) {
                 setButtonDisabled(false)
-                setCropDocument(data)
+                setImageCrop(data)
             } else {
                 image = `data:image/jpeg;base64,${data.base64}`
                 if (autoCrop) image = await handleAutoCrop(data)
@@ -106,7 +107,7 @@ export default function CaptureDocument(props) {
         const { onStepsFinished } = props
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
-            setButtonDisabled(false)
+            setImageCrop(null)
         } else {
             onStepsFinished(true)
         }
@@ -147,9 +148,37 @@ export default function CaptureDocument(props) {
         calculateNextStep()
     }
 
-    const handleManualCrop = async croppedImageUri => {
-        const src = await RNFS.readFile(croppedImageUri, 'base64')
-        onCapture(`data:image/jpeg;base64,${src}`)
+    const handleEmptySignature = () => {
+        Alert.alert(
+            'Warning',
+            'Please make sure your signature is drawn.',
+            [
+              {text: 'OK'},
+            ],
+            {cancelable: true}
+        )
+    }
+
+    const handleManualCrop = async data => {
+        onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
+        onManualCropCorners([
+            [
+                parseInt(data.topLeft.x),
+                parseInt(data.topLeft.y),
+            ],
+            [
+                parseInt(data.topRight.x),
+                parseInt(data.topRight.y),
+            ],
+            [
+                parseInt(data.bottomLeft.x),
+                parseInt(data.bottomLeft.y),
+            ],
+            [
+                parseInt(data.bottomRight.x),
+                parseInt(data.bottomRight.y),
+            ],
+        ])
         calculateNextStep()
     }
 
@@ -162,25 +191,16 @@ export default function CaptureDocument(props) {
         )
     }
 
-    if (cropDocument) {
+    if (imageCrop) {
         return (
-            <View style={styles.manualCropContainer}>
-                <StatusBar hidden />
-                <CropView
-                    sourceUrl={cropDocument.uri}
-                    style={{flex: 1}}
-                    ref={cropViewRef}
-                    onImageCrop={res => handleManualCrop(res.uri)}
-                />
-                <View style={styles.manualCropFooter}>
-                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={goBack}>
-                        <Text style={styles.manualCropButtonText}> Back </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={() => cropViewRef.current.saveImage(100)}>
-                        <Text style={styles.manualCropButtonText}> Crop </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <ImageCropper
+                image={imageCrop}
+                onCancel={() => {
+                    setImageCrop(false)
+                    return true // Added for react navigation not to intervene
+                }}
+                onCropped={data => handleManualCrop(data)}
+            />
         )
     }
 
@@ -198,7 +218,7 @@ export default function CaptureDocument(props) {
                 <View style={{ flex: 0.93 }}>
                     <SignatureDraw
                         onOK={handleSignature}
-                        onEmpty
+                        onEmpty={handleEmptySignature}
                     />
                 </View>
             </View>
