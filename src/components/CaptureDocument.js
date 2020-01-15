@@ -15,11 +15,11 @@ import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
 import { CropView } from 'react-native-image-crop-tools'
 import ImageEditor from '@react-native-community/image-editor'
-import Signature from 'react-native-signature-canvas'
 import DocumentPicker from 'react-native-document-picker'
 
 // Local files
 import SelfieMask from './SelfieMask'
+import SignatureDraw from './SignatureDraw'
 
 const { width, height } = Dimensions.get('window')
 
@@ -196,7 +196,7 @@ export default function CaptureDocument(props) {
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 0.93 }}>
-                    <Signature
+                    <SignatureDraw
                         onOK={handleSignature}
                         onEmpty
                     />
