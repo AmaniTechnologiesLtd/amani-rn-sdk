@@ -24,19 +24,17 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
 | react-native-svg | 10.1.0 |
 | @react-native-community/image-editor | 2.2.0 |
 | react-native-document-picker | 3.2.4 |
-| react-native-image-crop-tools | 1.2.2 |
-| react-native-signature-canvas | Forked version from [here](https://github.com/ozkanonur/react-native-signature-canvas)|
 
 To get all of these by single command run the following command:
 
 ```bash
-yarn add https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+yarn add react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
 ```
 
 or
 
 ```bash
-npm install https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+npm install react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
 ```
 
 If your React Native version is below the 0.60,  to link all these dependencies to your project, please run command below.
