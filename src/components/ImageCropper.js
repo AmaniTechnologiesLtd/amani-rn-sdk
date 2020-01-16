@@ -16,14 +16,15 @@ import iconCrop from '../../assets/crop.png'
 const ImageCropper = props => {
     const { image, onCancel } = props
     const { width, height } = Dimensions.get('window')
-    const ratio = image.width / width
+    const ratioX = image.width / width
+    const ratioY = image.height / height
     let customCrop = useRef(null)
 
     const rectangleCoordinates = {
-        topLeft: { x: width * 0.15 * ratio, y: height * 0.2 * ratio },
-        topRight: { x: width * 0.85 * ratio, y: height * 0.2 * ratio },
-        bottomRight: { x: width * 0.85 * ratio, y: height * 0.85 * ratio },
-        bottomLeft: { x: width * 0.15 * ratio, y: height * 0.85 * ratio },
+        topLeft: { x: width * 0.15 * ratioX, y: height * 0.2 * ratioY },
+        topRight: { x: width * 0.85 * ratioX, y: height * 0.2 * ratioY },
+        bottomRight: { x: width * 0.85 * ratioX, y: height * 0.85 * ratioY },
+        bottomLeft: { x: width * 0.15 * ratioX, y: height * 0.85 * ratioY },
     }
 
     const getCropData = () => {
@@ -79,7 +80,7 @@ const ImageCropper = props => {
                 width={image.width}
                 overlayColor="#ffffff"
                 overlayStrokeColor="#ffffff"
-                handlerColor="#212121"
+                handlerColor="#ff5252"
             />
         </View>
     )
@@ -88,7 +89,7 @@ const ImageCropper = props => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        position: 'relative',
     },
     customCrop: {
         position: 'absolute',

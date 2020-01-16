@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react'
-import { PanResponder, Dimensions, Image, View, Animated } from 'react-native'
+import { PanResponder, Dimensions, Image, View, Animated} from 'react-native'
 import Svg, { Polygon } from 'react-native-svg'
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon)
@@ -9,8 +9,9 @@ class CustomCrop extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            viewHeight:
-                Dimensions.get('window').width * (props.height / props.width),
+            ImageWidth:
+                Dimensions.get('window').height / (props.height / props.width),
+            viewHeight: Dimensions.get('window').height,
             height: props.height,
             width: props.width,
             image: props.initialImage,
@@ -80,6 +81,7 @@ class CustomCrop extends Component {
             topRight,
             bottomLeft,
             bottomRight,
+            ImageWidth,
             height,
             width,
             image,
@@ -93,6 +95,14 @@ class CustomCrop extends Component {
             width,
             image,
         }
+
+        const widthCorrection =
+            (ImageWidth - Dimensions.get('window').width) / 2
+
+        cropData.topLeft.x += widthCorrection
+        cropData.bottomLeft.x += widthCorrection
+        cropData.topRight.x -= widthCorrection
+        cropData.bottomRight.x -= widthCorrection
 
         return cropData
     }
@@ -136,7 +146,7 @@ class CustomCrop extends Component {
         return {
             x:
                 (corner.x._value / Dimensions.get('window').width) *
-                this.state.width,
+                    this.state.width,
             y: (corner.y._value / this.state.viewHeight) * this.state.height,
         }
     }
@@ -157,14 +167,17 @@ class CustomCrop extends Component {
                     <Image
                         style={[
                             s(this.props).image,
-                            { height: this.state.viewHeight },
+                            {
+                                height: this.state.viewHeight,
+                                width: this.state.ImageWidth,
+                                alignSelf: 'center',
+                            },
                         ]}
-                        resizeMode="cover"
+                        resizeMode="contain"
                         source={{ uri: this.state.image }}
                     />
                     <Svg
-                        height={Dimensions.get('window').height}
-
+                        height={this.state.viewHeight}
                         width={Dimensions.get('window').width}
                         style={{ position: 'absolute', left: 0, top: 0 }}>
                         <AnimatedPolygon
@@ -185,13 +198,14 @@ class CustomCrop extends Component {
                         <View
                             style={[
                                 s(this.props).handlerI,
-                                { left: -10, top: -10 },
+                                { left: 10, top: 10 },
                             ]}
                         />
                         <View
+                            hitSlop={{ top: 20, left: 20, bottom: 20 }}
                             style={[
                                 s(this.props).handlerRound,
-                                { left: 31, top: 31 },
+                                { right: 41, bottom: 41, opacity: 1 },
                             ]}
                         />
                     </Animated.View>
@@ -204,13 +218,14 @@ class CustomCrop extends Component {
                         <View
                             style={[
                                 s(this.props).handlerI,
-                                { left: 10, top: -10 },
+                                { left: -10, top: 10 },
                             ]}
                         />
                         <View
+                            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
                             style={[
                                 s(this.props).handlerRound,
-                                { right: 31, top: 31 },
+                                { left: 41, bottom: 41 },
                             ]}
                         />
                     </Animated.View>
@@ -223,13 +238,14 @@ class CustomCrop extends Component {
                         <View
                             style={[
                                 s(this.props).handlerI,
-                                { left: -10, top: 10 },
+                                { left: 10, top: -10 },
                             ]}
                         />
                         <View
+                            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
                             style={[
                                 s(this.props).handlerRound,
-                                { left: 31, bottom: 31 },
+                                { right: 41, top: 41 },
                             ]}
                         />
                     </Animated.View>
@@ -242,13 +258,14 @@ class CustomCrop extends Component {
                         <View
                             style={[
                                 s(this.props).handlerI,
-                                { left: 10, top: 10 },
+                                { left: -10, top: -10 },
                             ]}
                         />
                         <View
+                            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
                             style={[
                                 s(this.props).handlerRound,
-                                { right: 31, bottom: 31 },
+                                { left: 41, top: 41 },
                             ]}
                         />
                     </Animated.View>
@@ -261,14 +278,14 @@ class CustomCrop extends Component {
 const s = props => ({
     handlerI: {
         borderRadius: 0,
-        height: 20,
-        width: 20,
+        height: 14,
+        width: 14,
         backgroundColor: props.handlerColor || 'blue',
     },
     handlerRound: {
-        width: 39,
         position: 'absolute',
-        height: 39,
+        width: 26,
+        height: 26,
         borderRadius: 100,
         backgroundColor: props.handlerColor || 'blue',
     },
