@@ -20,12 +20,12 @@ import documentsReducer, { initialDocuments } from './store/documents'
 const { width, height } = Dimensions.get('window')
 
 const MainScreen = props => {
-    const [availableDocuments, setAvailableDocuments] = useState(null)
     const [documents] = useReducer(documentsReducer, initialDocuments)
+
+    const [availableDocuments, setAvailableDocuments] = useState(null)
     const [selectedDocument, setSelectedDocument] = useState(null)
     const [corners, setCorners] = useState(null)
     const [files, setFiles] = useState([])
-
     const [cropDocument, setCropDocument] = useState(null)
     const [isStepsFinished, setIsStepsFinished] = useState(false)
     const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
@@ -105,7 +105,6 @@ const MainScreen = props => {
         }
 
         setFiles([])
-        setCorners([])
     }
 
     const handleCurrentModalStatus = isPassed => {
@@ -119,7 +118,7 @@ const MainScreen = props => {
         )
     }
 
-    const documentCaptured = (capture) => {
+    const onDocumentCaptured = (capture) => {
         if (selectedDocument.crop) setCropDocument(capture)
         setFiles([...files, capture])
     }
@@ -135,8 +134,8 @@ const MainScreen = props => {
     if (selectedDocument) {
         return (
             <CaptureDocument
+                onCapture={onDocumentCaptured}
                 document={selectedDocument}
-                onCapture={documentCaptured}
                 onManualCropCorners={setCorners}
                 onClearDocument={setSelectedDocument}
                 onStepsFinished={setIsStepsFinished}
@@ -172,6 +171,9 @@ const MainScreen = props => {
                         )
                     }
                 })}
+            </View>
+            <View style={styles.poweredBy}>
+                <Text style={{ color: 'white' }}>Powered By Amani</Text>
             </View>
         </View>
     )
@@ -215,6 +217,13 @@ const styles = StyleSheet.create({
     moduleStatusIcon: {
         width: width * 0.15,
         height: height * 0.03
+    },
+    poweredBy: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 20,
+        alignItems: 'center'
     }
 })
 
