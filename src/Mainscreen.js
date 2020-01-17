@@ -9,8 +9,13 @@ import {
     StyleSheet,
     Image,
     StatusBar,
-    BackHandler
+    BackHandler,
+    PermissionsAndroid,
+    Platform
 } from 'react-native'
+import Geolocation from '@react-native-community/geolocation'
+import DeviceInfo from 'react-native-device-info'
+
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
@@ -29,9 +34,21 @@ const MainScreen = props => {
     const [cropDocument, setCropDocument] = useState(null)
     const [isStepsFinished, setIsStepsFinished] = useState(false)
     const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
+    const [permissions, setPermission] = useState({camera: null, location: null})
+    const [location, setLocation] = useState({latitude: null, longitude: null})
+
+
 
     const { onExit, onCreateCustomer } = props
 
+    const checkPermissions = async () => {
+        setPermission({
+            camera: await PermissionsAndroid.request('android.permission.CAMERA'),
+            location: await PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION')
+        })
+    }
+
+    if (Platform.OS === 'android' && !permissions.camera && !permissions.location) checkPermissions()
 
     const goBack = async () => {
         const callbackData = []
@@ -72,18 +89,31 @@ const MainScreen = props => {
     }, [availableDocuments])
 
     useEffect(() => {
-            if (isStepsFinished) handleSendDocumentsRequest()
-            setIsStepsFinished(false)
-    }, [isStepsFinished])
+        Geolocation.getCurrentPosition(position => setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude }))
+        if (isStepsFinished) handleSendDocumentsRequest()
+        setIsStepsFinished(false)
+    }, [isStepsFinished, location])
 
     const handleSendDocumentsRequest = async () => {
         selectedDocument.passed = 'loading'
         if (!cropDocument) setSelectedDocument(null)
 
+        const deviceData = {
+            id: DeviceInfo.getUniqueId(),
+            os: Platform.OS,
+            model: DeviceInfo.getModel(),
+            gsm: await DeviceInfo.getCarrier()
+        }
+
         const requestData = new FormData()
+
         requestData.append('type', selectedDocument.id)
         requestData.append('customer_token', tokens.customer)
+        requestData.append('device_data', deviceData)
+        requestData.append('location', location)
+
         if (corners) requestData.append('corners', corners.toString())
+
         files.map((x) => {
             requestData.append('files[]', x)
             return true
@@ -107,6 +137,11 @@ const MainScreen = props => {
         setFiles([])
     }
 
+    const onDocumentCaptured = (capture) => {
+        if (selectedDocument.crop) setCropDocument(capture)
+        setFiles([...files, capture])
+    }
+
     const handleCurrentModalStatus = isPassed => {
         if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
         return (
@@ -118,14 +153,19 @@ const MainScreen = props => {
         )
     }
 
-    const onDocumentCaptured = (capture) => {
-        if (selectedDocument.crop) setCropDocument(capture)
-        setFiles([...files, capture])
+    if (Platform.OS === 'android' &&permissions.camera !== 'granted' && permissions.location !== 'granted') {
+        return (
+            <View style={[styles.container, { alignItems: 'center' }]}>
+                <StatusBar barStyle="light-content" backgroundColor="black" />
+                <Text style={{ color: 'white', fontSize: 18 }}> Camera and Location permissions are not authorized </Text>
+            </View>
+        )
     }
 
     if (!availableDocuments) {
         return (
             <View style={styles.container}>
+                <StatusBar barStyle="light-content" backgroundColor="black" />
                 <ActivityIndicator color="white" />
             </View>
         )
