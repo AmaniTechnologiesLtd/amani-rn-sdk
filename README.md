@@ -84,21 +84,11 @@ import com.rnfs.RNFSPackage;
 
 ios/[...]/Info.plist:
 ```xml
-<!-- Required with iOS 10 and higher -->
 <key>NSCameraUsageDescription</key>
-<string>Your message to user when the camera is accessed for the first time</string>
+<string>Example Camera Description</string>
 
-<!-- Required with iOS 11 and higher: include this only if you are planning to use the camera roll -->
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>Your message to user when the photo library is accessed for the first time</string>
-
-<!-- Include this only if you are planning to use the camera roll -->
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Your message to user when the photo library is accessed for the first time</string>
-
-<!-- Include this only if you are planning to use the microphone for video recording -->
-<key>NSMicrophoneUsageDescription</key>
-<string>Your message to user when the microphone is accessed for the first time</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Example Location Description</string>
 ```
 
 ios/Podfile:
