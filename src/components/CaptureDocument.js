@@ -79,15 +79,14 @@ export default function CaptureDocument(props) {
             width: 1080,
             fixOrientation: true
         }).then(async data => {
-            if (document.crop) {
-                setButtonDisabled(false)
-                setImageCrop(data)
-            } else {
+            if (document.crop) setImageCrop(data)
+            else {
                 image = `data:image/jpeg;base64,${data.base64}`
                 if (autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
                 calculateNextStep()
             }
+            setButtonDisabled(false)
         })
     }
 
