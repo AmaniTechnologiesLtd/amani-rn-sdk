@@ -81,11 +81,12 @@ class CustomCrop extends Component {
             topRight,
             bottomLeft,
             bottomRight,
-            ImageWidth,
             height,
             width,
             image,
+            ImageWidth,
         } = this.state
+
         const cropData = {
             topLeft: this.viewCoordinatesToImageCoordinates(topLeft),
             topRight: this.viewCoordinatesToImageCoordinates(topRight),
@@ -110,16 +111,19 @@ class CustomCrop extends Component {
     createPanResponser(corner) {
         return PanResponder.create({
             onStartShouldSetPanResponder: () => true,
-            onPanResponderMove: Animated.event([
-                null,
-                {
-                    dx: corner.x,
-                    dy: corner.y,
-                },
-            ]),
+            onPanResponderMove: (e, gestureState) => {
+                Animated.event([
+                    null,
+                    {
+                        dx: corner.x,
+                        dy: corner.y,
+                    },
+                ])(e, gestureState)
+
+                this.updateOverlayOnMove()
+            },
             onPanResponderRelease: () => {
                 corner.flattenOffset()
-                this.updateOverlayString()
             },
             onPanResponderGrant: () => {
                 corner.setOffset({ x: corner.x._value, y: corner.y._value })
@@ -128,10 +132,31 @@ class CustomCrop extends Component {
         })
     }
 
-    updateOverlayString() {
+    updateOverlayOnMove() {
         const { topLeft, topRight, bottomLeft, bottomRight } = this.state
+
+        const movedTopLeft = {
+            x: topLeft.x._offset + topLeft.x._value,
+            y: topLeft.y._offset + topLeft.y._value,
+        }
+
+        const movedTopRight = {
+            x: topRight.x._offset + topRight.x._value,
+            y: topRight.y._offset + topRight.y._value,
+        }
+
+        const movedBottomLeft = {
+            x: bottomLeft.x._offset + bottomLeft.x._value,
+            y: bottomLeft.y._offset + bottomLeft.y._value,
+        }
+
+        const movedBottomRight = {
+            x: bottomRight.x._offset + bottomRight.x._value,
+            y: bottomRight.y._offset + bottomRight.y._value,
+        }
+
         this.setState({
-            overlayPositions: `${topLeft.x._value},${topLeft.y._value} ${topRight.x._value},${topRight.y._value} ${bottomRight.x._value},${bottomRight.y._value} ${bottomLeft.x._value},${bottomLeft.y._value}`,
+            overlayPositions: `${movedTopLeft.x},${movedTopLeft.y} ${movedTopRight.x},${movedTopRight.y} ${movedBottomRight.x},${movedBottomRight.y} ${movedBottomLeft.x},${movedBottomLeft.y}`,
         })
     }
 
@@ -146,7 +171,7 @@ class CustomCrop extends Component {
         return {
             x:
                 (corner.x._value / Dimensions.get('window').width) *
-                    this.state.width,
+                this.state.width,
             y: (corner.y._value / this.state.viewHeight) * this.state.height,
         }
     }
@@ -158,6 +183,7 @@ class CustomCrop extends Component {
                     flex: 1,
                     alignItems: 'center',
                     justifyContent: 'flex-end',
+                    backgroundColor: 'black',
                 }}>
                 <View
                     style={[
@@ -182,11 +208,11 @@ class CustomCrop extends Component {
                         style={{ position: 'absolute', left: 0, top: 0 }}>
                         <AnimatedPolygon
                             ref={ref => (this.polygon = ref)}
-                            fill={this.props.overlayColor || 'blue'}
-                            fillOpacity={this.props.overlayOpacity || 0.5}
-                            stroke={this.props.overlayStrokeColor || 'blue'}
+                            fill={this.props.overlayColor || 'white'}
+                            fillOpacity={this.props.overlayOpacity || 0.3}
+                            stroke={this.props.overlayStrokeColor || 'white'}
                             points={this.state.overlayPositions}
-                            strokeWidth={this.props.overlayStrokeWidth || 3}
+                            strokeWidth={this.props.overlayStrokeWidth || 1}
                         />
                     </Svg>
                     <Animated.View
@@ -196,16 +222,15 @@ class CustomCrop extends Component {
                             s(this.props).handler,
                         ]}>
                         <View
+                            hitSlop={{
+                                top: 40,
+                                left: 40,
+                                bottom: 40,
+                                right: 40,
+                            }}
                             style={[
                                 s(this.props).handlerI,
                                 { left: 10, top: 10 },
-                            ]}
-                        />
-                        <View
-                            hitSlop={{ top: 20, left: 20, bottom: 20 }}
-                            style={[
-                                s(this.props).handlerRound,
-                                { right: 41, bottom: 41, opacity: 1 },
                             ]}
                         />
                     </Animated.View>
@@ -216,16 +241,15 @@ class CustomCrop extends Component {
                             s(this.props).handler,
                         ]}>
                         <View
+                            hitSlop={{
+                                top: 40,
+                                left: 40,
+                                bottom: 40,
+                                right: 40,
+                            }}
                             style={[
                                 s(this.props).handlerI,
                                 { left: -10, top: 10 },
-                            ]}
-                        />
-                        <View
-                            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-                            style={[
-                                s(this.props).handlerRound,
-                                { left: 41, bottom: 41 },
                             ]}
                         />
                     </Animated.View>
@@ -236,16 +260,15 @@ class CustomCrop extends Component {
                             s(this.props).handler,
                         ]}>
                         <View
+                            hitSlop={{
+                                top: 40,
+                                left: 40,
+                                bottom: 40,
+                                right: 40,
+                            }}
                             style={[
                                 s(this.props).handlerI,
                                 { left: 10, top: -10 },
-                            ]}
-                        />
-                        <View
-                            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-                            style={[
-                                s(this.props).handlerRound,
-                                { right: 41, top: 41 },
                             ]}
                         />
                     </Animated.View>
@@ -256,16 +279,15 @@ class CustomCrop extends Component {
                             s(this.props).handler,
                         ]}>
                         <View
+                            hitSlop={{
+                                top: 40,
+                                left: 40,
+                                bottom: 40,
+                                right: 40,
+                            }}
                             style={[
                                 s(this.props).handlerI,
                                 { left: -10, top: -10 },
-                            ]}
-                        />
-                        <View
-                            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-                            style={[
-                                s(this.props).handlerRound,
-                                { left: 41, top: 41 },
                             ]}
                         />
                     </Animated.View>
@@ -278,16 +300,16 @@ class CustomCrop extends Component {
 const s = props => ({
     handlerI: {
         borderRadius: 0,
-        height: 14,
-        width: 14,
-        backgroundColor: props.handlerColor || 'blue',
+        height: 20,
+        width: 20,
+        backgroundColor: props.handlerColor || 'white',
     },
     handlerRound: {
+        width: 39,
         position: 'absolute',
-        width: 26,
-        height: 26,
+        height: 39,
         borderRadius: 100,
-        backgroundColor: props.handlerColor || 'blue',
+        backgroundColor: props.handlerColor || 'white',
     },
     image: {
         width: Dimensions.get('window').width,

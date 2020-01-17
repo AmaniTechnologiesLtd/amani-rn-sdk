@@ -80,7 +80,7 @@ const ImageCropper = props => {
                 width={image.width}
                 overlayColor="#ffffff"
                 overlayStrokeColor="#ffffff"
-                handlerColor="#ff5252"
+                handlerColor="transparent"
             />
         </View>
     )
