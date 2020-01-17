@@ -24,17 +24,18 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
 | react-native-svg | 10.1.0 |
 | @react-native-community/image-editor | 2.2.0 |
 | react-native-document-picker | 3.2.4 |
+| react-native-device-info | 5.4.1 |
 
 To get all of these by single command run the following command:
 
 ```bash
-yarn add react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+yarn add react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info
 ```
 
 or
 
 ```bash
-npm install react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+npm install react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info
 ```
 
 If your React Native version is below the 0.60,  to link all these dependencies to your project, please run command below.
