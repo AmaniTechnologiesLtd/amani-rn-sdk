@@ -186,7 +186,7 @@ const MainScreen = props => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="black" />
-            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Select a Document Type</Text>
+            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Döküman Seçim Ekranı </Text>
 
             <View style={styles.modulesContainer}>
                 {documents.map((document) => {
@@ -213,7 +213,7 @@ const MainScreen = props => {
                 })}
             </View>
             <View style={styles.poweredBy}>
-                <Text style={{ color: 'white' }}>Powered By Amani</Text>
+                <Image  source={require('../assets/powered-by.png')}/>
             </View>
         </View>
     )

@@ -99,7 +99,7 @@ export default function CaptureDocument(props) {
                 onCapture(`data:application/pdf;base64,${source}`)
                 calculateNextStep()
             })
-        })
+        }).catch(error => setIsProcessStarted(false))
     }
 
     const calculateNextStep = () => {
@@ -245,7 +245,7 @@ export default function CaptureDocument(props) {
                             <TouchableOpacity
                                 style={{ paddingHorizontal: 20 }}
                                 onPress={() => pickAndTransformPdf()}>
-                                <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/up.png')} />
+                                <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/pdf-icon.png')} />
                             </TouchableOpacity>
                             :
                             <View style={{flex: 0.15}} />
@@ -310,7 +310,7 @@ export default function CaptureDocument(props) {
                 </TouchableOpacity>
                 </View>
                 <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    <Text style={{ color: 'white' }}>Powered By Amani</Text>
+                    <Image  source={require('../../assets/powered-by.png')}/>
                 </View>
             </RNCamera>
         </View>
