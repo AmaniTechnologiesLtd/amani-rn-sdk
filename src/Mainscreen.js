@@ -89,7 +89,9 @@ const MainScreen = props => {
     }, [availableDocuments])
 
     useEffect(() => {
-        Geolocation.getCurrentPosition(position => setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude }))
+        if (permissions.location === 'granted' || Platform.OS === 'ios') {
+            Geolocation.getCurrentPosition(position => setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude }))
+        }
         if (isStepsFinished) handleSendDocumentsRequest()
         setIsStepsFinished(false)
     }, [isStepsFinished, location])
