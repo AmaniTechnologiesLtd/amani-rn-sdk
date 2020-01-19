@@ -89,7 +89,7 @@ const ImageCropper = props => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        position: 'relative',
+        zIndex: 1,
     },
     customCrop: {
         position: 'absolute',
