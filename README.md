@@ -103,6 +103,7 @@ cd ios && pod install
 | customerInformations | true | object | - |
 | server | false | string | tr |
 | onCreateCustomer | false | callback function | - |
+| onError | false | callback function | - |
 | onExit | false | callback function | - |
 
 
@@ -132,6 +133,7 @@ return (
         authData={authValues}
         customerInformations={customer}
         onCreateCustomer={customer => console.log(customer)}
+        onError={error => console.log(error)}
         onExit={values => console.log(values)}
     />
 )
