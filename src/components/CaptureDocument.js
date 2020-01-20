@@ -109,6 +109,7 @@ export default function CaptureDocument(props) {
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
             setImageCrop(null)
+            setIsProcessStarted(false)
         } else {
             onStepsFinished(true)
         }
@@ -163,24 +164,12 @@ export default function CaptureDocument(props) {
     const handleManualCrop = async data => {
         setIsProcessStarted(true)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
-        onManualCropCorners([
-            [
-                parseInt(data.topLeft.x),
-                parseInt(data.topLeft.y),
-            ],
-            [
-                parseInt(data.topRight.x),
-                parseInt(data.topRight.y),
-            ],
-            [
-                parseInt(data.bottomLeft.x),
-                parseInt(data.bottomLeft.y),
-            ],
-            [
-                parseInt(data.bottomRight.x),
-                parseInt(data.bottomRight.y),
-            ],
-        ])
+        onManualCropCorners({
+            topLeft: {x: parseInt(data.topLeft.x), y: parseInt(data.topLeft.y)},
+            topRight: {x: parseInt(data.topRight.x), y: parseInt(data.topRight.y)},
+            bottomLeft: {x: parseInt(data.bottomLeft.x), y: parseInt(data.bottomLeft.y)},
+            bottomRight: {x: parseInt(data.bottomRight.x), y: parseInt(data.bottomRight.y)},
+        })
         calculateNextStep()
     }
 

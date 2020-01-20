@@ -30,7 +30,7 @@ const MainScreen = props => {
 
     const [availableDocuments, setAvailableDocuments] = useState(null)
     const [selectedDocument, setSelectedDocument] = useState(null)
-    const [corners, setCorners] = useState(null)
+    const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
     const [cropDocument, setCropDocument] = useState(null)
     const [isStepsFinished, setIsStepsFinished] = useState(false)
@@ -136,7 +136,9 @@ const MainScreen = props => {
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('location', JSON.stringify(location))
 
-        if (corners) requestData.append('corners', JSON.stringify(corners))
+        if (corners) {
+          corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))  
+        } 
 
         files.map((x) => {
             requestData.append('files[]', x)
@@ -159,11 +161,16 @@ const MainScreen = props => {
         }
 
         setFiles([])
+        setCorners([])
     }
 
     const onDocumentCaptured = (capture) => {
         if (selectedDocument.crop) setCropDocument(capture)
         setFiles([...files, capture])
+    }
+
+    const onDocumentCrop = cropData => {
+        setCorners([...corners, cropData])
     }
 
     const handleCurrentModalStatus = isPassed => {
@@ -200,7 +207,7 @@ const MainScreen = props => {
             <CaptureDocument
                 onCapture={onDocumentCaptured}
                 document={selectedDocument}
-                onManualCropCorners={setCorners}
+                onManualCropCorners={onDocumentCrop}
                 onClearDocument={setSelectedDocument}
                 onStepsFinished={setIsStepsFinished}
             />

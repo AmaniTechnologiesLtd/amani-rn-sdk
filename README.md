@@ -123,13 +123,13 @@ const customer = {
     // Or create a new customer
     name: 'example name',
     email: 'example@mail.com',
-    phone: '+0123456789'
+    phone: '+905321111111'
 
 }
 
 return (
     <AmaniAi
-        server="uae"
+        server="tr"
         authData={authValues}
         customerInformations={customer}
         onCreateCustomer={customer => console.log(customer)}
