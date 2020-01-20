@@ -1,17 +1,17 @@
-# amani-ai-sdk
+# amani-rn-sdk
 
-amani-ai-sdk is a library that brings amani artifical intelligence modules together and make it work in your React Native project.
+amani-rn-sdk is a library that brings amani artifical intelligence modules together and make it work in your React Native project.
 
 ## Installation
 
 By yarn:
 ```bash
-yarn add https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
+yarn add https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 ```
 
 or NPM:
 ```bash
-npm install https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
+npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 ```
 
 ### Required dependencies:
@@ -108,7 +108,7 @@ cd ios && pod install
 
 
 ```js
-import AmaniAi from 'amani-ai-sdk'
+import AmaniAi from 'amani-rn-sdk'
 
 // These given values are all fake, they all just to show usage of this package.
 const authValues = {
