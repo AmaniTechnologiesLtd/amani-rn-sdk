@@ -237,22 +237,38 @@ export default function CaptureDocument(props) {
                 captureAudio={false}
                 ratio="16:9">
                 <View style={{ backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
+
                     <SafeAreaView style={styles.topBar}>
                         <TouchableOpacity
-                            style={{ paddingHorizontal: 20 }}
-                            onPress={goBack}>
-                            <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
+                            style={styles.topBarLeft}
+                            onPress={goBack}
+                            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                            <Image
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                                resizeMode="contain" source={require('../../assets/back-arrow.png')}
+                            />
                         </TouchableOpacity>
-                        <Text style={styles.topBarText}>{document.title}</Text>
-                        {document.options.includes('fileUpload') ?
+
+                        <Text style={styles.topBarTitle}>{document.title}</Text>
+
+                        {document.options.includes('fileUpload') && (
                             <TouchableOpacity
-                                style={{ paddingHorizontal: 20 }}
-                                onPress={() => pickAndTransformPdf()}>
-                                <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/pdf-icon.png')} />
+                                style={styles.topBarRight}
+                                onPress={() => pickAndTransformPdf()}
+                                hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                                <Image
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                    }}
+                                    resizeMode="contain"
+                                    source={require('../../assets/pdf-icon.png')}
+                                />
                             </TouchableOpacity>
-                            :
-                            <View style={{flex: 0.15}} />
-                        }
+                        )}
                     </SafeAreaView>
                 </View>
 
@@ -359,17 +375,28 @@ const styles = StyleSheet.create({
     },
     topBar: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        justifyContent: 'center',
+        paddingVertical: 15,
     },
-    topBarText: {
-        color: 'white',
-        fontSize: 20,
-        textAlign: 'center',
-        flex: 1,
-        alignItems: 'center',
-        paddingVertical: height * 0.022,
-        fontWeight: '500',
+    topBarLeft: {
+        position: 'absolute',
+        left: 10,
+        top: 15,
+        width: 30,
+        height: 20,
     },
+    topBarRight: {
+        position: 'absolute',
+        right: 10,
+        top: 15,
+        width: 30,
+        height: 20,
+    },
+    topBarTitle: { color: 'white', fontSize: 16 },
     topArea: {
         flex: 1,
         flexDirection: 'row',
