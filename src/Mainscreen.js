@@ -68,6 +68,15 @@ const MainScreen = props => {
             const customerInformations = props.customerInformations
             api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
                 api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
+                    // If already a customer get token
+                    if (customerInformations.id) {
+                        api.getCustomer(customerInformations.id, sRes.data.token).then(async (tRes) => {
+                            setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
+                            setAvailableDocuments(sRes.data.available_documents)
+                        })
+                        return
+                    }
+
                     const formData = {
                         customerData: customerInformations,
                         smsToken: sRes.data.token

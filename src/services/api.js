@@ -18,6 +18,12 @@ export default {
                 'Authorization': `Token ${param.smsToken}`,
             },
         }),
+    getCustomer: (id, token) =>
+        axios.get(`/api/v1/customer/${id}`, {
+            headers: {
+                'Authorization': `Token ${token}`,
+            },
+        }),
     sendDocument: (token, documentData) =>
         axios.post('/api/v1/recognition/web/upload', documentData, {
             headers: {
