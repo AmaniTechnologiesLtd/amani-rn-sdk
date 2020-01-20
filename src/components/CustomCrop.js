@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
+
+// Global dependencies
 import React, { Component } from 'react'
 import { PanResponder, Dimensions, Image, View, Animated} from 'react-native'
 import Svg, { Polygon } from 'react-native-svg'

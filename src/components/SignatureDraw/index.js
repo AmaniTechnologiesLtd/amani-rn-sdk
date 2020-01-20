@@ -1,11 +1,13 @@
-import { View, StyleSheet, ActivityIndicator } from 'react-native'
+// Global dependencies
 import React, { Component } from 'react'
+import { View, StyleSheet, ActivityIndicator } from 'react-native'
+import { WebView } from 'react-native-webview'
 
+// Local files
 import htmlContent from './View/html'
 import injectedSignaturePad from './View/js/signature_pad'
 import injectedApplication from './View/js/app'
 
-import { WebView } from 'react-native-webview'
 
 const styles = StyleSheet.create({
   webBg: {

@@ -1,3 +1,4 @@
+// Global dependencies
 import React, { useRef, useEffect } from 'react'
 import {
     View,
@@ -10,6 +11,8 @@ import {
     BackHandler,
     SafeAreaView,
 } from 'react-native'
+
+// Local files
 import CustomCrop from './CustomCrop'
 
 const ImageCropper = props => {
