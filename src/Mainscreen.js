@@ -214,9 +214,7 @@ const MainScreen = props => {
                     }
                 })}
             </View>
-            <View style={styles.poweredBy}>
-                <Image  source={require('../assets/powered-by.png')}/>
-            </View>
+            <Image style={styles.poweredBy}  source={require('../assets/powered-by.png')}/>
         </View>
     )
 }
@@ -262,10 +260,11 @@ const styles = StyleSheet.create({
     },
     poweredBy: {
         position: 'absolute',
-        left: 0,
-        right: 0,
         bottom: 20,
-        alignItems: 'center'
+        height: 12,
+        width: 104,
+        alignSelf: 'center',
+        resizeMode: 'contain'
     }
 })
 
