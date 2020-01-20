@@ -11,11 +11,11 @@ import {
     StatusBar,
     BackHandler,
     PermissionsAndroid,
-    Platform
+    Platform,
+    Alert
 } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 import DeviceInfo from 'react-native-device-info'
-
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
@@ -38,9 +38,7 @@ const MainScreen = props => {
     const [permissions, setPermission] = useState({camera: null, location: null})
     const [location, setLocation] = useState({latitude: null, longitude: null})
 
-
-
-    const { onExit, onCreateCustomer } = props
+    const { onCreateCustomer, onError, onExit } = props
 
     const checkPermissions = async () => {
         setPermission({
@@ -61,6 +59,20 @@ const MainScreen = props => {
         onExit(callbackData)
     }
 
+    const errorHandler = (e) => {
+        Alert.alert(
+            'Something went wrong',
+            e.response.data.errors[0].ERROR_MESSAGE,
+            [
+                {
+                  text: 'OK',
+                  onPress: () => onError(e.response.data.errors[0])
+                },
+            ],
+            {cancelable: false}
+        )
+    }
+
     useEffect(() => {
         if (!availableDocuments) {
             api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
@@ -73,7 +85,7 @@ const MainScreen = props => {
                         api.getCustomer(customerInformations.id, sRes.data.token).then(async (tRes) => {
                             setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
                             setAvailableDocuments(sRes.data.available_documents)
-                        })
+                        }).catch(error => errorHandler(error))
                         return
                     }
 
@@ -85,9 +97,9 @@ const MainScreen = props => {
                         setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
                         setAvailableDocuments(sRes.data.available_documents)
                         onCreateCustomer({ id: tRes.data.id })
-                    })
-                })
-            })
+                    }).catch(error => errorHandler(error))
+                }).catch(error => errorHandler(error))
+            }).catch(error => errorHandler(error))
             return
         }
 
@@ -138,7 +150,7 @@ const MainScreen = props => {
             })
             .catch(error => {
                 selectedDocument.passed = false
-                // console.log(error.response)
+                errorHandler(error)
             })
 
         if (cropDocument) {
@@ -165,9 +177,9 @@ const MainScreen = props => {
         )
     }
 
-    if (Platform.OS === 'android' &&permissions.camera !== 'granted' && permissions.location !== 'granted') {
+    if (Platform.OS === 'android' && permissions.camera !== 'granted' && permissions.location !== 'granted') {
         return (
-            <View style={[styles.container, { alignItems: 'center' }]}>
+            <View style={[styles.container, { alignItems: 'center', paddingHorizontal: width * 0.07 }]}>
                 <StatusBar barStyle="light-content" backgroundColor="black" />
                 <Text style={{ color: 'white', fontSize: 18 }}> Camera and Location permissions are not authorized </Text>
             </View>
