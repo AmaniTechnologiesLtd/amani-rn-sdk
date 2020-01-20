@@ -10,7 +10,8 @@ import {
     BackHandler,
     Dimensions,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    SafeAreaView
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
@@ -235,7 +236,7 @@ export default function CaptureDocument(props) {
                 captureAudio={false}
                 ratio="16:9">
                 <View style={{ backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
-                    <View style={styles.topBar}>
+                    <SafeAreaView style={styles.topBar}>
                         <TouchableOpacity
                             style={{ paddingHorizontal: 20 }}
                             onPress={goBack}>
@@ -251,7 +252,7 @@ export default function CaptureDocument(props) {
                             :
                             <View style={{flex: 0.15}} />
                         }
-                    </View>
+                    </SafeAreaView>
                 </View>
 
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>

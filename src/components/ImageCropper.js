@@ -8,10 +8,9 @@ import {
     Text,
     StatusBar,
     BackHandler,
+    SafeAreaView,
 } from 'react-native'
 import CustomCrop from './CustomCrop'
-import iconBack from '../../assets/back-arrow.png'
-import iconCrop from '../../assets/crop.png'
 
 const ImageCropper = props => {
     const { image, onCancel } = props
@@ -44,17 +43,16 @@ const ImageCropper = props => {
     return (
         <View style={styles.container}>
             <StatusBar hidden />
-            <View style={styles.topBar}>
+            <SafeAreaView style={styles.topBar}>
                 <TouchableOpacity
                     style={styles.topBarLeft}
                     onPress={onCancel}>
                     <Image
                         style={{
-                            resizeMode: 'center',
                             width: '100%',
                             height: '100%',
                         }}
-                        source={iconBack}
+                        resizeMode="contain" source={require('../../assets/back-arrow.png')}
                     />
                 </TouchableOpacity>
 
@@ -71,14 +69,14 @@ const ImageCropper = props => {
                     }}>
                     <Image
                         style={{
-                            resizeMode: 'center',
                             width: '100%',
                             height: '100%',
                         }}
-                        source={iconCrop}
+                        resizeMode="contain"
+                        source={require('../../assets/crop.png')}
                     />
                 </TouchableOpacity>
-            </View>
+            </SafeAreaView>
             <CustomCrop
                 ref={ref => (customCrop = ref)}
                 style={styles.customCrop}

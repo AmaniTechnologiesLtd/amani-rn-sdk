@@ -13,7 +13,7 @@ import {
     PermissionsAndroid,
     Platform
 } from 'react-native'
-import Geolocation from '@react-native-community/geolocation'
+import Geolocation from 'react-native-geolocation-service'
 import DeviceInfo from 'react-native-device-info'
 
 
