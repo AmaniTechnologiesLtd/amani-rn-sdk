@@ -108,6 +108,7 @@ cd ios && pod install
 
 ```js
 import AmaniAi from 'amani-ai-sdk'
+
 // These given values are all fake, they all just to show usage of this package.
 const authValues = {
     appKey: 'exampleAppKey',
@@ -115,9 +116,14 @@ const authValues = {
 }
 
 const customer = {
+
+    id: '512', // If you have a customer that already exists in Amani Service, pass the id here,
+
+    // Or create a new customer
     name: 'example name',
     email: 'example@mail.com',
     phone: '+0123456789'
+
 }
 
 return (
