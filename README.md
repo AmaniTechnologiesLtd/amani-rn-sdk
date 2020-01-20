@@ -85,11 +85,6 @@ ios/[...]/Info.plist:
 <string>Example Location Description</string>
 ```
 
-ios/Podfile:
-```ruby
-pod 'RNFS', :path => '../node_modules/react-native-fs'
-```
-
 Install pod dependencies by running:
 
 ```bash
