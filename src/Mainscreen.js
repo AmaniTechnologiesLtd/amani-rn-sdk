@@ -120,7 +120,7 @@ const MainScreen = props => {
 
     const handleSendDocumentsRequest = async () => {
         selectedDocument.passed = 'loading'
-        if (!cropDocument) setSelectedDocument(null)
+        setSelectedDocument(null)
 
         const deviceData = {
             id: DeviceInfo.getUniqueId(),
@@ -140,26 +140,21 @@ const MainScreen = props => {
           corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))  
         } 
 
-        files.map((x) => {
-            requestData.append('files[]', x)
-            return true
-        })
-
+        files.forEach(file => requestData.append('files[]', file))
+        
         await api.sendDocument(tokens.sms, requestData)
             .then(res => {
-                selectedDocument.passed = true
-                // console.log(res)
+                if (res.data.status === 'OK') {
+                    selectedDocument.passed = true
+                } else {
+                    selectedDocument.passed = false
+                }
             })
             .catch(error => {
                 selectedDocument.passed = false
-                errorHandler(error)
             })
 
-        if (cropDocument) {
-            setSelectedDocument(null)
-            setCropDocument(null)
-        }
-
+        setCropDocument(null)
         setFiles([])
         setCorners([])
     }
