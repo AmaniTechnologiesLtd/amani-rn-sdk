@@ -4,7 +4,7 @@ import {
     Image,
 } from 'react-native'
 
-const PoweredBy = () => <Image style={styles.poweredBy}  source={require('../assets/powered-by.png')}/>
+const PoweredBy = () => <Image style={styles.poweredBy}  source={require('../../assets/powered-by.png')}/>
 
 const styles = StyleSheet.create({
     poweredBy: {
