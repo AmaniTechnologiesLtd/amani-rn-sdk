@@ -45,7 +45,9 @@ const ImageCropper = props => {
         <View style={styles.container}>
             <StatusBar hidden />
             <View style={styles.topBar}>
-                <TouchableOpacity style={styles.topBarLeft} onPress={onCancel}>
+                <TouchableOpacity
+                    style={styles.topBarLeft}
+                    onPress={onCancel}>
                     <Image
                         style={{
                             resizeMode: 'center',
@@ -60,7 +62,13 @@ const ImageCropper = props => {
 
                 <TouchableOpacity
                     style={styles.topBarRight}
-                    onPress={getCropData}>
+                    onPress={getCropData}
+                    hitSlop={{
+                        top: 25,
+                        left: 25,
+                        bottom: 25,
+                        right: 25,
+                    }}>
                     <Image
                         style={{
                             resizeMode: 'center',
