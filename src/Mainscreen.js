@@ -19,6 +19,7 @@ import DeviceInfo from 'react-native-device-info'
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
+import PoweredBy from './components/PoweredBy'
 import api from './services/api'
 import documentsReducer, { initialDocuments } from './store/documents'
 
@@ -214,7 +215,7 @@ const MainScreen = props => {
                     }
                 })}
             </View>
-            <Image style={styles.poweredBy}  source={require('../assets/powered-by.png')}/>
+            <PoweredBy />
         </View>
     )
 }
@@ -257,14 +258,6 @@ const styles = StyleSheet.create({
     moduleStatusIcon: {
         width: width * 0.15,
         height: height * 0.03
-    },
-    poweredBy: {
-        position: 'absolute',
-        bottom: 20,
-        height: 12,
-        width: 104,
-        alignSelf: 'center',
-        resizeMode: 'contain'
     }
 })
 

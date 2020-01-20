@@ -21,6 +21,7 @@ import DocumentPicker from 'react-native-document-picker'
 import SelfieMask from './SelfieMask'
 import SignatureDraw from './SignatureDraw'
 import ImageCropper from './ImageCropper'
+import PoweredBy from './PoweredBy'
 
 const { width, height } = Dimensions.get('window')
 
@@ -295,24 +296,22 @@ export default function CaptureDocument(props) {
                     </Text>
                 </View>
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                <TouchableOpacity
-                    style={styles.takePhotoButtonCircle}
-                    disabled={buttonDisabled}
-                    onPress={takePicture}>
-                    <View style={[
-                            styles.takePhotoButton,
-                            {
-                                backgroundColor: buttonDisabled
-                                    ? '#9e9e9e'
-                                    : 'white',
-                            },
-                        ]}
-                    />
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.takePhotoButtonCircle}
+                        disabled={buttonDisabled}
+                        onPress={takePicture}>
+                        <View style={[
+                                styles.takePhotoButton,
+                                {
+                                    backgroundColor: buttonDisabled
+                                        ? '#9e9e9e'
+                                        : 'white',
+                                },
+                            ]}
+                        />
+                    </TouchableOpacity>
                 </View>
-                <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    <Image  source={require('../../assets/powered-by.png')}/>
-                </View>
+                <PoweredBy />
             </RNCamera>
         </View>
     )
@@ -387,6 +386,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingHorizontal: '7%',
         textAlign: 'center',
+        marginBottom: 40
     },
     takePhotoButtonCircle: {
         alignItems: 'center',
@@ -395,12 +395,12 @@ const styles = StyleSheet.create({
         padding: 3,
         borderWidth: 1,
         borderColor: 'white',
-        marginBottom: height * 0.02
+        marginBottom: height * 0.05
     },
     takePhotoButton: {
         borderRadius: 50,
         paddingHorizontal: width * 0.06,
-        paddingVertical: height * 0.03,
+        paddingVertical: width * 0.06,
     },
     buttonLoader: {
         alignSelf: 'flex-end',
@@ -420,12 +420,6 @@ const styles = StyleSheet.create({
     previewMiddle: {
         borderColor: 'white',
         borderWidth: 2,
-    },
-    poweredBy: {
-        paddingBottom: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
     },
     backDrop: {
         backgroundColor: 'rgba(0,0,0,0.70)',
