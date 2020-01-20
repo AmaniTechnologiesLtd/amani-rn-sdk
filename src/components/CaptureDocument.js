@@ -159,6 +159,7 @@ export default function CaptureDocument(props) {
     }
 
     const handleManualCrop = async data => {
+        setIsProcessStarted(true)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
         onManualCropCorners([
             [
