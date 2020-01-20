@@ -89,6 +89,11 @@ ios/[...]/Info.plist:
 
 ```
 
+ios/Podfile:
+```ruby
+pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
+```
+
 Install pod dependencies by running:
 
 ```bash
