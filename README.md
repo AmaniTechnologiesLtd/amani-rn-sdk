@@ -30,13 +30,13 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
 To get all of these by single command run the following command:
 
 ```bash
-yarn add react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
+yarn add react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
 ```
 
 or
 
 ```bash
-npm install react-native-camera react-native-webview react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
+npm install react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
 ```
 
 If your React Native version is below the 0.60,  to link all these dependencies to your project, please run command below.
@@ -53,12 +53,6 @@ android/app/src/main/AndroidManifest.xml:
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-```
-
-android/settings.gradle:
-```gradle
-include ':react-native-fs'
-project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
 ```
 
 android/app/build.gradle:
