@@ -111,10 +111,10 @@ const MainScreen = props => {
 
         requestData.append('type', selectedDocument.id)
         requestData.append('customer_token', tokens.customer)
-        requestData.append('device_data', deviceData)
-        requestData.append('location', location)
+        requestData.append('device_data', JSON.stringify(deviceData))
+        requestData.append('location', JSON.stringify(location))
 
-        if (corners) requestData.append('corners', corners.toString())
+        if (corners) requestData.append('corners', JSON.stringify(corners))
 
         files.map((x) => {
             requestData.append('files[]', x)
