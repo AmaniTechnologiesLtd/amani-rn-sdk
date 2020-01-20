@@ -24,19 +24,19 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-ai-sdk
 | react-native-svg | 10.1.0 |
 | @react-native-community/image-editor | 2.2.0 |
 | react-native-document-picker | 3.2.4 |
-| react-native-image-crop-tools | 1.2.2 |
-| react-native-signature-canvas | Forked version from [here](https://github.com/ozkanonur/react-native-signature-canvas)|
+| react-native-device-info | 5.4.1 |
+| react-native-geolocation-service | 3.1.0 |
 
 To get all of these by single command run the following command:
 
 ```bash
-yarn add https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+yarn add react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info react-native-geolocation-service
 ```
 
 or
 
 ```bash
-npm install https://git@github.com/ozkanonur/react-native-signature-canvas react-native-camera react-native-webview react-native-image-crop-tools@1.2.2 react-native-svg @react-native-community/image-editor react-native-document-picker react-native-fs
+npm install react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info react-native-geolocation-service
 ```
 
 If your React Native version is below the 0.60,  to link all these dependencies to your project, please run command below.
@@ -52,12 +52,7 @@ react-native link
 android/app/src/main/AndroidManifest.xml:
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
-```
-
-android/settings.gradle:
-```gradle
-include ':react-native-fs'
-project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
 
 android/app/build.gradle:
@@ -83,26 +78,15 @@ import com.rnfs.RNFSPackage;
 
 ios/[...]/Info.plist:
 ```xml
-<!-- Required with iOS 10 and higher -->
 <key>NSCameraUsageDescription</key>
-<string>Your message to user when the camera is accessed for the first time</string>
+<string>Example Camera Description</string>
 
-<!-- Required with iOS 11 and higher: include this only if you are planning to use the camera roll -->
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>Your message to user when the photo library is accessed for the first time</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Example Location Description</string>
 
-<!-- Include this only if you are planning to use the camera roll -->
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Your message to user when the photo library is accessed for the first time</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Example Location Description</string>
 
-<!-- Include this only if you are planning to use the microphone for video recording -->
-<key>NSMicrophoneUsageDescription</key>
-<string>Your message to user when the microphone is accessed for the first time</string>
-```
-
-ios/Podfile:
-```ruby
-pod 'RNFS', :path => '../node_modules/react-native-fs'
 ```
 
 Install pod dependencies by running:
@@ -118,9 +102,13 @@ cd ios && pod install
 | authData | true | object | - |
 | customerInformations | true | object | - |
 | server | false | string | tr |
+| onCreateCustomer | false | callback function | - |
+| onExit | false | callback function | - |
+
 
 ```js
 import AmaniAi from 'amani-ai-sdk'
+
 // These given values are all fake, they all just to show usage of this package.
 const authValues = {
     appKey: 'exampleAppKey',
@@ -128,10 +116,23 @@ const authValues = {
 }
 
 const customer = {
+
+    id: '512', // If you have a customer that already exists in Amani Service, pass the id here,
+
+    // Or create a new customer
     name: 'example name',
     email: 'example@mail.com',
     phone: '+0123456789'
+
 }
 
-return <AmaniAi authData={authValues} customerInformations={customer} server="uae" />
+return (
+    <AmaniAi
+        server="uae"
+        authData={authValues}
+        customerInformations={customer}
+        onCreateCustomer={customer => console.log(customer)}
+        onExit={values => console.log(values)}
+    />
+)
 ```

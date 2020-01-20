@@ -2,22 +2,27 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet,
+    View,
+    Text,
     StatusBar,
+    Image,
+    Alert,
     BackHandler,
     Dimensions,
-    Text,
-    View,
-    Image,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator,
+    SafeAreaView
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import RNFS from 'react-native-fs'
-import { CropView } from 'react-native-image-crop-tools'
 import ImageEditor from '@react-native-community/image-editor'
-import Signature from 'react-native-signature-canvas'
+import DocumentPicker from 'react-native-document-picker'
 
 // Local files
 import SelfieMask from './SelfieMask'
+import SignatureDraw from './SignatureDraw'
+import ImageCropper from './ImageCropper'
+import PoweredBy from './PoweredBy'
 
 const { width, height } = Dimensions.get('window')
 
@@ -26,7 +31,8 @@ export default function CaptureDocument(props) {
     const {
         document,
         document: { steps, aspectRatio, cameraFacing, autoCrop },
-        onCapture
+        onCapture,
+        onManualCropCorners
     } = props
 
     const [cameraType] = useState(
@@ -42,10 +48,10 @@ export default function CaptureDocument(props) {
 
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [currentStep, setCurrentStep] = useState(0)
-    const [cropDocument, setCropDocument] = useState(null)
+    const [isProcessStarted, setIsProcessStarted] = useState(false)
+    const [imageCrop, setImageCrop] = useState(null)
 
     const camera = useRef(null)
-    const cropViewRef = useRef()
 
     const goBack = async () => {
         const { onClearDocument } = props
@@ -68,7 +74,6 @@ export default function CaptureDocument(props) {
 
     const takePicture = async () => {
         setButtonDisabled(true)
-
         let image = await camera.current.takePictureAsync({
             quality: 0.7,
             orientation: 'portrait',
@@ -76,23 +81,34 @@ export default function CaptureDocument(props) {
             width: 1080,
             fixOrientation: true
         }).then(async data => {
-            if (document.crop) {
-                setButtonDisabled(false)
-                setCropDocument(data)
-            } else {
+            if (document.crop) setImageCrop(data)
+            else {
                 image = `data:image/jpeg;base64,${data.base64}`
                 if (autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
                 calculateNextStep()
             }
+            setButtonDisabled(false)
         })
+    }
+
+    const pickAndTransformPdf = () => {
+        setIsProcessStarted(true)
+        DocumentPicker.pick({
+            type: [DocumentPicker.types.pdf]
+        }).then(file => {
+            RNFS.readFile(file.uri, 'base64').then(source => {
+                onCapture(`data:application/pdf;base64,${source}`)
+                calculateNextStep()
+            })
+        }).catch(error => setIsProcessStarted(false))
     }
 
     const calculateNextStep = () => {
         const { onStepsFinished } = props
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
-            setButtonDisabled(false)
+            setImageCrop(null)
         } else {
             onStepsFinished(true)
         }
@@ -128,42 +144,72 @@ export default function CaptureDocument(props) {
     }
 
     const handleSignature = signature => {
+        setIsProcessStarted(true)
         onCapture(signature)
         calculateNextStep()
     }
 
-    const handleManualCrop = async croppedImageUri => {
-        const src = await RNFS.readFile(croppedImageUri, 'base64')
-        onCapture(`data:image/jpeg;base64,${src}`)
+    const handleEmptySignature = () => {
+        Alert.alert(
+            'Warning',
+            'Please make sure your signature is drawn.',
+            [
+              {text: 'OK'},
+            ],
+            {cancelable: true}
+        )
+    }
+
+    const handleManualCrop = async data => {
+        setIsProcessStarted(true)
+        onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
+        onManualCropCorners([
+            [
+                parseInt(data.topLeft.x),
+                parseInt(data.topLeft.y),
+            ],
+            [
+                parseInt(data.topRight.x),
+                parseInt(data.topRight.y),
+            ],
+            [
+                parseInt(data.bottomLeft.x),
+                parseInt(data.bottomLeft.y),
+            ],
+            [
+                parseInt(data.bottomRight.x),
+                parseInt(data.bottomRight.y),
+            ],
+        ])
         calculateNextStep()
     }
 
-    if (cropDocument) {
+    if (isProcessStarted) {
         return (
-            <View style={styles.manualCropContainer}>
-                <StatusBar hidden />
-                <CropView
-                    sourceUrl={cropDocument.uri}
-                    style={{flex: 1}}
-                    ref={cropViewRef}
-                    onImageCrop={res => handleManualCrop(res.uri)}
-                />
-                <View style={styles.manualCropFooter}>
-                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={goBack}>
-                        <Text style={styles.manualCropButtonText}> Back </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.manualCropFooterButton} onPress={() => cropViewRef.current.saveImage(100)}>
-                        <Text style={styles.manualCropButtonText}> Crop </Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.cameraContainer}>
+                <StatusBar barStyle="light-content" backgroundColor="black" />
+                <ActivityIndicator color="white" size="large" />
             </View>
+        )
+    }
+
+    if (imageCrop) {
+        return (
+            <ImageCropper
+                image={imageCrop}
+                onCancel={() => {
+                    setImageCrop(false)
+                    return true // Added for react navigation not to intervene
+                }}
+                onCropped={data => handleManualCrop(data)}
+            />
         )
     }
 
     if (document.id === 'SG') {
         return (
             <View style={styles.signatureContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#4630BE" />
+            <StatusBar hidden />
                 <View style={{ flex: 0.07}}>
                     <TouchableOpacity
                         style={{ paddingHorizontal: 20 }}
@@ -172,9 +218,9 @@ export default function CaptureDocument(props) {
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 0.93 }}>
-                    <Signature
+                    <SignatureDraw
                         onOK={handleSignature}
-                        onEmpty
+                        onEmpty={handleEmptySignature}
                     />
                 </View>
             </View>
@@ -191,23 +237,39 @@ export default function CaptureDocument(props) {
                 captureAudio={false}
                 ratio="16:9">
                 <View style={{ backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
-                    <View style={styles.topBar}>
+
+                    <SafeAreaView style={styles.topBar}>
                         <TouchableOpacity
-                            style={{ paddingHorizontal: 20 }}
-                            onPress={goBack}>
-                            <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
+                            style={styles.topBarLeft}
+                            onPress={goBack}
+                            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                            <Image
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                                resizeMode="contain" source={require('../../assets/back-arrow.png')}
+                            />
                         </TouchableOpacity>
+
+                        <Text style={styles.topBarTitle}>{document.title}</Text>
+
                         {document.options.includes('fileUpload') && (
                             <TouchableOpacity
-                                style={{ paddingHorizontal: 20 }}
-                                onPress={() => props.takePdfFile()}>
-                                <Image style={styles.fileUploadIcon} resizeMode="contain" source={require('../../assets/up.png')} />
+                                style={styles.topBarRight}
+                                onPress={() => pickAndTransformPdf()}
+                                hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                                <Image
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                    }}
+                                    resizeMode="contain"
+                                    source={require('../../assets/pdf-icon.png')}
+                                />
                             </TouchableOpacity>
                         )}
-                    </View>
-                    <View >
-                        <Text style={styles.topBarText}>{document.title}</Text>
-                    </View>
+                    </SafeAreaView>
                 </View>
 
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
@@ -252,14 +314,21 @@ export default function CaptureDocument(props) {
                 </View>
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <TouchableOpacity
-                        style={[styles.takePhotoButton, {backgroundColor: buttonDisabled ? '#9e9e9e': 'white'}]}
+                        style={styles.takePhotoButtonCircle}
                         disabled={buttonDisabled}
-                        onPress={takePicture}
-                    />
+                        onPress={takePicture}>
+                        <View style={[
+                                styles.takePhotoButton,
+                                {
+                                    backgroundColor: buttonDisabled
+                                        ? '#9e9e9e'
+                                        : 'white',
+                                },
+                            ]}
+                        />
+                    </TouchableOpacity>
                 </View>
-                <View style={[styles.poweredBy, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    <Text style={{ color: 'white' }}>Powered By Amani</Text>
-                </View>
+                <PoweredBy />
             </RNCamera>
         </View>
     )
@@ -268,6 +337,7 @@ export default function CaptureDocument(props) {
 const styles = StyleSheet.create({
     cameraContainer: {
         flex: 1,
+        backgroundColor: 'black',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -277,7 +347,7 @@ const styles = StyleSheet.create({
     },
     signatureContainer: {
         flex: 1,
-        backgroundColor: '#4630BE'
+        backgroundColor: 'black'
     },
     manualCropContainer: {
         flex: 1,
@@ -285,7 +355,7 @@ const styles = StyleSheet.create({
     },
     manualCropFooter: {
         flexDirection: 'row',
-        backgroundColor: '#4630BE'
+        backgroundColor: 'black'
     },
     manualCropFooterButton: {
         width: '50%',
@@ -305,15 +375,28 @@ const styles = StyleSheet.create({
     },
     topBar: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        justifyContent: 'center',
+        paddingVertical: 15,
     },
-    topBarText: {
-        color: 'white',
-        fontSize: 20,
-        textAlign: 'center',
-        fontWeight: '500',
+    topBarLeft: {
+        position: 'absolute',
+        left: 10,
+        top: 15,
+        width: 30,
+        height: 20,
     },
+    topBarRight: {
+        position: 'absolute',
+        right: 10,
+        top: 15,
+        width: 30,
+        height: 20,
+    },
+    topBarTitle: { color: 'white', fontSize: 16 },
     topArea: {
         flex: 1,
         flexDirection: 'row',
@@ -331,14 +414,21 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingHorizontal: '7%',
         textAlign: 'center',
+        marginBottom: 40
+    },
+    takePhotoButtonCircle: {
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+        borderRadius: 50,
+        padding: 3,
+        borderWidth: 1,
+        borderColor: 'white',
+        marginBottom: height * 0.05
     },
     takePhotoButton: {
-        alignSelf: 'flex-end',
-        alignItems: 'center',
         borderRadius: 50,
         paddingHorizontal: width * 0.06,
-        paddingVertical: height * 0.03,
-        marginBottom: height * 0.007
+        paddingVertical: width * 0.06,
     },
     buttonLoader: {
         alignSelf: 'flex-end',
@@ -358,12 +448,6 @@ const styles = StyleSheet.create({
     previewMiddle: {
         borderColor: 'white',
         borderWidth: 2,
-    },
-    poweredBy: {
-        paddingBottom: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
     },
     backDrop: {
         backgroundColor: 'rgba(0,0,0,0.70)',

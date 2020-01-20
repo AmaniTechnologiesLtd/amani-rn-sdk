@@ -1,60 +1,131 @@
 // Global dependencies
 import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, StyleSheet, Image, StatusBar } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
-import RNFS from 'react-native-fs'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    ActivityIndicator,
+    Dimensions,
+    StyleSheet,
+    Image,
+    StatusBar,
+    BackHandler,
+    PermissionsAndroid,
+    Platform
+} from 'react-native'
+import Geolocation from 'react-native-geolocation-service'
+import DeviceInfo from 'react-native-device-info'
+
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
+import PoweredBy from './components/PoweredBy'
 import api from './services/api'
 import documentsReducer, { initialDocuments } from './store/documents'
 
 const { width, height } = Dimensions.get('window')
 
-const MainScreen = (props) => {
-    const [availableDocuments, setAvailableDocuments] = useState(null)
+const MainScreen = props => {
     const [documents] = useReducer(documentsReducer, initialDocuments)
-    const [selectedDocument, setSelectedDocument] = useState(null)
-    const [files, setFiles] = useState([])
 
+    const [availableDocuments, setAvailableDocuments] = useState(null)
+    const [selectedDocument, setSelectedDocument] = useState(null)
+    const [corners, setCorners] = useState(null)
+    const [files, setFiles] = useState([])
     const [cropDocument, setCropDocument] = useState(null)
     const [isStepsFinished, setIsStepsFinished] = useState(false)
     const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
+    const [permissions, setPermission] = useState({camera: null, location: null})
+    const [location, setLocation] = useState({latitude: null, longitude: null})
 
-    useEffect(
-        () => {
-            if (isStepsFinished) handleSendDocumentsRequest()
-            setIsStepsFinished(false)
-        },
-        [isStepsFinished]
-    )
 
-    if (!availableDocuments) {
-        api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
 
-        const authData = props.authData
-        const customerInformations = props.customerInformations
-        api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
-            api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
-                const formData = {
-                    customerData: customerInformations,
-                    smsToken: sRes.data.token
-                }
-                api.createCustomer(formData).then(async (tRes) => {
-                    setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                    setAvailableDocuments(sRes.data.available_documents)
-                })
-            })
+    const { onExit, onCreateCustomer } = props
+
+    const checkPermissions = async () => {
+        setPermission({
+            camera: await PermissionsAndroid.request('android.permission.CAMERA'),
+            location: await PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION')
         })
     }
+
+    if (Platform.OS === 'android' && !permissions.camera && !permissions.location) checkPermissions()
+
+    const goBack = async () => {
+        const callbackData = []
+        availableDocuments.forEach(element => {
+            callbackData.push({
+                 [element]: documents.find(document => document.id === element).passed
+            })
+        })
+        onExit(callbackData)
+    }
+
+    useEffect(() => {
+        if (!availableDocuments) {
+            api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
+            const authData = props.authData
+            const customerInformations = props.customerInformations
+            api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
+                api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
+                    // If already a customer get token
+                    if (customerInformations.id) {
+                        api.getCustomer(customerInformations.id, sRes.data.token).then(async (tRes) => {
+                            setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
+                            setAvailableDocuments(sRes.data.available_documents)
+                        })
+                        return
+                    }
+
+                    const formData = {
+                        customerData: customerInformations,
+                        smsToken: sRes.data.token
+                    }
+                    api.createCustomer(formData).then(async (tRes) => {
+                        setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
+                        setAvailableDocuments(sRes.data.available_documents)
+                        onCreateCustomer({ id: tRes.data.id })
+                    })
+                })
+            })
+            return
+        }
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            goBack()
+        })
+
+        return () => backHandler.remove()
+    }, [availableDocuments])
+
+    useEffect(() => {
+        if (permissions.location === 'granted' || Platform.OS === 'ios') {
+            Geolocation.getCurrentPosition(position => setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude }))
+        }
+        if (isStepsFinished) handleSendDocumentsRequest()
+        setIsStepsFinished(false)
+    }, [isStepsFinished, location])
 
     const handleSendDocumentsRequest = async () => {
         selectedDocument.passed = 'loading'
         if (!cropDocument) setSelectedDocument(null)
 
+        const deviceData = {
+            id: DeviceInfo.getUniqueId(),
+            os: Platform.OS,
+            model: DeviceInfo.getModel(),
+            gsm: await DeviceInfo.getCarrier()
+        }
+
         const requestData = new FormData()
+
         requestData.append('type', selectedDocument.id)
         requestData.append('customer_token', tokens.customer)
+        requestData.append('device_data', JSON.stringify(deviceData))
+        requestData.append('location', JSON.stringify(location))
+
+        if (corners) requestData.append('corners', JSON.stringify(corners))
+
         files.map((x) => {
             requestData.append('files[]', x)
             return true
@@ -78,6 +149,11 @@ const MainScreen = (props) => {
         setFiles([])
     }
 
+    const onDocumentCaptured = (capture) => {
+        if (selectedDocument.crop) setCropDocument(capture)
+        setFiles([...files, capture])
+    }
+
     const handleCurrentModalStatus = isPassed => {
         if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
         return (
@@ -89,26 +165,20 @@ const MainScreen = (props) => {
         )
     }
 
-    const documentCaptured = (capture) => {
-        if (selectedDocument.crop) setCropDocument(capture)
-        setFiles([...files, capture])
-    }
-
-    const pickAndTransformPdf = () => {
-        DocumentPicker.pick({
-            type: [DocumentPicker.types.pdf]
-        }).then(file => {
-            RNFS.readFile(file.uri, 'base64').then(source => {
-                setFiles([`data:application/pdf;base64,${source}`])
-                setIsStepsFinished(true)
-            })
-        })
+    if (Platform.OS === 'android' &&permissions.camera !== 'granted' && permissions.location !== 'granted') {
+        return (
+            <View style={[styles.container, { alignItems: 'center' }]}>
+                <StatusBar barStyle="light-content" backgroundColor="black" />
+                <Text style={{ color: 'white', fontSize: 18 }}> Camera and Location permissions are not authorized </Text>
+            </View>
+        )
     }
 
     if (!availableDocuments) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator color="black" />
+                <StatusBar barStyle="light-content" backgroundColor="black" />
+                <ActivityIndicator color="white" />
             </View>
         )
     }
@@ -116,40 +186,45 @@ const MainScreen = (props) => {
     if (selectedDocument) {
         return (
             <CaptureDocument
+                onCapture={onDocumentCaptured}
                 document={selectedDocument}
-                onCapture={documentCaptured}
+                onManualCropCorners={setCorners}
                 onClearDocument={setSelectedDocument}
                 onStepsFinished={setIsStepsFinished}
-                takePdfFile={pickAndTransformPdf}
             />
         )
     }
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-            {documents.map((document) => {
-                if (availableDocuments.includes(document.id)) {
-                    return (
-                        <TouchableOpacity
-                            style={styles.moduleButton}
-                            key={document.id}
-                            onPress={() => setSelectedDocument(document)}
-                        >
-                            <View style={styles.moduleContainer}>
-                                <View style={styles.moduleTitleContainer}>
-                                    <Text style={styles.moduleTitle}>{document.title}</Text>
+            <StatusBar barStyle="light-content" backgroundColor="black" />
+            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Döküman Seçim Ekranı </Text>
+
+            <View style={styles.modulesContainer}>
+                {documents.map((document) => {
+                    if (availableDocuments.includes(document.id)) {
+                        return (
+                            <TouchableOpacity
+                                style={styles.moduleButton}
+                                key={document.id}
+                                onPress={() => setSelectedDocument(document)}
+                            >
+                                <View style={styles.moduleContainer}>
+                                    <View style={styles.moduleTitleContainer}>
+                                        <Text style={styles.moduleTitle}>{document.title}</Text>
+                                    </View>
+                                    <View style={styles.moduleStatusContainer}>
+                                        {document.passed !== null &&
+                                            handleCurrentModalStatus(document.passed)
+                                        }
+                                    </View>
                                 </View>
-                                <View style={styles.moduleStatusContainer}>
-                                    {document.passed !== null &&
-                                        handleCurrentModalStatus(document.passed)
-                                    }
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                }
-            })}
+                            </TouchableOpacity>
+                        )
+                    }
+                })}
+            </View>
+            <PoweredBy />
         </View>
     )
 }
@@ -157,6 +232,10 @@ const MainScreen = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+    },
+    modulesContainer: {
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -168,18 +247,17 @@ const styles = StyleSheet.create({
         height: height * 0.055,
         paddingHorizontal: 20,
         justifyContent: 'center',
-        borderRadius: 15,
         marginHorizontal: width * 0.03,
-        marginVertical: height * 0.0035,
+        marginBottom: height * 0.002,
         backgroundColor: '#212121'
     },
     moduleTitleContainer: {
         width: '90%',
-        flexDirection: 'row',
-        alignItems: 'center'
+        justifyContent: 'center',
     },
     moduleTitle: {
         color: '#eee',
+        fontSize: width * 0.04,
         width: '100%'
     },
     moduleStatusContainer: {
