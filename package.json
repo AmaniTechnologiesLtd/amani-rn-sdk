@@ -1,7 +1,7 @@
 {
-  "name": "amani-ai-sdk",
+  "name": "amani-rn-sdk",
   "version": "1.0.0",
-  "description": "Amani Ai SDK",
+  "description": "Amani SDK for React Native",
   "main": "index.js",
   "dependencies": {
     "axios": "^0.19.0"
