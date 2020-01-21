@@ -28,7 +28,7 @@ const { width, height } = Dimensions.get('window')
 const MainScreen = props => {
     const [documents] = useReducer(documentsReducer, initialDocuments)
 
-    const [availableDocuments, setAvailableDocuments] = useState(null)
+    const [availableDocuments, setAvailableDocuments] = useState([])
     const [selectedDocument, setSelectedDocument] = useState(null)
     const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
@@ -53,7 +53,7 @@ const MainScreen = props => {
         const callbackData = []
         availableDocuments.forEach(element => {
             callbackData.push({
-                 [element]: documents.find(document => document.id === element).passed
+                 [element.id]: documents.find(document => document.id === element.id).passed
             })
         })
         onExit(callbackData)
@@ -74,7 +74,7 @@ const MainScreen = props => {
     }
 
     useEffect(() => {
-        if (!availableDocuments) {
+        if (availableDocuments.length === 0) {
             api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
             const authData = props.authData
             const customerInformations = props.customerInformations
@@ -84,7 +84,11 @@ const MainScreen = props => {
                     if (customerInformations.id) {
                         api.getCustomer(customerInformations.id, sRes.data.token).then(async (tRes) => {
                             setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                            setAvailableDocuments(sRes.data.available_documents)
+                            documents.map(doc => {
+                                if (sRes.data.available_documents.includes(doc.id)) {
+                                    setAvailableDocuments(oldDoc => [...oldDoc, doc])
+                                }
+                            })
                         }).catch(error => errorHandler(error))
                         return
                     }
@@ -95,12 +99,15 @@ const MainScreen = props => {
                     }
                     api.createCustomer(formData).then(async (tRes) => {
                         setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                        setAvailableDocuments(sRes.data.available_documents)
+                        documents.map(doc => {
+                            if (sRes.data.available_documents.includes(doc.id)) {
+                                setAvailableDocuments(oldDoc => [...oldDoc, doc])
+                            }
+                        })
                         onCreateCustomer({ id: tRes.data.id })
                     }).catch(error => errorHandler(error))
                 }).catch(error => errorHandler(error))
             }).catch(error => errorHandler(error))
-            return
         }
 
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -137,11 +144,11 @@ const MainScreen = props => {
         requestData.append('location', JSON.stringify(location))
 
         if (corners) {
-          corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))  
-        } 
+          corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
+        }
 
         files.forEach(file => requestData.append('files[]', file))
-        
+
         await api.sendDocument(tokens.sms, requestData)
             .then(res => {
                 if (res.data.status === 'OK') {
@@ -168,8 +175,22 @@ const MainScreen = props => {
         setCorners([...corners, cropData])
     }
 
-    const handleCurrentModalStatus = isPassed => {
-        if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+    const handleCurrentModalStatus = (isPassed, isLocked) => {
+
+        if (isLocked) {
+            return (
+                <Image
+                    resizeMode="contain"
+                    style={styles.moduleStatusIcon}
+                    source={require('../assets/locked-icon.png')}
+                />
+            )
+        }
+
+        else if (isPassed === null) return
+
+        else if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+
         return (
             <Image
                 resizeMode="contain"
@@ -177,6 +198,7 @@ const MainScreen = props => {
                 source={isPassed ? require('../assets/success.png') : require('../assets/failed.png')}
             />
         )
+
     }
 
     if (Platform.OS === 'android' && permissions.camera !== 'granted' && permissions.location !== 'granted') {
@@ -188,7 +210,7 @@ const MainScreen = props => {
         )
     }
 
-    if (!availableDocuments) {
+    if (availableDocuments.length === 0) {
         return (
             <View style={styles.container}>
                 <StatusBar barStyle="light-content" backgroundColor="black" />
@@ -212,30 +234,27 @@ const MainScreen = props => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="black" />
-            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Döküman Seçim Ekranı </Text>
+            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Doküman Seçim Ekranı </Text>
 
             <View style={styles.modulesContainer}>
-                {documents.map((document) => {
-                    if (availableDocuments.includes(document.id)) {
-                        return (
-                            <TouchableOpacity
-                                style={styles.moduleButton}
-                                key={document.id}
-                                onPress={() => setSelectedDocument(document)}
-                            >
-                                <View style={styles.moduleContainer}>
-                                    <View style={styles.moduleTitleContainer}>
-                                        <Text style={styles.moduleTitle}>{document.title}</Text>
-                                    </View>
-                                    <View style={styles.moduleStatusContainer}>
-                                        {document.passed !== null &&
-                                            handleCurrentModalStatus(document.passed)
-                                        }
-                                    </View>
+                {availableDocuments.map((document, index) => {
+                    return (
+                        <TouchableOpacity
+                            disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
+                            style={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
+                            key={document.id}
+                            onPress={() => setSelectedDocument(document)}
+                        >
+                            <View style={styles.moduleContainer}>
+                                <View style={styles.moduleTitleContainer}>
+                                    <Text style={styles.moduleTitle}>{document.title}</Text>
                                 </View>
-                            </TouchableOpacity>
-                        )
-                    }
+                                <View style={styles.moduleStatusContainer}>
+                                    {handleCurrentModalStatus(document.passed, index !== 0 && availableDocuments[index -1].passed == null)}
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )
                 })}
             </View>
             <PoweredBy />
@@ -265,6 +284,14 @@ const styles = StyleSheet.create({
         marginBottom: height * 0.002,
         backgroundColor: '#212121'
     },
+    disabledModuleButton: {
+        height: height * 0.055,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        marginHorizontal: width * 0.03,
+        marginBottom: height * 0.002,
+        backgroundColor: 'transparent'
+    },
     moduleTitleContainer: {
         width: '90%',
         justifyContent: 'center',
@@ -280,7 +307,7 @@ const styles = StyleSheet.create({
     },
     moduleStatusIcon: {
         width: width * 0.15,
-        height: height * 0.03
+        height: height * 0.025
     }
 })
 
