@@ -32,8 +32,8 @@ const content = `
             window.ReactNativeWebView.postMessage('EMPTY')
         } else {
             window.ReactNativeWebView.postMessage(signaturePad.toDataURL())
-
         }
+        signaturePad.clear()
     })
 `
 
