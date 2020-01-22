@@ -12,7 +12,7 @@ import {
     BackHandler,
     PermissionsAndroid,
     Platform,
-    Alert
+    Alert,
 } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 import DeviceInfo from 'react-native-device-info'
@@ -22,6 +22,7 @@ import CaptureDocument from './components/CaptureDocument'
 import PoweredBy from './components/PoweredBy'
 import api from './services/api'
 import documentsReducer, { initialDocuments } from './store/documents'
+import ContractScreen from 'amani-rn-sdk/src/components/SmartContract/ContractScreen';
 
 const { width, height } = Dimensions.get('window')
 
@@ -30,9 +31,10 @@ const MainScreen = props => {
 
     const [availableDocuments, setAvailableDocuments] = useState([])
     const [selectedDocument, setSelectedDocument] = useState(null)
+    const [cropDocument, setCropDocument] = useState(null)
+    const [showContract, setShowContract] = useState(false)
     const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
-    const [cropDocument, setCropDocument] = useState(null)
     const [isStepsFinished, setIsStepsFinished] = useState(false)
     const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
@@ -231,6 +233,16 @@ const MainScreen = props => {
         )
     }
 
+    if (showContract) {
+        return (
+            <ContractScreen
+                onContractDecline={setShowContract}
+                currentDocument={documents.find(document => document.id === 'SG')}
+                onContractAccept={setSelectedDocument}
+            />
+        )
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="black" />
@@ -243,7 +255,7 @@ const MainScreen = props => {
                             disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
                             style={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
-                            onPress={() => setSelectedDocument(document)}
+                            onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
                         >
                             <View style={styles.moduleContainer}>
                                 <View style={styles.moduleTitleContainer}>
