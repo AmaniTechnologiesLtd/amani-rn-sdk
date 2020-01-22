@@ -102,23 +102,6 @@ export const initialDocuments = [
         autoCrop: false,
     },
     {
-        id: 'SG',
-        title: 'İmza Doğrulama',
-        passed: null,
-        steps: [
-            {
-                title: '',
-                description: '',
-            },
-        ],
-        options: ['takePicture'],
-        type: 'image',
-        captureVideo: false,
-        cameraFacing: null,
-        crop: false,
-        autoCrop: false,
-    },
-    {
         id: 'SE',
         title: 'Selfie',
         passed: null,
@@ -134,6 +117,27 @@ export const initialDocuments = [
         captureVideo: true,
         cameraFacing: 'user',
         duration: 3,
+        crop: false,
+        autoCrop: false,
+    },
+    {
+        id: 'SG',
+        title: 'Akıllı Kontrat',
+        passed: null,
+        steps: [
+            {
+                title: 'İmzanızı Çizin',
+                description: '1/2',
+            },
+            {
+                title: 'İmzanızı Tekrar Çizin',
+                description: '2/2',
+            },
+        ],
+        options: ['takePicture'],
+        type: 'image',
+        captureVideo: false,
+        cameraFacing: null,
         crop: false,
         autoCrop: false,
     },
