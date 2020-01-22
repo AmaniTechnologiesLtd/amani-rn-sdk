@@ -199,13 +199,15 @@ export default function CaptureDocument(props) {
         return (
             <View style={styles.signatureContainer}>
             <StatusBar hidden />
-                <View style={{ flex: 0.07}}>
+                <SafeAreaView style={{ flex: 0.07, flexDirection: 'row', justifyContent:'center',  alignItems: 'center'}}>
                     <TouchableOpacity
-                        style={{ paddingHorizontal: 20 }}
+                        style={{ position: 'absolute', left: width * 0.001, paddingHorizontal: 20 }}
                         onPress={goBack}>
                         <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
                     </TouchableOpacity>
-                </View>
+
+                    <Text style={{ color: 'white', marginBottom: 17, fontSize: 19 }}> {document.steps[currentStep].title} {document.steps[currentStep].description}</Text>
+                </SafeAreaView>
                 <View style={{ flex: 0.93 }}>
                     <SignatureDraw
                         onOK={handleSignature}
