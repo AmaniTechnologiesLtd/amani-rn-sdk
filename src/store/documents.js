@@ -122,7 +122,7 @@ export const initialDocuments = [
     },
     {
         id: 'SG',
-        title: 'Akıllı Kontrat',
+        title: 'Sözleşme',
         passed: null,
         steps: [
             {
