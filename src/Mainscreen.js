@@ -23,6 +23,7 @@ import PoweredBy from './components/PoweredBy'
 import api from './services/api'
 import documentsReducer, { initialDocuments } from './store/documents'
 import ContractScreen from 'amani-rn-sdk/src/components/SmartContract/ContractScreen';
+import Loading from './components/Loading'
 
 const { width, height } = Dimensions.get('window')
 
@@ -212,14 +213,7 @@ const MainScreen = props => {
         )
     }
 
-    if (availableDocuments.length === 0) {
-        return (
-            <View style={styles.container}>
-                <StatusBar barStyle="light-content" backgroundColor="black" />
-                <ActivityIndicator color="white" />
-            </View>
-        )
-    }
+    if (availableDocuments.length === 0) return <Loading />
 
     if (selectedDocument) {
         return (
@@ -252,7 +246,7 @@ const MainScreen = props => {
                 {availableDocuments.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
+                            // disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
                             style={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
