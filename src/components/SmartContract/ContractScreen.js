@@ -1,5 +1,5 @@
 // Global dependencies
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     View,
     Text,
@@ -7,48 +7,70 @@ import {
     StatusBar,
     SafeAreaView,
     Alert,
-    StyleSheet
+    StyleSheet,
+    BackHandler,
+    Dimensions
 } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 // Local files
 import htmlView from './View/html'
-import documents from '../../store/documents'
 
+const { width, height } = Dimensions.get('window')
 
 const ContractScreen = props => {
     const { onContractDecline, onContractAccept, currentDocument } = props
+    const [isContractApproved, setIsContractApproved] = useState(false)
 
-    const handleContractDecline = () => {
-        Alert.alert(
-            '',
-            'Kontratı reddettiğiniz durumda ana ekrana yönlendirileceksiniz.\nDevam etmek istediğinize emin misiniz?',
-            [
-                {
-                    text: 'Hayır'
-                },
-                {
-                    text: 'Evet',
-                    onPress: () =>  onContractDecline(false)
-                }
-            ],
-            {cancelable: false}
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', () => {
+                onContractDecline(false)
+                return true
+            }
+        )
+        return () => BackHandler.removeEventListener('hardwareBackPress')
+    }, [])
+
+    const handleContractProcess = async () => {
+        if (!isContractApproved) {
+            Alert.alert(
+                '',
+                'Sözleşmeyi kabul etmeden imzalama ekranına geçemezsiniz.',
+                [
+                    {
+                        text: 'Anladım'
+                    },
+                ],
+                {cancelable: false}
+            )
+            return
+        }
+
+        await onContractDecline(false)
+        onContractAccept(currentDocument)
+    }
+
+    const customCheckboxView = () => {
+        return (
+            <TouchableOpacity onPress={() => setIsContractApproved(!isContractApproved)} style={styles.customCheckboxOutline}>
+                {isContractApproved && (
+                    <View style={styles.customCheckboxInline} />
+                )}
+            </TouchableOpacity>
         )
     }
 
     return (
         <SafeAreaView style={{flex: 1}}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <WebView style={{flex: 1}} source={{html: htmlView}} />
+            <WebView source={{html: htmlView}} />
             <View style={styles.bottomBar}>
-                <TouchableOpacity onPress={handleContractDecline} style={styles.bottomBarButton}>
-                    <Text style={styles.bottomBarButtonText}> Reddet </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={async () => {
-                    await onContractDecline(false)
-                    onContractAccept(currentDocument)
-                }} style={styles.bottomBarButton}>
-                    <Text style={styles.bottomBarButtonText}> Okudum, anladım ve onaylıyorum. </Text>
+                <View style={styles.bottomBarButton}>
+                <Text style={styles.bottomBarButtonText}> Onaylıyorum {' '}</Text>
+                {customCheckboxView()}
+                </View>
+                <TouchableOpacity onPress={handleContractProcess} style={styles.bottomBarButton}>
+                    <Text style={styles.bottomBarButtonText}> İmzala </Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
@@ -56,18 +78,32 @@ const ContractScreen = props => {
 }
 
 const styles = StyleSheet.create({
+    customCheckboxOutline: {
+        borderColor: 'white',
+        borderWidth: 1,
+        width: height * 0.035,
+        height: height * 0.035,
+        padding: 3,
+    },
+    customCheckboxInline: {
+        backgroundColor: 'gray',
+        height:'100%',
+        width:'100%'
+    },
     bottomBar: {
         flex: 0.06,
-        backgroundColor: '#212121',
+        backgroundColor: 'black',
         flexDirection: 'row'
     },
     bottomBarButton: {
         flex: 0.5,
+        flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'center'
     },
     bottomBarButtonText: {
         color: 'white',
-        textAlign: 'center'
+        textAlign: 'center',
     }
 })
 
