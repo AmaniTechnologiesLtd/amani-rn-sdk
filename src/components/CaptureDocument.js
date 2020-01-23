@@ -10,7 +10,6 @@ import {
     BackHandler,
     Dimensions,
     TouchableOpacity,
-    ActivityIndicator,
     SafeAreaView
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
@@ -23,6 +22,7 @@ import SelfieMask from './SelfieMask'
 import SignatureDraw from './SignatureDraw'
 import ImageCropper from './ImageCropper'
 import PoweredBy from './PoweredBy'
+import Loading from './Loading'
 
 const { width, height } = Dimensions.get('window')
 
@@ -32,7 +32,8 @@ export default function CaptureDocument(props) {
         document,
         document: { steps, aspectRatio, cameraFacing, autoCrop },
         onCapture,
-        onManualCropCorners
+        onManualCropCorners,
+        onStepsFinished
     } = props
 
     const [cameraType] = useState(
@@ -59,17 +60,12 @@ export default function CaptureDocument(props) {
     }
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            () => {
+        BackHandler.addEventListener('hardwareBackPress', () => {
                 goBack()
                 return true
             }
         )
-
-        return () => {
-            backHandler.remove()
-        }
+        return () => BackHandler.removeEventListener('hardwareBackPress')
     }, [])
 
     const takePicture = async () => {
@@ -105,14 +101,13 @@ export default function CaptureDocument(props) {
     }
 
     const calculateNextStep = () => {
-        const { onStepsFinished } = props
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
             setImageCrop(null)
             setIsProcessStarted(false)
-        } else {
-            onStepsFinished(true)
+            return
         }
+        onStepsFinished(true)
     }
 
     const setPreviewPosition = event => {
@@ -144,9 +139,9 @@ export default function CaptureDocument(props) {
         return `data:image/jpeg;base64,${src}`
     }
 
-    const handleSignature = signature => {
+    const handleSignature = async signature => {
         setIsProcessStarted(true)
-        onCapture(signature)
+        await onCapture(signature)
         calculateNextStep()
     }
 
@@ -173,14 +168,7 @@ export default function CaptureDocument(props) {
         calculateNextStep()
     }
 
-    if (isProcessStarted) {
-        return (
-            <View style={styles.cameraContainer}>
-                <StatusBar barStyle="light-content" backgroundColor="black" />
-                <ActivityIndicator color="white" size="large" />
-            </View>
-        )
-    }
+    if (isProcessStarted) return <Loading />
 
     if (imageCrop) {
         return (
@@ -198,17 +186,23 @@ export default function CaptureDocument(props) {
     if (document.id === 'SG') {
         return (
             <View style={styles.signatureContainer}>
-            <StatusBar hidden />
-                <SafeAreaView style={{ flex: 0.07, flexDirection: 'row', justifyContent:'center',  alignItems: 'center'}}>
+                <StatusBar hidden />
+                <SafeAreaView style={styles.topBar}>
                     <TouchableOpacity
-                        style={{ position: 'absolute', left: width * 0.001, paddingHorizontal: 20 }}
-                        onPress={goBack}>
-                        <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
+                        style={styles.topBarLeft}
+                        onPress={goBack}
+                        hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                            <Image
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                                resizeMode="contain" source={require('../../assets/back-arrow.png')}
+                            />
                     </TouchableOpacity>
-
-                    <Text style={{ color: 'white', marginBottom: 17, fontSize: 19 }}> {document.steps[currentStep].title} {document.steps[currentStep].description}</Text>
+                    <Text style={styles.topBarTitle}>{document.steps[currentStep].title} {document.steps[currentStep].description}</Text>
                 </SafeAreaView>
-                <View style={{ flex: 0.93 }}>
+                <View style={{ flex: 1 }}>
                     <SignatureDraw
                         onOK={handleSignature}
                         onEmpty={handleEmptySignature}
