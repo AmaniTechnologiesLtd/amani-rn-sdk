@@ -5,8 +5,9 @@ import {
     Text,
     TouchableOpacity,
     StatusBar,
-    SafeAreaView,
+    TextInput,
     Alert,
+    SafeAreaView,
     StyleSheet,
     BackHandler,
     Dimensions
@@ -19,7 +20,8 @@ import htmlView from './View/html'
 const { width, height } = Dimensions.get('window')
 
 const ContractScreen = props => {
-    const { onContractDecline, onContractAccept, currentDocument } = props
+    const { onContractDecline, onContractAccept, currentDocument, contractFormData } = props
+    const [showContract, setShowContract] = useState(false)
     const [isContractApproved, setIsContractApproved] = useState(false)
 
     useEffect(() => {
@@ -60,10 +62,92 @@ const ContractScreen = props => {
         )
     }
 
+    const handleFormSubmit = async data => {
+        for (const key in data) {
+            if (!data[key]) {
+                Alert.alert(
+                    '',
+                    'Devam etmeden önce formu doldurmalısınız.',
+                    [
+                        {
+                            text: 'Anladım'
+                        },
+                    ],
+                    {cancelable: false}
+                )
+                return
+            }
+        }
+        await contractFormData(data)
+        setShowContract(true)
+    }
+
+    if (!showContract) {
+
+        const formData = {
+            job: null,
+            city: null,
+            district: null,
+            address: null,
+        }
+
+        return (
+            <View style={styles.contactFormContainer}>
+                <StatusBar barStyle="dark-content" backgroundColor="white" />
+                <Text style={styles.contactFormTitle}> SÖZLEŞME FORMU </Text>
+                <View>
+                    <View style={styles.contactFormView}>
+                        <TextInput
+                            style={styles.contactFormInput}
+                            onChangeText={val => formData.job = val}
+                            placeholder="Meslek"
+                            placeholderTextColor="gray"
+                            value={formData.job}
+                        />
+                    </View>
+                    <View style={styles.contactFormView}>
+                        <TextInput
+                            style={styles.contactFormInput}
+                            onChangeText={val => formData.city = val}
+                            placeholder="İl"
+                            placeholderTextColor="gray"
+                            value={formData.job}
+                        />
+                    </View>
+                    <View style={styles.contactFormView}>
+                        <TextInput
+                            style={styles.contactFormInput}
+                            onChangeText={val => formData.district = val}
+                            placeholder="İlçe"
+                            placeholderTextColor="gray"
+                            value={formData.job}
+                        />
+                    </View>
+                    <View style={styles.contactFormView}>
+                        <TextInput
+                            style={styles.contactFormInput}
+                            onChangeText={val => formData.address = val}
+                            placeholder="Adres"
+                            placeholderTextColor="gray"
+                            value={formData.job}
+                        />
+                    </View>
+                    <View style={{alignItems: 'center'}}>
+                    <TouchableOpacity onPress={() => handleFormSubmit(formData)} style={styles.contactFormButton}>
+                        <Text style={{ color: 'white' }}>
+                            Devam
+                        </Text>
+                    </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <WebView source={{html: htmlView}} />
+            <WebView javaScriptEnabled source={{html: htmlView}} />
             <View style={styles.bottomBar}>
                 <View style={styles.bottomBarButton}>
                 <Text style={styles.bottomBarButtonText}> Onaylıyorum {' '}</Text>
@@ -78,6 +162,33 @@ const ContractScreen = props => {
 }
 
 const styles = StyleSheet.create({
+    contactFormContainer: {
+        flex: 1,
+        backgroundColor: 'white'
+    },
+    contactFormView: {
+        alignItems: 'center',
+        padding: 10
+    },
+    contactFormTitle: {
+        textAlign: 'center',
+        fontSize: height * 0.04,
+        padding: 20
+    },
+    contactFormInput: {
+        width: width * 0.8,
+        borderWidth: 0.5,
+        borderColor: '#212121',
+        color: '#212121'
+    },
+    contactFormButton: {
+        backgroundColor:'#212121',
+        height: height * 0.05,
+        width: width * 0.8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5
+    },
     customCheckboxOutline: {
         borderColor: 'white',
         borderWidth: 1,
