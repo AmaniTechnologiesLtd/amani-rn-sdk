@@ -40,6 +40,7 @@ const MainScreen = props => {
     const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
     const [location, setLocation] = useState({latitude: null, longitude: null})
+    const [contractForm, setContractForm] = useState(null)
 
     const { onCreateCustomer, onError, onExit } = props
 
@@ -145,6 +146,7 @@ const MainScreen = props => {
         requestData.append('customer_token', tokens.customer)
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('location', JSON.stringify(location))
+        if (contractForm) requestData.append('contractForm', JSON.stringify(contractForm))
 
         if (corners) {
           corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
@@ -233,6 +235,7 @@ const MainScreen = props => {
                 onContractDecline={setShowContract}
                 currentDocument={documents.find(document => document.id === 'SG')}
                 onContractAccept={setSelectedDocument}
+                contractFormData={setContractForm}
             />
         )
     }
@@ -246,7 +249,7 @@ const MainScreen = props => {
                 {availableDocuments.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            // disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
+                            disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
                             style={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
