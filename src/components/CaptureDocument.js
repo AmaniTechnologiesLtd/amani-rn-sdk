@@ -23,6 +23,7 @@ import SignatureDraw from './SignatureDraw'
 import ImageCropper from './ImageCropper'
 import PoweredBy from './PoweredBy'
 import Loading from './Loading'
+import PreScreen from './PreScreen'
 
 const { width, height } = Dimensions.get('window')
 
@@ -30,7 +31,7 @@ export default function CaptureDocument(props) {
 
     const {
         document,
-        document: { steps, aspectRatio, cameraFacing, autoCrop },
+        document: { steps, cameraFacing },
         onCapture,
         onManualCropCorners,
         onStepsFinished
@@ -51,6 +52,8 @@ export default function CaptureDocument(props) {
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(false)
     const [imageCrop, setImageCrop] = useState(null)
+    const [documentIndex, setDocumentIndex] = useState(0)
+    const [showPreScreen, setShowPreScreen] = useState(true)
 
     const camera = useRef(null)
 
@@ -77,10 +80,10 @@ export default function CaptureDocument(props) {
             width: 1080,
             fixOrientation: true
         }).then(async data => {
-            if (document.crop) setImageCrop(data)
+            if (document.versions[documentIndex].crop) setImageCrop(data)
             else {
                 image = `data:image/jpeg;base64,${data.base64}`
-                if (autoCrop) image = await handleAutoCrop(data)
+                if (document.versions[documentIndex].autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
                 calculateNextStep()
             }
@@ -170,6 +173,17 @@ export default function CaptureDocument(props) {
 
     if (isProcessStarted) return <Loading />
 
+    if (document.versions.length > 1 && showPreScreen) {
+        return (
+            <PreScreen
+                screenKey="versioning"
+                versions={document.versions}
+                documentIndex={setDocumentIndex}
+                preScreenOn={setShowPreScreen}
+            />
+        )
+    }
+
     if (imageCrop) {
         return (
             <ImageCropper
@@ -237,7 +251,7 @@ export default function CaptureDocument(props) {
                             />
                         </TouchableOpacity>
 
-                        <Text style={styles.topBarTitle}>{document.title}</Text>
+                        <Text style={styles.topBarTitle}>{document.versions[documentIndex].title}</Text>
 
                         {document.options.includes('fileUpload') && (
                             <TouchableOpacity
@@ -264,7 +278,7 @@ export default function CaptureDocument(props) {
                         </Text>
                     )}
                 </View>
-                {aspectRatio && (
+                {document.versions[documentIndex].aspectRatio && (
                     <View
                         style={{ flexDirection: 'row' }}
                         onLayout={setPreviewPosition}>
@@ -274,7 +288,7 @@ export default function CaptureDocument(props) {
                                 styles.previewMiddle,
                                 {
                                     width: width * 0.85,
-                                    paddingTop: width * 0.85 * aspectRatio,
+                                    paddingTop: width * 0.85 * document.versions[documentIndex].aspectRatio,
                                 },
                             ]}
                         />
