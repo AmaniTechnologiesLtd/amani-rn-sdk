@@ -7,6 +7,7 @@ import {
     StatusBar,
     TextInput,
     Alert,
+    Image,
     SafeAreaView,
     StyleSheet,
     BackHandler,
@@ -23,6 +24,12 @@ const ContractScreen = props => {
     const { onContractDecline, onContractAccept, currentDocument, contractFormData } = props
     const [showContract, setShowContract] = useState(false)
     const [isContractApproved, setIsContractApproved] = useState(false)
+    const [formData, setFormData] = useState({
+        job: null,
+        city: null,
+        district: null,
+        address: null,
+    })
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', () => {
@@ -47,7 +54,6 @@ const ContractScreen = props => {
             )
             return
         }
-
         await onContractDecline(false)
         onContractAccept(currentDocument)
     }
@@ -56,15 +62,22 @@ const ContractScreen = props => {
         return (
             <TouchableOpacity onPress={() => setIsContractApproved(!isContractApproved)} style={styles.customCheckboxOutline}>
                 {isContractApproved && (
-                    <View style={styles.customCheckboxInline} />
+                    <View style={styles.customCheckboxInline}>
+                        <Image
+                            source={require('../../../assets/checked.png')}
+                            style={{height: height * 0.03}}
+                            resizeMode="contain"
+                        />
+                    </View>
                 )}
             </TouchableOpacity>
         )
     }
 
     const handleFormSubmit = async data => {
+        console.log(formData)
         for (const key in data) {
-            if (!data[key]) {
+            if (data[key] === null) {
                 Alert.alert(
                     '',
                     'Devam etmeden önce formu doldurmalısınız.',
@@ -84,13 +97,6 @@ const ContractScreen = props => {
 
     if (!showContract) {
 
-        const formData = {
-            job: null,
-            city: null,
-            district: null,
-            address: null,
-        }
-
         return (
             <View style={styles.contactFormContainer}>
                 <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -99,7 +105,7 @@ const ContractScreen = props => {
                     <View style={styles.contactFormView}>
                         <TextInput
                             style={styles.contactFormInput}
-                            onChangeText={val => formData.job = val}
+                            onChangeText={val => setFormData({...formData, job: val})}
                             placeholder="Meslek"
                             placeholderTextColor="gray"
                             value={formData.job}
@@ -108,28 +114,28 @@ const ContractScreen = props => {
                     <View style={styles.contactFormView}>
                         <TextInput
                             style={styles.contactFormInput}
-                            onChangeText={val => formData.city = val}
+                            onChangeText={val => setFormData({...formData, city: val})}
                             placeholder="İl"
                             placeholderTextColor="gray"
-                            value={formData.job}
+                            value={formData.city}
                         />
                     </View>
                     <View style={styles.contactFormView}>
                         <TextInput
                             style={styles.contactFormInput}
-                            onChangeText={val => formData.district = val}
+                            onChangeText={val => setFormData({...formData, district: val})}
                             placeholder="İlçe"
                             placeholderTextColor="gray"
-                            value={formData.job}
+                            value={formData.district}
                         />
                     </View>
                     <View style={styles.contactFormView}>
                         <TextInput
                             style={styles.contactFormInput}
-                            onChangeText={val => formData.address = val}
+                            onChangeText={val => setFormData({...formData, address: val})}
                             placeholder="Adres"
                             placeholderTextColor="gray"
-                            value={formData.job}
+                            value={formData.address}
                         />
                     </View>
                     <View style={{alignItems: 'center'}}>
@@ -177,6 +183,7 @@ const styles = StyleSheet.create({
     },
     contactFormInput: {
         width: width * 0.8,
+        height: height * 0.05,
         borderWidth: 0.5,
         borderColor: '#212121',
         color: '#212121'
@@ -192,14 +199,16 @@ const styles = StyleSheet.create({
     customCheckboxOutline: {
         borderColor: 'white',
         borderWidth: 1,
+        borderRadius: 50,
         width: height * 0.035,
         height: height * 0.035,
-        padding: 3,
+
     },
     customCheckboxInline: {
-        backgroundColor: 'gray',
-        height:'100%',
-        width:'100%'
+        height: '100%',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     bottomBar: {
         flex: 0.06,
