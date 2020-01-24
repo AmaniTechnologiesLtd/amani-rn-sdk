@@ -1,50 +1,44 @@
 export const initialDocuments = [
     {
         id: 'ID',
-        title: 'Kimlik',
+        secondary_id: 'DL',
+        title: 'Kimlik & Sürücü Belgesi',
         passed: null,
         steps: [
             {
                 title: 'Ön yüz',
                 description:
-                    'Lütfen kimliğinizin ön yüzünü kutucuğun içinde olacak şekilde konumlandırın',
+                    'Lütfen dokümanın ön yüzünü kutucuğun içinde olacak şekilde konumlandırın',
             },
             {
                 title: 'Arka yüz',
                 description:
-                    'Lütfen kimliğinizin arka yüzünü kutucuğun içinde olacak şekilde konumlandırın',
+                    'Lütfen dokümanın arka yüzünü kutucuğun içinde olacak şekilde konumlandırın',
             },
         ],
         options: ['takePicture'],
         captureVideo: false,
         cameraFacing: 'environment',
-        crop: false,
-        autoCrop: true,
-        aspectRatio: 0.63,
-    },
-    {
-        id: 'DL',
-        title: 'Sürücü Belgesi',
-        passed: null,
-        steps: [
+        versions: [
             {
-                title: 'Ön yüz',
-                description:
-                    'Lütfen sürücü belgenizin ön yüzünü kutucuğun içinde olacak şekilde konumlandırın',
+                title: 'Eski Kimlik',
+                aspectRatio: 1.2,
+                crop: true,
+                autoCrop: false,
             },
             {
-                title: 'Arka yüz',
-                description:
-                    'Lütfen sürücü belgenizin arka yüzünü kutucuğun içinde olacak şekilde konumlandırın',
+                title: 'Yeni Kimlik',
+                aspectRatio: 0.63,
+                crop: false,
+                autoCrop: true,
+            },
+            {
+                title: 'Yeni Sürücü Belgesi',
+                aspectRatio: 0.63,
+                crop: false,
+                autoCrop: true,
             },
         ],
-        options: ['takePicture'],
-        type: 'image',
-        captureVideo: false,
-        cameraFacing: 'environment',
-        crop: false,
-        autoCrop: true,
-        aspectRatio: 0.63,
     },
     {
         id: 'PA',
@@ -61,9 +55,14 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: 'environment',
-        crop: false,
-        autoCrop: true,
-        aspectRatio: 0.7042,
+        versions: [
+            {
+                title: 'Pasaport',
+                crop: false,
+                autoCrop: true,
+                aspectRatio: 0.7042,
+            },
+        ],
     },
     {
         id: 'VA',
@@ -80,9 +79,14 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: 'environment',
-        crop: false,
-        autoCrop: true,
-        aspectRatio: 0.7042,
+        versions: [
+            {
+                title: 'Vize',
+                crop: false,
+                autoCrop: true,
+                aspectRatio: 0.7042,
+            },
+        ],
     },
     {
         id: 'UB',
@@ -98,8 +102,23 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: 'environment',
-        crop: true,
-        autoCrop: false,
+        versions: [
+            {
+                title: 'Türk Telekom',
+                crop: true,
+                autoCrop: false,
+            },
+            {
+                title: 'Turkcell',
+                crop: true,
+                autoCrop: false,
+            },
+            {
+                title: 'Vodafone',
+                crop: true,
+                autoCrop: false,
+            },
+        ],
     },
     {
         id: 'SE',
@@ -117,8 +136,13 @@ export const initialDocuments = [
         captureVideo: true,
         cameraFacing: 'user',
         duration: 3,
-        crop: false,
-        autoCrop: false,
+        versions: [
+            {
+                title: 'Selfie',
+                crop: false,
+                autoCrop: false,
+            },
+        ],
     },
     {
         id: 'SG',
@@ -138,8 +162,13 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: null,
-        crop: false,
-        autoCrop: false,
+        versions: [
+            {
+                title: 'Sözleşme',
+                crop: false,
+                autoCrop: false,
+            },
+        ],
     },
 ]
 
