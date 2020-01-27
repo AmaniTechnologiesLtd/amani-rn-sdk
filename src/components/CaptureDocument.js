@@ -19,7 +19,6 @@ import DocumentPicker from 'react-native-document-picker'
 
 // Local files
 import SelfieMask from './SelfieMask'
-import SignatureDraw from './SignatureDraw'
 import ImageCropper from './ImageCropper'
 import PoweredBy from './PoweredBy'
 import Loading from './Loading'
@@ -197,35 +196,6 @@ export default function CaptureDocument(props) {
         )
     }
 
-    if (document.id === 'SG') {
-        return (
-            <View style={styles.signatureContainer}>
-                <StatusBar hidden />
-                <SafeAreaView style={styles.topBar}>
-                    <TouchableOpacity
-                        style={styles.topBarLeft}
-                        onPress={goBack}
-                        hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
-                            <Image
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                }}
-                                resizeMode="contain" source={require('../../assets/back-arrow.png')}
-                            />
-                    </TouchableOpacity>
-                    <Text style={styles.topBarTitle}>{document.steps[currentStep].title} {document.steps[currentStep].description}</Text>
-                </SafeAreaView>
-                <View style={{ flex: 1 }}>
-                    <SignatureDraw
-                        onOK={handleSignature}
-                        onEmpty={handleEmptySignature}
-                    />
-                </View>
-            </View>
-        )
-    }
-
     return (
         <View style={styles.cameraContainer}>
             <StatusBar hidden />
@@ -235,7 +205,7 @@ export default function CaptureDocument(props) {
                 type={cameraType}
                 captureAudio={false}
                 ratio="16:9">
-                <View style={{ backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
+                <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
 
                     <SafeAreaView style={styles.topBar}>
                         <TouchableOpacity
@@ -271,7 +241,7 @@ export default function CaptureDocument(props) {
                     </SafeAreaView>
                 </View>
 
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     {steps.length > 1 && (
                         <Text style={styles.topText}>
                             {steps[currentStep].title}
@@ -306,12 +276,12 @@ export default function CaptureDocument(props) {
                         <View style={styles.backDrop} />
                     </View>
                 )}
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <Text style={styles.bottomText}>
                         {steps[currentStep].description}
                     </Text>
                 </View>
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <TouchableOpacity
                         style={styles.takePhotoButtonCircle}
                         disabled={buttonDisabled}
