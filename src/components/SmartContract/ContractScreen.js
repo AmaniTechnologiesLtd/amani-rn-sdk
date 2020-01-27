@@ -17,13 +17,16 @@ import { WebView } from 'react-native-webview'
 
 // Local files
 import htmlView from './View/html'
+import SignatureDraw from '../SignatureDraw/SignatureDraw'
 
 const { width, height } = Dimensions.get('window')
 
 const ContractScreen = props => {
-    const { onContractDecline, onContractAccept, currentDocument, contractFormData } = props
+    const { onContractDecline, currentDocument, token } = props
     const [showContract, setShowContract] = useState(false)
+    const [showSignatureScreen, setShowSignatureScreen] = useState(false)
     const [isContractApproved, setIsContractApproved] = useState(false)
+
     const [formData, setFormData] = useState({
         job: null,
         city: null,
@@ -55,7 +58,7 @@ const ContractScreen = props => {
             return
         }
         await onContractDecline(false)
-        onContractAccept(currentDocument)
+        setShowSignatureScreen(true)
     }
 
     const customCheckboxView = () => {
@@ -74,10 +77,9 @@ const ContractScreen = props => {
         )
     }
 
-    const handleFormSubmit = async data => {
-        console.log(formData)
-        for (const key in data) {
-            if (data[key] === null) {
+    const handleFormSubmit = async () => {
+        for (const key in formData) {
+            if (formData[key] === null) {
                 Alert.alert(
                     '',
                     'Devam etmeden önce formu doldurmalısınız.',
@@ -91,12 +93,15 @@ const ContractScreen = props => {
                 return
             }
         }
-        await contractFormData(data)
-        setShowContract(true)
+        // await contractFormData(formData)
+        setShowSignatureScreen(true)
+    }
+
+    if (showSignatureScreen) {
+        return <SignatureDraw document={currentDocument} backToContractForm={setShowSignatureScreen} isSignatureScreenOn={onContractDecline} token={token} />
     }
 
     if (!showContract) {
-
         return (
             <View style={styles.contactFormContainer}>
                 <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -139,7 +144,7 @@ const ContractScreen = props => {
                         />
                     </View>
                     <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity onPress={() => handleFormSubmit(formData)} style={styles.contactFormButton}>
+                    <TouchableOpacity onPress={handleFormSubmit} style={styles.contactFormButton}>
                         <Text style={{ color: 'white' }}>
                             Devam
                         </Text>
