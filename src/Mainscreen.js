@@ -37,10 +37,9 @@ const MainScreen = props => {
     const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
     const [isStepsFinished, setIsStepsFinished] = useState(false)
-    const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
+    const [tokens, setTokens] = useState({ access: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
-    const [location, setLocation] = useState({latitude: null, longitude: null})
-    const [contractForm, setContractForm] = useState(null)
+    const [location, setLocation] = useState(null)
 
     const { onCreateCustomer, onError, onExit } = props
 
@@ -57,7 +56,7 @@ const MainScreen = props => {
         const callbackData = []
         availableDocuments.forEach(element => {
             callbackData.push({
-                 [element.id]: documents.find(document => document.id === element.id).passed
+                [element.id]: documents.find(document => document.id === element.id).passed
             })
         })
         onExit(callbackData)
@@ -65,11 +64,11 @@ const MainScreen = props => {
 
     const errorHandler = (e) => {
         Alert.alert(
-            'Something went wrong',
+            'Bir şeyler yanlış gitti',
             e.response.data.errors[0].ERROR_MESSAGE,
             [
                 {
-                  text: 'OK',
+                  text: 'Tamam',
                   onPress: () => onError(e.response.data.errors[0])
                 },
             ],
@@ -83,33 +82,32 @@ const MainScreen = props => {
             const authData = props.authData
             const customerInformations = props.customerInformations
             api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
-                api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
-                    // If already a customer get token
-                    if (customerInformations.id) {
-                        api.getCustomer(customerInformations.id, sRes.data.token).then(async (tRes) => {
-                            setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                            documents.map(doc => {
-                                if (sRes.data.available_documents.includes(doc.id)) {
-                                    setAvailableDocuments(oldDoc => [...oldDoc, doc])
-                                }
-                            })
-                        }).catch(error => errorHandler(error))
-                        return
-                    }
-
-                    const formData = {
-                        customerData: customerInformations,
-                        smsToken: sRes.data.token
-                    }
-                    api.createCustomer(formData).then(async (tRes) => {
-                        setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
+                // If already a customer get token
+                if (customerInformations.id) {
+                    api.getCustomer(customerInformations.id, fRes.data.token).then(async (sRes) => {
+                        setTokens({ access: fRes.data.token, customer: sRes.data.token })
                         documents.map(doc => {
-                            if (sRes.data.available_documents.includes(doc.id)) {
+                            if (fRes.data.available_documents.includes(doc.id)) {
                                 setAvailableDocuments(oldDoc => [...oldDoc, doc])
                             }
                         })
-                        onCreateCustomer({ id: tRes.data.id })
                     }).catch(error => errorHandler(error))
+                    return
+                }
+
+                const formData = {
+                    customerData: customerInformations,
+                    token: fRes.data.token
+                }
+
+                api.createCustomer(formData).then(async (sRes) => {
+                    setTokens({ access: fRes.data.token, customer: sRes.data.token })
+                    documents.map(doc => {
+                        if (fRes.data.available_documents.includes(doc.id)) {
+                            setAvailableDocuments(oldDoc => [...oldDoc, doc])
+                        }
+                    })
+                    onCreateCustomer({ id: sRes.data.id })
                 }).catch(error => errorHandler(error))
             }).catch(error => errorHandler(error))
         }
@@ -122,9 +120,12 @@ const MainScreen = props => {
     }, [availableDocuments])
 
     useEffect(() => {
-        if (permissions.location === 'granted' || Platform.OS === 'ios') {
-            Geolocation.getCurrentPosition(position => setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude }))
+        const getLocation = async () => {
+            if (permissions.location === 'granted' || Platform.OS === 'ios') {
+                await Geolocation.getCurrentPosition(position => setLocation(position.coords))
+            }
         }
+        getLocation()
         if (isStepsFinished) handleSendDocumentsRequest()
         setIsStepsFinished(false)
     }, [isStepsFinished, location])
@@ -146,15 +147,14 @@ const MainScreen = props => {
         requestData.append('customer_token', tokens.customer)
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('location', JSON.stringify(location))
-        if (contractForm) requestData.append('contractForm', JSON.stringify(contractForm))
 
         if (corners) {
-          corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
+            corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
         }
 
         files.forEach(file => requestData.append('files[]', file))
 
-        await api.sendDocument(tokens.sms, requestData)
+        await api.sendDocument(tokens.access, requestData)
             .then(res => {
                 if (res.data.status === 'OK') {
                     selectedDocument.passed = true
@@ -234,8 +234,7 @@ const MainScreen = props => {
             <ContractScreen
                 onContractDecline={setShowContract}
                 currentDocument={documents.find(document => document.id === 'SG')}
-                onContractAccept={setSelectedDocument}
-                contractFormData={setContractForm}
+                token={tokens}
             />
         )
     }
@@ -249,7 +248,7 @@ const MainScreen = props => {
                 {availableDocuments.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
+                            // disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
                             style={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
