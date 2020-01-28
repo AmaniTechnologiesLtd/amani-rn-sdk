@@ -259,7 +259,7 @@ export const MainScreen = props => {
     if (showContract) {
         return (
             <ContractScreen
-                onContractDecline={setShowContract}
+                onContractDecline={() => setShowContract(false)}
                 currentDocument={documents.find(document => document.id === 'SG')}
                 state={[documents, dispatch]}
                 customer={customer}

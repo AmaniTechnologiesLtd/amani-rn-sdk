@@ -21,7 +21,7 @@ import api from '../../services/api'
 
 
 export const SignatureDraw = props => {
-    const { document, isSignatureScreenOn, customer, backToContractForm } = props
+    const { document, goBackToMainScreen, customer, goBack } = props
     const [documents, dispatch] = props.state
     const [location, setLocation] = useState(null)
     const [signature, setSignature] = useState(null)
@@ -40,7 +40,7 @@ export const SignatureDraw = props => {
                 document_id: document.id,
                 passed: false
             })
-            backToContractForm(!true)
+            goBack()
             return true
         })
         return () => BackHandler.removeEventListener('hardwareBackPress')
@@ -57,7 +57,7 @@ export const SignatureDraw = props => {
                 setIsProcessStarted(false)
                 return
             }
-            isSignatureScreenOn(false)
+            goBackToMainScreen()
         } else {
             setIsProcessStarted(false)
             Alert.alert(
@@ -129,7 +129,7 @@ export const SignatureDraw = props => {
             <SafeAreaView style={styles.topBar}>
                 <TouchableOpacity
                     style={styles.topBarLeft}
-                    onPress={() => backToContractForm(!true)}
+                    onPress={goBack}
                     hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
                         <Image
                             style={{

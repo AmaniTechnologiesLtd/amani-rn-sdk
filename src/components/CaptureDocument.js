@@ -66,8 +66,7 @@ export const CaptureDocument = props => {
         BackHandler.addEventListener('hardwareBackPress', () => {
                 goBack()
                 return true
-            }
-        )
+        })
         return () => BackHandler.removeEventListener('hardwareBackPress')
     }, [])
 
@@ -179,6 +178,7 @@ export const CaptureDocument = props => {
                 screenKey="versioning"
                 versions={document.versions}
                 documentIndex={setDocumentIndex}
+                goBack={goBack}
                 preScreenOn={setShowPreScreen}
             />
         )

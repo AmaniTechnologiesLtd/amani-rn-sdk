@@ -36,7 +36,7 @@ export const ContractScreen = props => {
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', () => {
-                onContractDecline(false)
+                onContractDecline()
                 return true
             }
         )
@@ -58,7 +58,7 @@ export const ContractScreen = props => {
             )
             return
         }
-        await onContractDecline(false)
+        await onContractDecline()
         setShowSignatureScreen(true)
     }
 
@@ -102,8 +102,8 @@ export const ContractScreen = props => {
             <SignatureDraw
                 document={currentDocument}
                 state={props.state}
-                backToContractForm={setShowSignatureScreen}
-                isSignatureScreenOn={onContractDecline}
+                goBack={() => setShowSignatureScreen(false)}
+                goBackToMainScreen={onContractDecline}
                 customer={customer}
             />
         )
@@ -111,55 +111,71 @@ export const ContractScreen = props => {
 
     if (!showContract) {
         return (
-            <View style={styles.contactFormContainer}>
+            <SafeAreaView style={styles.contactFormContainer}>
                 <StatusBar barStyle="dark-content" backgroundColor="white" />
-                <Text style={styles.contactFormTitle}> SÖZLEŞME FORMU </Text>
-                <View>
-                    <View style={styles.contactFormView}>
-                        <TextInput
-                            style={styles.contactFormInput}
-                            onChangeText={val => setFormData({...formData, job: val})}
-                            placeholder="Meslek"
-                            placeholderTextColor="gray"
-                            value={formData.job}
+                <View style={styles.topBar}>
+                    <TouchableOpacity
+                        style={styles.topBarLeft}
+                        onPress={onContractDecline}
+                        hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                        <Image
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                            }}
+                            resizeMode="contain" source={require('../../../assets/back-arrow-black.png')}
                         />
-                    </View>
-                    <View style={styles.contactFormView}>
-                        <TextInput
-                            style={styles.contactFormInput}
-                            onChangeText={val => setFormData({...formData, city: val})}
-                            placeholder="İl"
-                            placeholderTextColor="gray"
-                            value={formData.city}
-                        />
-                    </View>
-                    <View style={styles.contactFormView}>
-                        <TextInput
-                            style={styles.contactFormInput}
-                            onChangeText={val => setFormData({...formData, district: val})}
-                            placeholder="İlçe"
-                            placeholderTextColor="gray"
-                            value={formData.district}
-                        />
-                    </View>
-                    <View style={styles.contactFormView}>
-                        <TextInput
-                            style={styles.contactFormInput}
-                            onChangeText={val => setFormData({...formData, address: val})}
-                            placeholder="Adres"
-                            placeholderTextColor="gray"
-                            value={formData.address}
-                        />
-                    </View>
-                    <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity onPress={handleFormSubmit} style={styles.contactFormButton}>
-                        <Text style={{ color: 'white' }}>
-                            Devam
-                        </Text>
                     </TouchableOpacity>
+                </View>
+                <View>
+                    <Text style={styles.contactFormTitle}> SÖZLEŞME FORMU </Text>
+                    <View>
+                        <View style={styles.contactFormView}>
+                            <TextInput
+                                style={styles.contactFormInput}
+                                onChangeText={val => setFormData({...formData, job: val})}
+                                placeholder="Meslek"
+                                placeholderTextColor="gray"
+                                value={formData.job}
+                            />
+                        </View>
+                        <View style={styles.contactFormView}>
+                            <TextInput
+                                style={styles.contactFormInput}
+                                onChangeText={val => setFormData({...formData, city: val})}
+                                placeholder="İl"
+                                placeholderTextColor="gray"
+                                value={formData.city}
+                            />
+                        </View>
+                        <View style={styles.contactFormView}>
+                            <TextInput
+                                style={styles.contactFormInput}
+                                onChangeText={val => setFormData({...formData, district: val})}
+                                placeholder="İlçe"
+                                placeholderTextColor="gray"
+                                value={formData.district}
+                            />
+                        </View>
+                        <View style={styles.contactFormView}>
+                            <TextInput
+                                style={styles.contactFormInput}
+                                onChangeText={val => setFormData({...formData, address: val})}
+                                placeholder="Adres"
+                                placeholderTextColor="gray"
+                                value={formData.address}
+                            />
+                        </View>
+                        <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={handleFormSubmit} style={styles.contactFormButton}>
+                            <Text style={{ color: 'white' }}>
+                                Devam
+                            </Text>
+                        </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </SafeAreaView>
         )
     }
 
@@ -197,6 +213,7 @@ const styles = StyleSheet.create({
     contactFormInput: {
         width: width * 0.8,
         height: height * 0.05,
+        paddingHorizontal: width * 0.035,
         borderWidth: 0.5,
         borderColor: '#212121',
         color: '#212121'
@@ -222,6 +239,22 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    topBar: {
+        flexDirection: 'row',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        justifyContent: 'center',
+        paddingVertical: 15,
+    },
+    topBarLeft: {
+        position: 'absolute',
+        left: 10,
+        top: 15,
+        width: 30,
+        height: 20,
     },
     bottomBar: {
         flex: 0.06,
