@@ -175,7 +175,15 @@ export const initialDocuments = [
 const documentsReducer = (state, action) => {
     switch (action.type) {
         case 'FILTER_DOCUMENTS':
-            return state.filter(document => action.types.includes(document.id))
+            return state.filter(document => action.document_types.includes(document.id))
+        case 'CHANGE_STATUS':
+            return state.map(document => {
+                if (action.document_id === document.id || (document.secondary_id && document.secondary_id.includes(action.document_id))) {
+                    const updateDoc = { ...document, passed: action.passed }
+                    return updateDoc
+                }
+                return document
+            })
         default:
             return state
     }
