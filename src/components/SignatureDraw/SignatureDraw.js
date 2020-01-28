@@ -16,12 +16,12 @@ import DeviceInfo from 'react-native-device-info'
 
 // Local files
 import SignatureScreen from './index'
-import Loading from '../Loading'
+import { Loading } from '../Loading'
 import api from '../../services/api'
 
 
-const SignatureDraw = props => {
-    const { document, isSignatureScreenOn, token, backToContractForm } = props
+export const SignatureDraw = props => {
+    const { document, isSignatureScreenOn, customer, backToContractForm } = props
     const [location, setLocation] = useState(null)
     const [signature, setSignature] = useState(null)
     const [currentStep, setCurrentStep] = useState(0)
@@ -76,12 +76,12 @@ const SignatureDraw = props => {
         const requestData = new FormData()
 
         requestData.append('type', document.id)
-        requestData.append('customer_token', token.customer)
+        requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('location', JSON.stringify(location))
         requestData.append('files[]', signature)
 
-        await api.sendDocument(token.access, requestData)
+        await api.sendDocument(customer.access, requestData)
             .then(res => {
                 handleSignatureSteps(res)
             })
@@ -159,5 +159,3 @@ const styles = StyleSheet.create({
     },
     topBarTitle: { color: 'white', fontSize: 16 }
 })
-
-export default SignatureDraw

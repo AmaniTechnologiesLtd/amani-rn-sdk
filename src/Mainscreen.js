@@ -18,16 +18,16 @@ import Geolocation from 'react-native-geolocation-service'
 import DeviceInfo from 'react-native-device-info'
 
 // Local files
-import CaptureDocument from './components/CaptureDocument'
-import ContractScreen from './components/SmartContract/ContractScreen';
-import Loading from './components/Loading'
-import PoweredBy from './components/PoweredBy'
-import documentsReducer, { initialDocuments } from './store/documents'
+import { CaptureDocument } from './components/CaptureDocument'
+import { ContractScreen } from './components/SmartContract/ContractScreen';
+import { Loading } from './components/Loading'
+import { PoweredBy } from './components/PoweredBy'
+import { initialDocuments, documentsReducer } from './store/documents'
 import api from './services/api'
 
 const { width, height } = Dimensions.get('window')
 
-const MainScreen = props => {
+export const MainScreen = props => {
     const [documents, dispatch] = useReducer(documentsReducer, initialDocuments)
 
     const [isLoading, setIsLoading] = useState(true)
@@ -37,7 +37,7 @@ const MainScreen = props => {
     const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
     const [isStepsFinished, setIsStepsFinished] = useState(false)
-    const [tokens, setTokens] = useState({ access: null, customer: null })
+    const [customer, setCustomer] = useState({ access: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
     const [location, setLocation] = useState(null)
 
@@ -85,7 +85,7 @@ const MainScreen = props => {
                 // If already a customer get token
                 if (customerInformations.id) {
                     api.getCustomer(customerInformations.id, fRes.data.token).then(async (sRes) => {
-                        setTokens({ access: fRes.data.token, customer: sRes.data.token })
+                        setCustomer({ access: fRes.data.token, id: sRes.data.token })
                         await dispatch({
                             type: 'FILTER_DOCUMENTS',
                             document_types: fRes.data.available_documents,
@@ -101,7 +101,7 @@ const MainScreen = props => {
                 }
 
                 api.createCustomer(formData).then(async (sRes) => {
-                    setTokens({ access: fRes.data.token, customer: sRes.data.token })
+                    setCustomer({ access: fRes.data.token, id: sRes.data.token })
                     await dispatch({
                         type: 'FILTER_DOCUMENTS',
                         document_types: fRes.data.available_documents,
@@ -150,7 +150,7 @@ const MainScreen = props => {
         const requestData = new FormData()
 
         requestData.append('type', selectedDocument.id)
-        requestData.append('customer_token', tokens.customer)
+        requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('location', JSON.stringify(location))
 
@@ -160,7 +160,7 @@ const MainScreen = props => {
 
         files.forEach(file => requestData.append('files[]', file))
 
-        await api.sendDocument(tokens.access, requestData)
+        await api.sendDocument(customer.access, requestData)
             .then(async res => {
                 if (res.data.status === 'OK') {
                     await dispatch({
@@ -249,7 +249,7 @@ const MainScreen = props => {
             <ContractScreen
                 onContractDecline={setShowContract}
                 currentDocument={documents.find(document => document.id === 'SG')}
-                token={tokens}
+                customer={customer}
             />
         )
     }
@@ -263,7 +263,7 @@ const MainScreen = props => {
                 {documents.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
+                            // disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
                             style={ (index !== 0 && documents[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}

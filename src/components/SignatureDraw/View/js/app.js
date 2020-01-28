@@ -1,4 +1,4 @@
-const content = `
+export const AppContent = `
     var wrapper = document.getElementById('signature-pad'),
         clearButton = wrapper.querySelector('[data-action=clear]'),
         saveButton = wrapper.querySelector('[data-action=save]'),
@@ -36,5 +36,3 @@ const content = `
         signaturePad.clear()
     })
 `
-
-export default content

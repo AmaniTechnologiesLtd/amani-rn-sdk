@@ -11,7 +11,7 @@ import {
 
 const { width, height } = Dimensions.get('window')
 
-const PreScreen = props => {
+export const PreScreen = props => {
     const { screenKey, versions, documentIndex, preScreenOn } = props
     switch (screenKey) {
         case 'versioning':
@@ -44,5 +44,3 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
-
-export default PreScreen

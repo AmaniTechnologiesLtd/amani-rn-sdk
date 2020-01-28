@@ -16,13 +16,13 @@ import {
 import { WebView } from 'react-native-webview'
 
 // Local files
-import htmlView from './View/html'
-import SignatureDraw from '../SignatureDraw/SignatureDraw'
+import { content } from './View/html'
+import { SignatureDraw } from '../SignatureDraw/SignatureDraw'
 
 const { width, height } = Dimensions.get('window')
 
-const ContractScreen = props => {
-    const { onContractDecline, currentDocument, token } = props
+export const ContractScreen = props => {
+    const { onContractDecline, currentDocument, customer } = props
     const [showContract, setShowContract] = useState(false)
     const [showSignatureScreen, setShowSignatureScreen] = useState(false)
     const [isContractApproved, setIsContractApproved] = useState(false)
@@ -44,6 +44,7 @@ const ContractScreen = props => {
     }, [])
 
     const handleContractProcess = async () => {
+
         if (!isContractApproved) {
             Alert.alert(
                 '',
@@ -93,12 +94,11 @@ const ContractScreen = props => {
                 return
             }
         }
-        // await contractFormData(formData)
         setShowSignatureScreen(true)
     }
 
     if (showSignatureScreen) {
-        return <SignatureDraw document={currentDocument} backToContractForm={setShowSignatureScreen} isSignatureScreenOn={onContractDecline} token={token} />
+        return <SignatureDraw document={currentDocument} backToContractForm={setShowSignatureScreen} isSignatureScreenOn={onContractDecline} customer={customer} />
     }
 
     if (!showContract) {
@@ -158,7 +158,7 @@ const ContractScreen = props => {
     return (
         <SafeAreaView style={{flex: 1}}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <WebView javaScriptEnabled source={{html: htmlView}} />
+            <WebView javaScriptEnabled source={{html: content}} />
             <View style={styles.bottomBar}>
                 <View style={styles.bottomBarButton}>
                 <Text style={styles.bottomBarButtonText}> Onaylıyorum {' '}</Text>
@@ -231,5 +231,3 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     }
 })
-
-export default ContractScreen

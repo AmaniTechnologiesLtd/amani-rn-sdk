@@ -172,7 +172,7 @@ export const initialDocuments = [
     },
 ]
 
-const documentsReducer = (state, action) => {
+export const documentsReducer = (state, action) => {
     switch (action.type) {
         case 'FILTER_DOCUMENTS':
             return state.filter(document => action.document_types.includes(document.id))
@@ -188,5 +188,3 @@ const documentsReducer = (state, action) => {
             return state
     }
 }
-
-export default documentsReducer

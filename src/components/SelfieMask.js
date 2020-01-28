@@ -5,7 +5,7 @@ import { Svg, Defs, Rect, Mask, Ellipse } from 'react-native-svg'
 
 const { width, height } = Dimensions.get('window')
 
-const SelfieMask = () => (
+export const SelfieMask = () => (
     <Svg width={height * 0.6} height={height * 0.6}>
         <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
@@ -27,5 +27,3 @@ const SelfieMask = () => (
         />
     </Svg>
 )
-
-export default SelfieMask

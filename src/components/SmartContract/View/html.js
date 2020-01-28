@@ -1,4 +1,4 @@
-const content = `
+export const content = `
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -864,5 +864,3 @@ pdf2htmlEX.defaultViewer = new pdf2htmlEX.Viewer({});
 </div>
 </body>
 </html>`;
-
-export default content;

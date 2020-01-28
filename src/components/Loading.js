@@ -7,7 +7,7 @@ import {
     StatusBar
 } from 'react-native'
 
-const Loading = () => (
+export const Loading = () => (
     <View style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="black" />
         <ActivityIndicator color="white" size="large" />
@@ -22,5 +22,3 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
-
-export default Loading

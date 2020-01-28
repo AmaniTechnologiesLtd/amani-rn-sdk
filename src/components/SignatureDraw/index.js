@@ -4,9 +4,9 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 // Local files
-import htmlContent from './View/html'
-import injectedSignaturePad from './View/js/signature_pad'
-import injectedApplication from './View/js/app'
+import { content } from './View/html'
+import { SignaturePad } from './View/js/signature_pad'
+import { AppContent } from './View/js/app'
 
 
 const styles = StyleSheet.create({
@@ -35,8 +35,8 @@ class SignatureView extends Component {
       isLoading: true,
     }
 
-    const injectedJavaScript = injectedSignaturePad + injectedApplication
-    let html = htmlContent(injectedJavaScript)
+    const injectedJavaScript = SignaturePad + AppContent
+    let html = content(injectedJavaScript)
     html = html.replace('<%style%>', webStyle)
     html = html.replace('<%confirm%>', confirmText)
     html = html.replace('<%clear%>', clearText)

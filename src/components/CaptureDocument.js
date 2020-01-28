@@ -18,15 +18,15 @@ import ImageEditor from '@react-native-community/image-editor'
 import DocumentPicker from 'react-native-document-picker'
 
 // Local files
-import SelfieMask from './SelfieMask'
-import ImageCropper from './ImageCropper'
-import PoweredBy from './PoweredBy'
-import Loading from './Loading'
-import PreScreen from './PreScreen'
+import { SelfieMask } from './SelfieMask'
+import { ImageCropper } from './ImageCropper'
+import { PoweredBy } from './PoweredBy'
+import { Loading } from './Loading'
+import { PreScreen } from './PreScreen'
 
 const { width, height } = Dimensions.get('window')
 
-export default function CaptureDocument(props) {
+export const CaptureDocument = props => {
 
     const {
         document,
@@ -55,6 +55,7 @@ export default function CaptureDocument(props) {
     const [showPreScreen, setShowPreScreen] = useState(true)
 
     const camera = useRef(null)
+
 
     const goBack = async () => {
         const { onClearDocument } = props
