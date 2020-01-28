@@ -131,7 +131,6 @@ export const MainScreen = props => {
 
 
     const handleSendDocumentsRequest = async () => {
-
         await dispatch({
             type: 'CHANGE_STATUS',
             document_id: selectedDocument.id,
@@ -249,6 +248,7 @@ export const MainScreen = props => {
             <ContractScreen
                 onContractDecline={setShowContract}
                 currentDocument={documents.find(document => document.id === 'SG')}
+                state={[documents, dispatch]}
                 customer={customer}
             />
         )
@@ -263,7 +263,7 @@ export const MainScreen = props => {
                 {documents.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            // disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
+                            disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
                             style={ (index !== 0 && documents[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}

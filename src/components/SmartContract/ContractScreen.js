@@ -98,7 +98,15 @@ export const ContractScreen = props => {
     }
 
     if (showSignatureScreen) {
-        return <SignatureDraw document={currentDocument} backToContractForm={setShowSignatureScreen} isSignatureScreenOn={onContractDecline} customer={customer} />
+        return (
+            <SignatureDraw
+                document={currentDocument}
+                state={props.state}
+                backToContractForm={setShowSignatureScreen}
+                isSignatureScreenOn={onContractDecline}
+                customer={customer}
+            />
+        )
     }
 
     if (!showContract) {

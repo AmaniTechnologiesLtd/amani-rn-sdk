@@ -22,6 +22,7 @@ import api from '../../services/api'
 
 export const SignatureDraw = props => {
     const { document, isSignatureScreenOn, customer, backToContractForm } = props
+    const [documents, dispatch] = props.state
     const [location, setLocation] = useState(null)
     const [signature, setSignature] = useState(null)
     const [currentStep, setCurrentStep] = useState(0)
@@ -33,7 +34,12 @@ export const SignatureDraw = props => {
         }
         getLocation()
 
-        BackHandler.addEventListener('hardwareBackPress', () => {
+        BackHandler.addEventListener('hardwareBackPress', async () => {
+            await dispatch({
+                type: 'CHANGE_STATUS',
+                document_id: document.id,
+                passed: false
+            })
             backToContractForm(!true)
             return true
         })
@@ -82,11 +88,20 @@ export const SignatureDraw = props => {
         requestData.append('files[]', signature)
 
         await api.sendDocument(customer.access, requestData)
-            .then(res => {
+            .then(async res => {
+                await dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: document.id,
+                    passed: true
+                })
                 handleSignatureSteps(res)
             })
-            .catch(error => {
-                // console.log(error)
+            .catch(async error => {
+                await dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: document.id,
+                    passed: false
+                })
             })
     }
 
