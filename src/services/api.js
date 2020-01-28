@@ -10,12 +10,10 @@ export default {
     setBaseUrl: param => axios.defaults.baseURL = servers[param],
     login: param =>
         axios.post('/api/v1/user/login/', param),
-    smsVerification: param =>
-        axios.post('/api/v1/user/verify/', param),
     createCustomer: param =>
         axios.post('/api/v1/customer/', param.customerData, {
             headers: {
-                'Authorization': `Token ${param.smsToken}`,
+                'Authorization': `Token ${param.token}`,
             },
         }),
     getCustomer: (id, token) =>

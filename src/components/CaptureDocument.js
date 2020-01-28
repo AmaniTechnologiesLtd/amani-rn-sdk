@@ -10,7 +10,6 @@ import {
     BackHandler,
     Dimensions,
     TouchableOpacity,
-    ActivityIndicator,
     SafeAreaView
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
@@ -19,20 +18,22 @@ import ImageEditor from '@react-native-community/image-editor'
 import DocumentPicker from 'react-native-document-picker'
 
 // Local files
-import SelfieMask from './SelfieMask'
-import SignatureDraw from './SignatureDraw'
-import ImageCropper from './ImageCropper'
-import PoweredBy from './PoweredBy'
+import { SelfieMask } from './SelfieMask'
+import { ImageCropper } from './ImageCropper'
+import { PoweredBy } from './PoweredBy'
+import { Loading } from './Loading'
+import { PreScreen } from './PreScreen'
 
 const { width, height } = Dimensions.get('window')
 
-export default function CaptureDocument(props) {
+export const CaptureDocument = props => {
 
     const {
         document,
-        document: { steps, aspectRatio, cameraFacing, autoCrop },
+        document: { steps, cameraFacing },
         onCapture,
-        onManualCropCorners
+        onManualCropCorners,
+        onStepsFinished
     } = props
 
     const [cameraType] = useState(
@@ -50,8 +51,11 @@ export default function CaptureDocument(props) {
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(false)
     const [imageCrop, setImageCrop] = useState(null)
+    const [documentIndex, setDocumentIndex] = useState(0)
+    const [showPreScreen, setShowPreScreen] = useState(true)
 
     const camera = useRef(null)
+
 
     const goBack = async () => {
         const { onClearDocument } = props
@@ -59,17 +63,11 @@ export default function CaptureDocument(props) {
     }
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            () => {
+        BackHandler.addEventListener('hardwareBackPress', () => {
                 goBack()
                 return true
-            }
-        )
-
-        return () => {
-            backHandler.remove()
-        }
+        })
+        return () => BackHandler.removeEventListener('hardwareBackPress')
     }, [])
 
     const takePicture = async () => {
@@ -81,10 +79,10 @@ export default function CaptureDocument(props) {
             width: 1080,
             fixOrientation: true
         }).then(async data => {
-            if (document.crop) setImageCrop(data)
+            if (document.versions[documentIndex].crop) setImageCrop(data)
             else {
                 image = `data:image/jpeg;base64,${data.base64}`
-                if (autoCrop) image = await handleAutoCrop(data)
+                if (document.versions[documentIndex].autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
                 calculateNextStep()
             }
@@ -105,14 +103,13 @@ export default function CaptureDocument(props) {
     }
 
     const calculateNextStep = () => {
-        const { onStepsFinished } = props
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
             setImageCrop(null)
             setIsProcessStarted(false)
-        } else {
-            onStepsFinished(true)
+            return
         }
+        onStepsFinished(true)
     }
 
     const setPreviewPosition = event => {
@@ -144,9 +141,9 @@ export default function CaptureDocument(props) {
         return `data:image/jpeg;base64,${src}`
     }
 
-    const handleSignature = signature => {
+    const handleSignature = async signature => {
         setIsProcessStarted(true)
-        onCapture(signature)
+        await onCapture(signature)
         calculateNextStep()
     }
 
@@ -173,12 +170,17 @@ export default function CaptureDocument(props) {
         calculateNextStep()
     }
 
-    if (isProcessStarted) {
+    if (isProcessStarted) return <Loading />
+
+    if (document.versions.length > 1 && showPreScreen) {
         return (
-            <View style={styles.cameraContainer}>
-                <StatusBar barStyle="light-content" backgroundColor="black" />
-                <ActivityIndicator color="white" size="large" />
-            </View>
+            <PreScreen
+                screenKey="versioning"
+                versions={document.versions}
+                documentIndex={setDocumentIndex}
+                goBack={goBack}
+                preScreenOn={setShowPreScreen}
+            />
         )
     }
 
@@ -195,27 +197,6 @@ export default function CaptureDocument(props) {
         )
     }
 
-    if (document.id === 'SG') {
-        return (
-            <View style={styles.signatureContainer}>
-            <StatusBar hidden />
-                <View style={{ flex: 0.07}}>
-                    <TouchableOpacity
-                        style={{ paddingHorizontal: 20 }}
-                        onPress={goBack}>
-                        <Image style={styles.backArrowIcon} resizeMode="contain" source={require('../../assets/back-arrow.png')} />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flex: 0.93 }}>
-                    <SignatureDraw
-                        onOK={handleSignature}
-                        onEmpty={handleEmptySignature}
-                    />
-                </View>
-            </View>
-        )
-    }
-
     return (
         <View style={styles.cameraContainer}>
             <StatusBar hidden />
@@ -225,7 +206,7 @@ export default function CaptureDocument(props) {
                 type={cameraType}
                 captureAudio={false}
                 ratio="16:9">
-                <View style={{ backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
+                <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
 
                     <SafeAreaView style={styles.topBar}>
                         <TouchableOpacity
@@ -241,7 +222,7 @@ export default function CaptureDocument(props) {
                             />
                         </TouchableOpacity>
 
-                        <Text style={styles.topBarTitle}>{document.title}</Text>
+                        <Text style={styles.topBarTitle}>{document.versions[documentIndex].title}</Text>
 
                         {document.options.includes('fileUpload') && (
                             <TouchableOpacity
@@ -261,14 +242,14 @@ export default function CaptureDocument(props) {
                     </SafeAreaView>
                 </View>
 
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     {steps.length > 1 && (
                         <Text style={styles.topText}>
                             {steps[currentStep].title}
                         </Text>
                     )}
                 </View>
-                {aspectRatio && (
+                {document.versions[documentIndex].aspectRatio && (
                     <View
                         style={{ flexDirection: 'row' }}
                         onLayout={setPreviewPosition}>
@@ -278,7 +259,7 @@ export default function CaptureDocument(props) {
                                 styles.previewMiddle,
                                 {
                                     width: width * 0.85,
-                                    paddingTop: width * 0.85 * aspectRatio,
+                                    paddingTop: width * 0.85 * document.versions[documentIndex].aspectRatio,
                                 },
                             ]}
                         />
@@ -296,12 +277,12 @@ export default function CaptureDocument(props) {
                         <View style={styles.backDrop} />
                     </View>
                 )}
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <Text style={styles.bottomText}>
                         {steps[currentStep].description}
                     </Text>
                 </View>
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' && document.id !== 'SG' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
                     <TouchableOpacity
                         style={styles.takePhotoButtonCircle}
                         disabled={buttonDisabled}

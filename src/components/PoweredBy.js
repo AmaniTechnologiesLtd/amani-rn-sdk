@@ -1,10 +1,11 @@
+// Global dependencies
 import React from 'react'
 import {
     StyleSheet,
     Image,
 } from 'react-native'
 
-const PoweredBy = () => <Image style={styles.poweredBy}  source={require('../../assets/powered-by.png')}/>
+export const PoweredBy = () => <Image style={styles.poweredBy}  source={require('../../assets/powered-by.png')}/>
 
 const styles = StyleSheet.create({
     poweredBy: {
@@ -16,5 +17,3 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     }
 })
-
-export default PoweredBy

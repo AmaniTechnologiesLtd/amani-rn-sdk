@@ -15,7 +15,7 @@ import {
 // Local files
 import CustomCrop from './CustomCrop'
 
-const ImageCropper = props => {
+export const ImageCropper = props => {
     const { image, onCancel } = props
     const { width, height } = Dimensions.get('window')
     const ratioX = image.width / width
@@ -134,5 +134,3 @@ const styles = StyleSheet.create({
     },
     topBarTitle: { color: 'white', fontSize: 16 },
 })
-
-export default ImageCropper

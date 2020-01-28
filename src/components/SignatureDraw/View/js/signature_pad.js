@@ -1,4 +1,4 @@
-const content = `
+export const SignaturePad = `
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module unless amdModuleId is set
@@ -45,8 +45,8 @@ var SignaturePad = (function (document) {
         this.dotSize = opts.dotSize || function () {
             return (this.minWidth + this.maxWidth) / 2;
         };
-        this.penColor = opts.penColor || "black";
-        this.backgroundColor = opts.backgroundColor || "white";
+        this.penColor = "#0005af";
+        this.backgroundColor = "white";
         this.onEnd = opts.onEnd;
         this.onBegin = opts.onBegin;
 
@@ -389,5 +389,3 @@ return SignaturePad;
 
 }));
 `;
-
-export default content;

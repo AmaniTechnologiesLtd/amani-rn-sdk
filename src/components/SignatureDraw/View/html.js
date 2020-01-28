@@ -1,4 +1,4 @@
-const content = (script) =>
+export const content = (script) =>
   `<!doctype html>
 <html lang="en">
 <head>
@@ -171,5 +171,3 @@ const content = (script) =>
   </script>
 </body>
 </html>`;
-
-export default content;

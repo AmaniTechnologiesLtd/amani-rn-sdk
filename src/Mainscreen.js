@@ -12,31 +12,39 @@ import {
     BackHandler,
     PermissionsAndroid,
     Platform,
-    Alert
+    Alert,
 } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 import DeviceInfo from 'react-native-device-info'
 
 // Local files
-import CaptureDocument from './components/CaptureDocument'
-import PoweredBy from './components/PoweredBy'
+import { CaptureDocument } from './components/CaptureDocument'
+import { ContractScreen } from './components/SmartContract/ContractScreen';
+import { Loading } from './components/Loading'
+import { PoweredBy } from './components/PoweredBy'
+import { initialDocuments, documentsReducer } from './store/documents'
 import api from './services/api'
-import documentsReducer, { initialDocuments } from './store/documents'
 
 const { width, height } = Dimensions.get('window')
 
-const MainScreen = props => {
-    const [documents] = useReducer(documentsReducer, initialDocuments)
+export const MainScreen = props => {
+    const [documents, dispatch] = useReducer(documentsReducer, initialDocuments)
 
-    const [availableDocuments, setAvailableDocuments] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
     const [selectedDocument, setSelectedDocument] = useState(null)
+    const [cropDocument, setCropDocument] = useState(null)
+    const [showContract, setShowContract] = useState(false)
     const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
-    const [cropDocument, setCropDocument] = useState(null)
     const [isStepsFinished, setIsStepsFinished] = useState(false)
-    const [tokens, setTokens] = useState({ auth: null, sms: null, customer: null })
+    const [customer, setCustomer] = useState({ access: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
-    const [location, setLocation] = useState({latitude: null, longitude: null})
+    const [location, setLocation] = useState(null)
+    const [controllerButton, setControllerButton] = useState({
+        text: 'Geri Dön',
+        backgroundColor: 'gray',
+        color: 'white'
+    })
 
     const { onCreateCustomer, onError, onExit } = props
 
@@ -51,9 +59,9 @@ const MainScreen = props => {
 
     const goBack = async () => {
         const callbackData = []
-        availableDocuments.forEach(element => {
+        documents.forEach(element => {
             callbackData.push({
-                 [element]: documents.find(document => document.id === element).passed
+                [element.id]: documents.find(document => document.id === element.id).passed
             })
         })
         onExit(callbackData)
@@ -61,11 +69,11 @@ const MainScreen = props => {
 
     const errorHandler = (e) => {
         Alert.alert(
-            'Something went wrong',
+            'Bir şeyler yanlış gitti',
             e.response.data.errors[0].ERROR_MESSAGE,
             [
                 {
-                  text: 'OK',
+                  text: 'Tamam',
                   onPress: () => onError(e.response.data.errors[0])
                 },
             ],
@@ -74,33 +82,46 @@ const MainScreen = props => {
     }
 
     useEffect(() => {
-        if (!availableDocuments) {
+        if (Object.values(documents).every(item => item.passed === true)) {
+            setControllerButton({
+                text: 'Doğrulamayı Bitir',
+                backgroundColor: '#00e676',
+                color: '#212121'
+            })
+        }
+
+        if (isLoading) {
             api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
             const authData = props.authData
             const customerInformations = props.customerInformations
             api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
-                api.smsVerification({ code: 111111, access_hash: fRes.data.access_hash }).then((sRes) => {
-                    // If already a customer get token
-                    if (customerInformations.id) {
-                        api.getCustomer(customerInformations.id, sRes.data.token).then(async (tRes) => {
-                            setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                            setAvailableDocuments(sRes.data.available_documents)
-                        }).catch(error => errorHandler(error))
-                        return
-                    }
-
-                    const formData = {
-                        customerData: customerInformations,
-                        smsToken: sRes.data.token
-                    }
-                    api.createCustomer(formData).then(async (tRes) => {
-                        setTokens({ auth: fRes.data.access_hash, sms: sRes.data.token, customer: tRes.data.token })
-                        setAvailableDocuments(sRes.data.available_documents)
-                        onCreateCustomer({ id: tRes.data.id })
+                // If already a customer get token
+                if (customerInformations.id) {
+                    api.getCustomer(customerInformations.id, fRes.data.token).then(async (sRes) => {
+                        setCustomer({ access: fRes.data.token, id: sRes.data.token })
+                        await dispatch({
+                            type: 'FILTER_DOCUMENTS',
+                            document_types: fRes.data.available_documents,
+                        })
+                        setIsLoading(false)
                     }).catch(error => errorHandler(error))
+                    return
+                }
+
+                const formData = {
+                    customerData: customerInformations,
+                    token: fRes.data.token
+                }
+
+                api.createCustomer(formData).then(async (sRes) => {
+                    setCustomer({ access: fRes.data.token, id: sRes.data.token })
+                    await dispatch({
+                        type: 'FILTER_DOCUMENTS',
+                        document_types: fRes.data.available_documents,
+                    })
+                    onCreateCustomer({ id: sRes.data.id })
                 }).catch(error => errorHandler(error))
             }).catch(error => errorHandler(error))
-            return
         }
 
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -108,18 +129,27 @@ const MainScreen = props => {
         })
 
         return () => backHandler.remove()
-    }, [availableDocuments])
+    }, [documents])
 
     useEffect(() => {
-        if (permissions.location === 'granted' || Platform.OS === 'ios') {
-            Geolocation.getCurrentPosition(position => setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude }))
+        const getLocation = async () => {
+            if (permissions.location === 'granted' || Platform.OS === 'ios') {
+                await Geolocation.getCurrentPosition(position => setLocation(position.coords))
+            }
         }
+        getLocation()
         if (isStepsFinished) handleSendDocumentsRequest()
         setIsStepsFinished(false)
     }, [isStepsFinished, location])
 
+
     const handleSendDocumentsRequest = async () => {
-        selectedDocument.passed = 'loading'
+        await dispatch({
+            type: 'CHANGE_STATUS',
+            document_id: selectedDocument.id,
+            passed: 'loading'
+        })
+
         setSelectedDocument(null)
 
         const deviceData = {
@@ -132,26 +162,38 @@ const MainScreen = props => {
         const requestData = new FormData()
 
         requestData.append('type', selectedDocument.id)
-        requestData.append('customer_token', tokens.customer)
+        requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('location', JSON.stringify(location))
 
         if (corners) {
-          corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))  
-        } 
+            corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
+        }
 
         files.forEach(file => requestData.append('files[]', file))
-        
-        await api.sendDocument(tokens.sms, requestData)
-            .then(res => {
+
+        await api.sendDocument(customer.access, requestData)
+            .then(async res => {
                 if (res.data.status === 'OK') {
-                    selectedDocument.passed = true
-                } else {
-                    selectedDocument.passed = false
+                    await dispatch({
+                        type: 'CHANGE_STATUS',
+                        document_id: selectedDocument.id,
+                        passed: true
+                    })
+                    return
                 }
+                await dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: selectedDocument.id,
+                    passed: false
+                })
             })
-            .catch(error => {
-                selectedDocument.passed = false
+            .catch(async error => {
+                await dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: selectedDocument.id,
+                    passed: false
+                })
             })
 
         setCropDocument(null)
@@ -168,8 +210,20 @@ const MainScreen = props => {
         setCorners([...corners, cropData])
     }
 
-    const handleCurrentModalStatus = isPassed => {
-        if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+    const handleCurrentModalStatus = (isPassed, isLocked) => {
+        if (isLocked) {
+            return (
+                <Image
+                    resizeMode="contain"
+                    style={styles.moduleStatusIcon}
+                    source={require('../assets/locked-icon.png')}
+                />
+            )
+        }
+
+        else if (isPassed === null) return
+        else if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+
         return (
             <Image
                 resizeMode="contain"
@@ -188,14 +242,7 @@ const MainScreen = props => {
         )
     }
 
-    if (!availableDocuments) {
-        return (
-            <View style={styles.container}>
-                <StatusBar barStyle="light-content" backgroundColor="black" />
-                <ActivityIndicator color="white" />
-            </View>
-        )
-    }
+    if (isLoading) return <Loading />
 
     if (selectedDocument) {
         return (
@@ -209,35 +256,51 @@ const MainScreen = props => {
         )
     }
 
+    if (showContract) {
+        return (
+            <ContractScreen
+                onContractDecline={() => setShowContract(false)}
+                currentDocument={documents.find(document => document.id === 'SG')}
+                state={[documents, dispatch]}
+                customer={customer}
+            />
+        )
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="black" />
-            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Döküman Seçim Ekranı </Text>
+            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Doküman Seçim Ekranı </Text>
 
             <View style={styles.modulesContainer}>
-                {documents.map((document) => {
-                    if (availableDocuments.includes(document.id)) {
-                        return (
-                            <TouchableOpacity
-                                style={styles.moduleButton}
-                                key={document.id}
-                                onPress={() => setSelectedDocument(document)}
-                            >
-                                <View style={styles.moduleContainer}>
-                                    <View style={styles.moduleTitleContainer}>
-                                        <Text style={styles.moduleTitle}>{document.title}</Text>
-                                    </View>
-                                    <View style={styles.moduleStatusContainer}>
-                                        {document.passed !== null &&
-                                            handleCurrentModalStatus(document.passed)
-                                        }
-                                    </View>
+                {documents.map((document, index) => {
+                    return (
+                        <TouchableOpacity
+                            disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
+                            style={ (index !== 0 && documents[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
+                            key={document.id}
+                            onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
+                        >
+                            <View style={styles.moduleContainer}>
+                                <View style={styles.moduleTitleContainer}>
+                                    <Text style={styles.moduleTitle}>{document.title}</Text>
                                 </View>
-                            </TouchableOpacity>
-                        )
-                    }
+                                <View style={styles.moduleStatusContainer}>
+                                    {handleCurrentModalStatus(document.passed, index !== 0 && documents[index -1].passed == null)}
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )
                 })}
             </View>
+            <TouchableOpacity
+                onPress={goBack}
+                style={[styles.controllerButton, { backgroundColor: controllerButton.backgroundColor }]}
+            >
+                <Text style={{color: controllerButton.color}}>
+                    {controllerButton.text}
+                </Text>
+            </TouchableOpacity>
             <PoweredBy />
         </View>
     )
@@ -265,6 +328,14 @@ const styles = StyleSheet.create({
         marginBottom: height * 0.002,
         backgroundColor: '#212121'
     },
+    disabledModuleButton: {
+        height: height * 0.055,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        marginHorizontal: width * 0.03,
+        marginBottom: height * 0.002,
+        backgroundColor: 'transparent'
+    },
     moduleTitleContainer: {
         width: '90%',
         justifyContent: 'center',
@@ -280,7 +351,14 @@ const styles = StyleSheet.create({
     },
     moduleStatusIcon: {
         width: width * 0.15,
-        height: height * 0.03
+        height: height * 0.025
+    },
+    controllerButton: {
+        alignItems:'center',
+        justifyContent: 'center',
+        marginHorizontal: width * 0.075,
+        marginTop: height * 0.075,
+        height: height * 0.06
     }
 })
 
