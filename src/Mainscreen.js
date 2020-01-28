@@ -19,18 +19,18 @@ import DeviceInfo from 'react-native-device-info'
 
 // Local files
 import CaptureDocument from './components/CaptureDocument'
-import PoweredBy from './components/PoweredBy'
-import api from './services/api'
-import documentsReducer, { initialDocuments } from './store/documents'
-import ContractScreen from 'amani-rn-sdk/src/components/SmartContract/ContractScreen';
+import ContractScreen from './components/SmartContract/ContractScreen';
 import Loading from './components/Loading'
+import PoweredBy from './components/PoweredBy'
+import documentsReducer, { initialDocuments } from './store/documents'
+import api from './services/api'
 
 const { width, height } = Dimensions.get('window')
 
 const MainScreen = props => {
-    const [documents] = useReducer(documentsReducer, initialDocuments)
+    const [documents, dispatch] = useReducer(documentsReducer, initialDocuments)
 
-    const [availableDocuments, setAvailableDocuments] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const [selectedDocument, setSelectedDocument] = useState(null)
     const [cropDocument, setCropDocument] = useState(null)
     const [showContract, setShowContract] = useState(false)
@@ -54,7 +54,7 @@ const MainScreen = props => {
 
     const goBack = async () => {
         const callbackData = []
-        availableDocuments.forEach(element => {
+        documents.forEach(element => {
             callbackData.push({
                 [element.id]: documents.find(document => document.id === element.id).passed
             })
@@ -77,7 +77,7 @@ const MainScreen = props => {
     }
 
     useEffect(() => {
-        if (availableDocuments.length === 0) {
+        if (isLoading) {
             api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
             const authData = props.authData
             const customerInformations = props.customerInformations
@@ -86,11 +86,11 @@ const MainScreen = props => {
                 if (customerInformations.id) {
                     api.getCustomer(customerInformations.id, fRes.data.token).then(async (sRes) => {
                         setTokens({ access: fRes.data.token, customer: sRes.data.token })
-                        documents.map(doc => {
-                            if (fRes.data.available_documents.includes(doc.id)) {
-                                setAvailableDocuments(oldDoc => [...oldDoc, doc])
-                            }
+                        await dispatch({
+                            type: 'FILTER_DOCUMENTS',
+                            document_types: fRes.data.available_documents,
                         })
+                        setIsLoading(false)
                     }).catch(error => errorHandler(error))
                     return
                 }
@@ -102,10 +102,9 @@ const MainScreen = props => {
 
                 api.createCustomer(formData).then(async (sRes) => {
                     setTokens({ access: fRes.data.token, customer: sRes.data.token })
-                    documents.map(doc => {
-                        if (fRes.data.available_documents.includes(doc.id)) {
-                            setAvailableDocuments(oldDoc => [...oldDoc, doc])
-                        }
+                    await dispatch({
+                        type: 'FILTER_DOCUMENTS',
+                        document_types: fRes.data.available_documents,
                     })
                     onCreateCustomer({ id: sRes.data.id })
                 }).catch(error => errorHandler(error))
@@ -117,7 +116,7 @@ const MainScreen = props => {
         })
 
         return () => backHandler.remove()
-    }, [availableDocuments])
+    }, [documents])
 
     useEffect(() => {
         const getLocation = async () => {
@@ -130,8 +129,15 @@ const MainScreen = props => {
         setIsStepsFinished(false)
     }, [isStepsFinished, location])
 
+
     const handleSendDocumentsRequest = async () => {
-        selectedDocument.passed = 'loading'
+
+        await dispatch({
+            type: 'CHANGE_STATUS',
+            document_id: selectedDocument.id,
+            passed: 'loading'
+        })
+
         setSelectedDocument(null)
 
         const deviceData = {
@@ -155,15 +161,27 @@ const MainScreen = props => {
         files.forEach(file => requestData.append('files[]', file))
 
         await api.sendDocument(tokens.access, requestData)
-            .then(res => {
+            .then(async res => {
                 if (res.data.status === 'OK') {
-                    selectedDocument.passed = true
-                } else {
-                    selectedDocument.passed = false
+                    await dispatch({
+                        type: 'CHANGE_STATUS',
+                        document_id: selectedDocument.id,
+                        passed: true
+                    })
+                    return
                 }
+                await dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: selectedDocument.id,
+                    passed: false
+                })
             })
-            .catch(error => {
-                selectedDocument.passed = false
+            .catch(async error => {
+                await dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: selectedDocument.id,
+                    passed: false
+                })
             })
 
         setCropDocument(null)
@@ -181,7 +199,6 @@ const MainScreen = props => {
     }
 
     const handleCurrentModalStatus = (isPassed, isLocked) => {
-
         if (isLocked) {
             return (
                 <Image
@@ -193,7 +210,6 @@ const MainScreen = props => {
         }
 
         else if (isPassed === null) return
-
         else if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
 
         return (
@@ -203,7 +219,6 @@ const MainScreen = props => {
                 source={isPassed ? require('../assets/success.png') : require('../assets/failed.png')}
             />
         )
-
     }
 
     if (Platform.OS === 'android' && permissions.camera !== 'granted' && permissions.location !== 'granted') {
@@ -215,7 +230,7 @@ const MainScreen = props => {
         )
     }
 
-    if (availableDocuments.length === 0) return <Loading />
+    if (isLoading) return <Loading />
 
     if (selectedDocument) {
         return (
@@ -245,11 +260,11 @@ const MainScreen = props => {
             <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Doküman Seçim Ekranı </Text>
 
             <View style={styles.modulesContainer}>
-                {availableDocuments.map((document, index) => {
+                {documents.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            // disabled={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed }
-                            style={ (index !== 0 && availableDocuments[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
+                            disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
+                            style={ (index !== 0 && documents[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
                         >
@@ -258,7 +273,7 @@ const MainScreen = props => {
                                     <Text style={styles.moduleTitle}>{document.title}</Text>
                                 </View>
                                 <View style={styles.moduleStatusContainer}>
-                                    {handleCurrentModalStatus(document.passed, index !== 0 && availableDocuments[index -1].passed == null)}
+                                    {handleCurrentModalStatus(document.passed, index !== 0 && documents[index -1].passed == null)}
                                 </View>
                             </View>
                         </TouchableOpacity>

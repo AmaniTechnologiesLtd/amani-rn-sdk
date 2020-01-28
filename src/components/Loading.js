@@ -1,3 +1,4 @@
+// Global dependencies
 import React from 'react'
 import {
     View,
