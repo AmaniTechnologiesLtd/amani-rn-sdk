@@ -40,6 +40,11 @@ export const MainScreen = props => {
     const [customer, setCustomer] = useState({ access: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
     const [location, setLocation] = useState(null)
+    const [controllerButton, setControllerButton] = useState({
+        text: 'Geri Dön',
+        backgroundColor: 'gray',
+        color: 'white'
+    })
 
     const { onCreateCustomer, onError, onExit } = props
 
@@ -77,6 +82,14 @@ export const MainScreen = props => {
     }
 
     useEffect(() => {
+        if (Object.values(documents).every(item => item.passed === true)) {
+            setControllerButton({
+                text: 'Doğrulamayı Bitir',
+                backgroundColor: '#00e676',
+                color: '#212121'
+            })
+        }
+
         if (isLoading) {
             api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr')
             const authData = props.authData
@@ -280,6 +293,14 @@ export const MainScreen = props => {
                     )
                 })}
             </View>
+            <TouchableOpacity
+                onPress={goBack}
+                style={[styles.controllerButton, { backgroundColor: controllerButton.backgroundColor }]}
+            >
+                <Text style={{color: controllerButton.color}}>
+                    {controllerButton.text}
+                </Text>
+            </TouchableOpacity>
             <PoweredBy />
         </View>
     )
@@ -331,6 +352,13 @@ const styles = StyleSheet.create({
     moduleStatusIcon: {
         width: width * 0.15,
         height: height * 0.025
+    },
+    controllerButton: {
+        alignItems:'center',
+        justifyContent: 'center',
+        marginHorizontal: width * 0.075,
+        marginTop: height * 0.075,
+        height: height * 0.06
     }
 })
 
