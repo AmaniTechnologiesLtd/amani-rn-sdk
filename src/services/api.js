@@ -2,28 +2,28 @@
 import axios from 'axios'
 
 const servers = {
-    tr: 'https://tr.amani.ai',
-    uae: 'https://uae.amani.ai'
+    tr: 'https://tr.amani.ai/api/v1/',
+    uae: 'https://uae.amani.ai/api/v1/'
 }
 
 export default {
     setBaseUrl: param => axios.defaults.baseURL = servers[param],
     login: param =>
-        axios.post('/api/v1/user/login/', param),
+        axios.post('user/login/', param),
     createCustomer: param =>
-        axios.post('/api/v1/customer/', param.customerData, {
+        axios.post('customer', param.customerData, {
             headers: {
                 'Authorization': `Token ${param.token}`,
             },
         }),
     getCustomer: (id, token) =>
-        axios.get(`/api/v1/customer/${id}`, {
+        axios.get(`customer/${id}`, {
             headers: {
                 'Authorization': `Token ${token}`,
             },
         }),
     sendDocument: (token, documentData) =>
-        axios.post('/api/v1/recognition/web/upload', documentData, {
+        axios.post('recognition/web/upload', documentData, {
             headers: {
                 'Authorization': `Token ${token}`,
             },
