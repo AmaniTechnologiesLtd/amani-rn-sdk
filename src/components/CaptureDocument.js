@@ -50,7 +50,7 @@ export const CaptureDocument = props => {
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(false)
     const [imageCrop, setImageCrop] = useState(null)
-    const [versionGroup, setVersionGroup] = useState('default')
+    const [versionGroup, setVersionGroup] = useState('')
     const [groupIndex, setGroupIndex] = useState(0)
     const [showPreScreen, setShowPreScreen] = useState(true)
     const [showRequestCondition, setShowRequestCondition] = useState(null)
@@ -157,6 +157,12 @@ export const CaptureDocument = props => {
         setIsProcessStarted(false)
     }
 
+    const checkPreScreenConditionForVersioning = () => {
+        if(Object.keys(document.versions).length > 1) return true // If groups are more than one
+        else if(document.versions[Object.keys(document.versions)[0]].length > 1) return true // If there is only one group but it has more than one versions
+        return false
+    }
+
     if (isProcessStarted) {
         return <Loading />
     }
@@ -171,10 +177,11 @@ export const CaptureDocument = props => {
         )
     }
 
-    if (Object.keys(document.versions).length > 1 && showPreScreen) {
+    if (checkPreScreenConditionForVersioning() && showPreScreen) {
         return (
             <PreScreen
                 screenKey="versioning"
+                menuMode={(document.versions[Object.keys(document.versions)[0]].length > 1) ? 'vertical' : 'horizontal'}
                 versions={document.versions}
                 versionGroup={setVersionGroup}
                 groupIndex={setGroupIndex}
