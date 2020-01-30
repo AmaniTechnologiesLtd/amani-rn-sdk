@@ -6,7 +6,6 @@ import {
     Text,
     StatusBar,
     Image,
-    Alert,
     BackHandler,
     Dimensions,
     TouchableOpacity,
@@ -23,6 +22,7 @@ import { ImageCropper } from './ImageCropper'
 import { PoweredBy } from './PoweredBy'
 import { Loading } from './Loading'
 import { PreScreen } from './PreScreen'
+import { RequestHandlerScreen } from './RequestHandlerScreen'
 
 const { width, height } = Dimensions.get('window')
 
@@ -30,14 +30,13 @@ export const CaptureDocument = props => {
 
     const {
         document,
-        document: { steps, cameraFacing },
         onCapture,
         onManualCropCorners,
         onStepsFinished
     } = props
 
     const [cameraType] = useState(
-        cameraFacing === 'environment' ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front
+        document.cameraFacing === 'environment' ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front
     )
 
     const [previewArea, setPreviewArea] = useState({
@@ -51,8 +50,10 @@ export const CaptureDocument = props => {
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(false)
     const [imageCrop, setImageCrop] = useState(null)
-    const [documentIndex, setDocumentIndex] = useState(0)
+    const [versionGroup, setVersionGroup] = useState('default')
+    const [groupIndex, setGroupIndex] = useState(0)
     const [showPreScreen, setShowPreScreen] = useState(true)
+    const [showRequestCondition, setShowRequestCondition] = useState(null)
 
     const camera = useRef(null)
 
@@ -79,12 +80,13 @@ export const CaptureDocument = props => {
             width: 1080,
             fixOrientation: true
         }).then(async data => {
-            if (document.versions[documentIndex].crop) setImageCrop(data)
+            if (document.versions[versionGroup][groupIndex].crop) setImageCrop(data)
             else {
                 image = `data:image/jpeg;base64,${data.base64}`
-                if (document.versions[documentIndex].autoCrop) image = await handleAutoCrop(data)
+                if (document.versions[versionGroup][groupIndex].autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
-                calculateNextStep()
+                setShowRequestCondition(true)
+                setIsProcessStarted(false)
             }
             setButtonDisabled(false)
         })
@@ -97,16 +99,17 @@ export const CaptureDocument = props => {
         }).then(file => {
             RNFS.readFile(file.uri, 'base64').then(source => {
                 onCapture(`data:application/pdf;base64,${source}`)
-                calculateNextStep()
+                setShowRequestCondition(true)
+                setIsProcessStarted(false)
             })
         }).catch(error => setIsProcessStarted(false))
     }
 
     const calculateNextStep = () => {
-        if (currentStep < steps.length - 1) {
+        setShowRequestCondition(false)
+        if (currentStep < document.steps.length - 1) {
             setCurrentStep(currentStep + 1)
             setImageCrop(null)
-            setIsProcessStarted(false)
             return
         }
         onStepsFinished(true)
@@ -141,23 +144,6 @@ export const CaptureDocument = props => {
         return `data:image/jpeg;base64,${src}`
     }
 
-    const handleSignature = async signature => {
-        setIsProcessStarted(true)
-        await onCapture(signature)
-        calculateNextStep()
-    }
-
-    const handleEmptySignature = () => {
-        Alert.alert(
-            'Warning',
-            'Please make sure your signature is drawn.',
-            [
-              {text: 'OK'},
-            ],
-            {cancelable: true}
-        )
-    }
-
     const handleManualCrop = async data => {
         setIsProcessStarted(true)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
@@ -167,17 +153,31 @@ export const CaptureDocument = props => {
             bottomLeft: {x: parseInt(data.bottomLeft.x), y: parseInt(data.bottomLeft.y)},
             bottomRight: {x: parseInt(data.bottomRight.x), y: parseInt(data.bottomRight.y)},
         })
-        calculateNextStep()
+        setShowRequestCondition(true)
+        setIsProcessStarted(false)
     }
 
-    if (isProcessStarted) return <Loading />
+    if (isProcessStarted) {
+        return <Loading />
+    }
 
-    if (document.versions.length > 1 && showPreScreen) {
+    if (showRequestCondition) {
+        return (
+            <RequestHandlerScreen
+                documentTitle={document.title}
+                isSucceed={true}
+                continueProcess={calculateNextStep}
+            />
+        )
+    }
+
+    if (Object.keys(document.versions).length > 1 && showPreScreen) {
         return (
             <PreScreen
                 screenKey="versioning"
                 versions={document.versions}
-                documentIndex={setDocumentIndex}
+                versionGroup={setVersionGroup}
+                groupIndex={setGroupIndex}
                 goBack={goBack}
                 preScreenOn={setShowPreScreen}
             />
@@ -222,7 +222,7 @@ export const CaptureDocument = props => {
                             />
                         </TouchableOpacity>
 
-                        <Text style={styles.topBarTitle}>{document.versions[documentIndex].title}</Text>
+                        <Text style={styles.topBarTitle}> {document.versions[versionGroup][groupIndex].title} </Text>
 
                         {document.options.includes('fileUpload') && (
                             <TouchableOpacity
@@ -234,7 +234,7 @@ export const CaptureDocument = props => {
                                         width: '100%',
                                         height: '100%',
                                     }}
-                                    resizeMode="contain"
+                                    resizeMode="cover"
                                     source={require('../../assets/pdf-icon.png')}
                                 />
                             </TouchableOpacity>
@@ -243,13 +243,13 @@ export const CaptureDocument = props => {
                 </View>
 
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    {steps.length > 1 && (
+                    {document.steps.length > 1 && (
                         <Text style={styles.topText}>
-                            {steps[currentStep].title}
+                            {document.steps[currentStep].title}
                         </Text>
                     )}
                 </View>
-                {document.versions[documentIndex].aspectRatio && (
+                {document.versions[versionGroup][groupIndex].aspectRatio && (
                     <View
                         style={{ flexDirection: 'row' }}
                         onLayout={setPreviewPosition}>
@@ -259,7 +259,7 @@ export const CaptureDocument = props => {
                                 styles.previewMiddle,
                                 {
                                     width: width * 0.85,
-                                    paddingTop: width * 0.85 * document.versions[documentIndex].aspectRatio,
+                                    paddingTop: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
                                 },
                             ]}
                         />
@@ -277,9 +277,9 @@ export const CaptureDocument = props => {
                         <View style={styles.backDrop} />
                     </View>
                 )}
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
                     <Text style={styles.bottomText}>
-                        {steps[currentStep].description}
+                        {document.steps[currentStep].description}
                     </Text>
                 </View>
                 <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
@@ -356,17 +356,20 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 10,
         top: 15,
-        width: 30,
-        height: 20,
+        width: width * 0.055,
+        height: height * 0.03,
     },
     topBarRight: {
         position: 'absolute',
         right: 10,
         top: 15,
-        width: 30,
-        height: 20,
+        width: width * 0.055,
+        height: height * 0.03,
     },
-    topBarTitle: { color: 'white', fontSize: 16 },
+    topBarTitle: {
+        color: 'white',
+        fontSize: width * 0.045
+    },
     topArea: {
         flex: 1,
         flexDirection: 'row',
@@ -381,9 +384,10 @@ const styles = StyleSheet.create({
     },
     bottomText: {
         color: 'white',
-        fontSize: 16,
-        paddingHorizontal: '7%',
+        fontSize: height * 0.025,
+        paddingHorizontal: '5%',
         textAlign: 'center',
+        marginVertical: 10,
         marginBottom: 40
     },
     takePhotoButtonCircle: {
