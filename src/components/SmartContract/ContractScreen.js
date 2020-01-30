@@ -183,9 +183,23 @@ export const ContractScreen = props => {
     }
 
     return (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <WebView javaScriptEnabled source={{html: content}} />
+            <View style={styles.topBar}>
+                <TouchableOpacity
+                    style={styles.topBarLeft}
+                    onPress={onContractDecline}
+                    hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                    <Image
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                        }}
+                        resizeMode="contain" source={require('../../../assets/back-arrow-black.png')}
+                    />
+                </TouchableOpacity>
+            </View>
+            <WebView style={{marginTop: height * 0.025}} javaScriptEnabled source={{html: content}} />
             <View style={styles.bottomBar}>
                 <View style={styles.bottomBarButton}>
                 <Text style={styles.bottomBarButtonText}> Onaylıyorum {' '}</Text>
@@ -264,8 +278,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 10,
         top: 15,
-        width: 30,
-        height: 20,
+        width: width * 0.055,
+        height: height * 0.03,
     },
     bottomBar: {
         flex: 0.06,
