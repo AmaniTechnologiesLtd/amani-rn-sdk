@@ -126,7 +126,7 @@ const customer = {
     id: '512', // If you have a customer that already exists in Amani Service, pass the id here,
 
     // Or create a new customer
-    id_card_number: 00000000000, // Like TC Number
+    id_card_number: '00000000000', // Like TC Number
     name: 'example name',
     email: 'example@mail.com',
     phone: '+905321111111'
