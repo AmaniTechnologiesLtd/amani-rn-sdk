@@ -211,6 +211,14 @@ export const MainScreen = props => {
         setCorners([...corners, cropData])
     }
 
+    const checkIsNextStepDisabled = (document, index) => {
+        if (document.id === 'SG') {
+            if (Object.values(documents).every(item => item.passed === true)) return false
+            return true
+        }
+        return index !== 0 && documents[index -1].passed == null || document.passed
+    }
+
     const handleCurrentModalStatus = (isPassed, isLocked) => {
         if (isLocked) {
             return (
@@ -277,7 +285,7 @@ export const MainScreen = props => {
                 {documents.map((document, index) => {
                     return (
                         <TouchableOpacity
-                            disabled={ (index !== 0 && documents[index -1].passed == null) || document.passed }
+                            disabled={checkIsNextStepDisabled(document, index)}
                             style={ (index !== 0 && documents[index -1].passed == null) || document.passed ? styles.disabledModuleButton : styles.moduleButton }
                             key={document.id}
                             onPress={() => document.id === 'SG' ? setShowContract(true) : setSelectedDocument(document)}
