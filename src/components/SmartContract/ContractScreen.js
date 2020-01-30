@@ -11,6 +11,7 @@ import {
     SafeAreaView,
     StyleSheet,
     BackHandler,
+    Platform,
     Dimensions
 } from 'react-native'
 import { WebView } from 'react-native-webview'
@@ -58,7 +59,6 @@ export const ContractScreen = props => {
             )
             return
         }
-        await onContractDecline()
         setShowSignatureScreen(true)
     }
 
@@ -94,7 +94,7 @@ export const ContractScreen = props => {
                 return
             }
         }
-        setShowSignatureScreen(true)
+        setShowContract(true)
     }
 
     if (showSignatureScreen) {
@@ -159,10 +159,13 @@ export const ContractScreen = props => {
                         </View>
                         <View style={styles.contactFormView}>
                             <TextInput
-                                style={styles.contactFormInput}
+                                style={styles.multilineFormInput}
                                 onChangeText={val => setFormData({...formData, address: val})}
                                 placeholder="Adres"
                                 placeholderTextColor="gray"
+                                multiline
+                                numberOfLines={Platform.OS === 'ios' ? null : 12}
+                                minHeight={(Platform.OS === 'ios' && 12) ? (12 * 12) : null}
                                 value={formData.address}
                             />
                         </View>
@@ -215,6 +218,14 @@ const styles = StyleSheet.create({
         height: height * 0.05,
         paddingHorizontal: width * 0.035,
         borderWidth: 0.5,
+        borderColor: '#212121',
+        color: '#212121'
+    },
+    multilineFormInput: {
+        width: width * 0.8,
+        paddingHorizontal: width * 0.035,
+        borderWidth: 0.5,
+        textAlignVertical: 'top',
         borderColor: '#212121',
         color: '#212121'
     },
