@@ -21,6 +21,7 @@ export const PreScreen = props => {
         versionGroup,
         groupIndex,
         preScreenOn,
+        menuMode,
         goBack
     } = props
 
@@ -62,7 +63,7 @@ export const PreScreen = props => {
                             return (
                                 <View key={groupKey}>
                                     <Text style={styles.groupTitle}> {group.toLocaleUpperCase()} </Text>
-                                    <View style={styles.groupViewContainer}>
+                                    <View style={menuMode === 'horizontal' ? styles.horizontalGroupViewContainer : styles.verticalGroupViewContainer}>
                                         {versions[group].map((version, versionKey) => {
                                             return (
                                                 <TouchableOpacity
@@ -113,15 +114,22 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 10,
         top: 15,
-        width: 30,
-        height: 20,
+        width: width * 0.055,
+        height: height * 0.03
     },
-    groupViewContainer: {
+    horizontalGroupViewContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         width: width * 0.9,
         backgroundColor: 'transparent',
         alignItems: 'center',
+        borderRadius: 5,
+        marginBottom: 10
+    },
+    verticalGroupViewContainer: {
+        flexDirection: 'column',
+        width: width * 0.9,
+        backgroundColor: 'transparent',
         borderRadius: 5,
         marginBottom: 10
     },
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
     },
     versionButton: {
         backgroundColor:'#212121',
-        height: height * 0.05,
+        height: height * 0.055,
         padding: 5,
         margin: 2,
         borderRadius: 5,
