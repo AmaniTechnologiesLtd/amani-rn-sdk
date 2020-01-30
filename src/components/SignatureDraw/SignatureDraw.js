@@ -29,11 +29,6 @@ export const SignatureDraw = props => {
     const [isProcessStarted, setIsProcessStarted] = useState(null)
 
     useEffect(() => {
-        const getLocation = async () => {
-            await Geolocation.getCurrentPosition(position => setLocation(position.coords))
-        }
-        getLocation()
-
         BackHandler.addEventListener('hardwareBackPress', async () => {
             await dispatch({
                 type: 'CHANGE_STATUS',
@@ -49,6 +44,10 @@ export const SignatureDraw = props => {
     useEffect(() => {
         if (location && signature) handleSignatureMatch()
     }, [location, signature])
+
+    const getLocation = async () => {
+        await Geolocation.getCurrentPosition(position => setLocation(position.coords))
+    }
 
     const handleSignatureSteps = res => {
         if (res.data.status === 'OK') {
@@ -116,7 +115,8 @@ export const SignatureDraw = props => {
             })
     }
 
-    const handleSignature = signature => {
+    const handleSignature = async signature => {
+        await getLocation()
         setSignature(signature)
         setIsProcessStarted(true)
     }
