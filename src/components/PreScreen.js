@@ -15,7 +15,14 @@ import {
 const { width, height } = Dimensions.get('window')
 
 export const PreScreen = props => {
-    const { screenKey, versions, documentIndex, preScreenOn, goBack } = props
+    const {
+        screenKey,
+        versions,
+        versionGroup,
+        groupIndex,
+        preScreenOn,
+        goBack
+    } = props
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', () => {
@@ -23,6 +30,12 @@ export const PreScreen = props => {
         })
         return () => BackHandler.removeEventListener('hardwareBackPress')
     }, [])
+
+    const handleVersionChoice = (group, versionKey) => {
+        groupIndex(versionKey)
+        versionGroup(group)
+        preScreenOn(false)
+    }
 
     switch (screenKey) {
         case 'versioning':
@@ -45,20 +58,24 @@ export const PreScreen = props => {
                     </View>
                     <View style={styles.childContainer}>
                         <Text style={styles.childContainerTitle}> Doküman Tipi Seçin </Text>
-                        {versions.map((version, index) => {
+                        {Object.keys(versions).map((group, groupKey) => {
                             return (
-                                <TouchableOpacity
-                                    key={index}
-                                    onPress={() => {
-                                        documentIndex(index)
-                                        preScreenOn(false)
-                                    }}
-                                    style={styles.versionButtonStyle}
-                                >
-                                    <Text style={styles.versionTitle}>
-                                        {version.title}
-                                    </Text>
-                                </TouchableOpacity>
+                                <View key={groupKey}>
+                                    <Text style={styles.groupTitle}> {group.toLocaleUpperCase()} </Text>
+                                    <View style={styles.groupViewContainer}>
+                                        {versions[group].map((version, versionKey) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    key={versionKey}
+                                                    onPress={() => handleVersionChoice(group, versionKey)}
+                                                    style={styles.versionButton}
+                                                >
+                                                    <Text style={styles.versionTitle}> {version.title} </Text>
+                                                </TouchableOpacity>
+                                            )
+                                        })}
+                                    </View>
+                                </View>
                             )
                         })}
                     </View>
@@ -99,16 +116,31 @@ const styles = StyleSheet.create({
         width: 30,
         height: 20,
     },
-    versionButtonStyle: {
+    groupViewContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         width: width * 0.9,
-        backgroundColor: '#212121',
-        height: height * 0.06,
-        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        alignItems: 'center',
         borderRadius: 5,
         marginBottom: 10
     },
-    versionTitle: {
+    groupTitle: {
+        fontSize: width * 0.06,
+        margin: 3,
         color: 'white',
+        textAlign: 'left'
+    },
+    versionButton: {
+        backgroundColor:'#212121',
+        height: height * 0.05,
+        padding: 5,
+        margin: 2,
+        borderRadius: 5,
+        justifyContent: 'center'
+    },
+    versionTitle: {
+        color: '#eee',
         textAlign: 'center'
     }
 })
