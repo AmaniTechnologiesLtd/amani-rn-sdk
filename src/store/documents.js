@@ -19,26 +19,28 @@ export const initialDocuments = [
         options: ['takePicture'],
         captureVideo: false,
         cameraFacing: 'environment',
-        versions: [
-            {
-                title: 'Eski Kimlik',
-                aspectRatio: 1.2,
-                crop: true,
-                autoCrop: false,
-            },
-            {
-                title: 'Yeni Kimlik',
-                aspectRatio: 0.63,
-                crop: false,
-                autoCrop: true,
-            },
-            {
-                title: 'Yeni Sürücü Belgesi',
-                aspectRatio: 0.63,
-                crop: false,
-                autoCrop: true,
-            },
-        ],
+        versions: {
+            default: [
+                {
+                    title: 'Eski Kimlik',
+                    aspectRatio: 1.2,
+                    crop: true,
+                    autoCrop: false,
+                },
+                {
+                    title: 'Yeni Kimlik',
+                    aspectRatio: 0.63,
+                    crop: false,
+                    autoCrop: true,
+                },
+                {
+                    title: 'Yeni Sürücü Belgesi',
+                    aspectRatio: 0.63,
+                    crop: false,
+                    autoCrop: true,
+                },
+            ]
+        },
     },
     {
         id: 'PA',
@@ -55,14 +57,16 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: 'environment',
-        versions: [
-            {
-                title: 'Pasaport',
-                crop: false,
-                autoCrop: true,
-                aspectRatio: 0.7042,
-            },
-        ],
+        versions: {
+            default: [
+                {
+                    title: 'Pasaport',
+                    crop: false,
+                    autoCrop: true,
+                    aspectRatio: 0.7042,
+                },
+            ]
+        }
     },
     {
         id: 'VA',
@@ -79,14 +83,17 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: 'environment',
-        versions: [
-            {
-                title: 'Vize',
-                crop: false,
-                autoCrop: true,
-                aspectRatio: 0.7042,
-            },
-        ],
+        versions: {
+            default: [
+                {
+                    group: null,
+                    title: 'Vize',
+                    crop: false,
+                    autoCrop: true,
+                    aspectRatio: 0.7042,
+                }
+            ]
+        }
     },
     {
         id: 'UB',
@@ -102,23 +109,60 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: 'environment',
-        versions: [
-            {
-                title: 'Türk Telekom',
-                crop: true,
-                autoCrop: false,
-            },
-            {
-                title: 'Turkcell',
-                crop: true,
-                autoCrop: false,
-            },
-            {
-                title: 'Vodafone',
-                crop: true,
-                autoCrop: false,
-            },
-        ],
+        versions: {
+            Devlet: [
+                {
+                    title: 'E-Devlet İkametgah',
+                    crop: true,
+                    autoCrop: false,
+                }
+            ],
+            GSM: [
+                {
+                    title: 'Turk Telekom',
+                    crop: true,
+                    autoCrop: false,
+                },
+                {
+                    title: 'Turkcell',
+                    crop: true,
+                    autoCrop: false,
+                },
+                {
+                    title: 'Vodafone',
+                    crop: true,
+                    autoCrop: false,
+                }
+            ],
+            Su: [
+                {
+                    title: 'İski',
+                    crop: true,
+                    autoCrop: false,
+                }
+            ],
+            Doğalgaz: [
+                {
+                    title: 'İgdaş',
+                    crop: true,
+                    autoCrop: false,
+                }
+            ],
+            Elektrik: [
+                {
+                    title: 'Boğaziçi Elektrik',
+                    crop: true,
+                    autoCrop: false,
+                }
+            ],
+            Diğer: [
+                {
+                    title: 'Diğer',
+                    crop: true,
+                    autoCrop: false,
+                },
+            ]
+        },
     },
     {
         id: 'SE',
@@ -136,13 +180,15 @@ export const initialDocuments = [
         captureVideo: true,
         cameraFacing: 'user',
         duration: 3,
-        versions: [
-            {
-                title: 'Selfie',
-                crop: false,
-                autoCrop: false,
-            },
-        ],
+        versions: {
+            default: [
+                {
+                    title: 'Selfie',
+                    crop: false,
+                    autoCrop: false,
+                }
+            ]
+        }
     },
     {
         id: 'SG',
@@ -162,13 +208,15 @@ export const initialDocuments = [
         type: 'image',
         captureVideo: false,
         cameraFacing: null,
-        versions: [
-            {
-                title: 'Sözleşme',
-                crop: false,
-                autoCrop: false,
-            },
-        ],
+        versions: {
+            default: [
+                {
+                    title: 'Sözleşme',
+                    crop: false,
+                    autoCrop: false,
+                }
+            ]
+        }
     },
 ]
 
