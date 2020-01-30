@@ -119,6 +119,7 @@ export const MainScreen = props => {
                         type: 'FILTER_DOCUMENTS',
                         document_types: fRes.data.available_documents,
                     })
+                    setIsLoading(false)
                     onCreateCustomer({ id: sRes.data.id })
                 }).catch(error => errorHandler(error))
             }).catch(error => errorHandler(error))
