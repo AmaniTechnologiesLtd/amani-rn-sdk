@@ -102,6 +102,17 @@ export const SignatureDraw = props => {
                     document_id: document.id,
                     passed: false
                 })
+                Alert.alert(
+                    '',
+                    'Bir hata oluştu.',
+                    [
+                        {
+                            text: 'Tamam',
+                            onPress: () => setIsProcessStarted(false)
+                        },
+                    ],
+                    {cancelable: false}
+                )
             })
     }
 
