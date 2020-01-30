@@ -216,7 +216,7 @@ export const MainScreen = props => {
             if (Object.values(documents).every(item => item.passed === true)) return false
             return true
         }
-        return index !== 0 && documents[index -1].passed == null || document.passed
+        return Boolean(index !== 0 && documents[index -1].passed == null || document.passed)
     }
 
     const handleCurrentModalStatus = (isPassed, isLocked) => {
