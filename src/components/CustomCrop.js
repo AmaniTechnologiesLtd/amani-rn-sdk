@@ -232,7 +232,7 @@ class CustomCrop extends Component {
                             }}
                             style={[
                                 s(this.props).handlerI,
-                                { left: 10, top: 10 },
+                                { left: 0, top: 0 },
                             ]}
                         />
                     </Animated.View>
@@ -251,7 +251,7 @@ class CustomCrop extends Component {
                             }}
                             style={[
                                 s(this.props).handlerI,
-                                { left: -10, top: 10 },
+                                { left: 0, top: 0 },
                             ]}
                         />
                     </Animated.View>
@@ -270,7 +270,7 @@ class CustomCrop extends Component {
                             }}
                             style={[
                                 s(this.props).handlerI,
-                                { left: 10, top: -10 },
+                                { left: 0, top: 0 },
                             ]}
                         />
                     </Animated.View>
@@ -289,7 +289,7 @@ class CustomCrop extends Component {
                             }}
                             style={[
                                 s(this.props).handlerI,
-                                { left: -10, top: -10 },
+                                { left: 0, top: 0 },
                             ]}
                         />
                     </Animated.View>
@@ -304,6 +304,7 @@ const s = props => ({
         borderRadius: 0,
         height: 20,
         width: 20,
+        borderRadius: 50,
         backgroundColor: props.handlerColor || 'white',
     },
     handlerRound: {
