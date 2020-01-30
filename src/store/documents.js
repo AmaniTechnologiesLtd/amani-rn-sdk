@@ -20,7 +20,7 @@ export const initialDocuments = [
         captureVideo: false,
         cameraFacing: 'environment',
         versions: {
-            default: [
+            '': [
                 {
                     title: 'Eski Kimlik',
                     aspectRatio: 1.2,
@@ -58,7 +58,7 @@ export const initialDocuments = [
         captureVideo: false,
         cameraFacing: 'environment',
         versions: {
-            default: [
+            '': [
                 {
                     title: 'Pasaport',
                     crop: false,
@@ -84,7 +84,7 @@ export const initialDocuments = [
         captureVideo: false,
         cameraFacing: 'environment',
         versions: {
-            default: [
+            '': [
                 {
                     group: null,
                     title: 'Vize',
@@ -181,7 +181,7 @@ export const initialDocuments = [
         cameraFacing: 'user',
         duration: 3,
         versions: {
-            default: [
+            '': [
                 {
                     title: 'Selfie',
                     crop: false,
@@ -209,7 +209,7 @@ export const initialDocuments = [
         captureVideo: false,
         cameraFacing: null,
         versions: {
-            default: [
+            '': [
                 {
                     title: 'Sözleşme',
                     crop: false,
