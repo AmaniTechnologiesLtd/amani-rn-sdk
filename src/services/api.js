@@ -16,12 +16,6 @@ export default {
                 'Authorization': `Token ${param.token}`,
             },
         }),
-    getCustomer: (id, token) =>
-        axios.get(`customer/${id}`, {
-            headers: {
-                'Authorization': `Token ${token}`,
-            },
-        }),
     sendDocument: (token, documentData) =>
         axios.post('recognition/web/upload', documentData, {
             headers: {
