@@ -11,7 +11,6 @@ import {
     StyleSheet,
     BackHandler
 } from 'react-native'
-import Geolocation from 'react-native-geolocation-service'
 import DeviceInfo from 'react-native-device-info'
 
 // Local files
@@ -21,9 +20,8 @@ import api from '../../services/api'
 
 
 export const SignatureDraw = props => {
-    const { document, goBackToMainScreen, customer, goBack } = props
+    const { document, goBackToMainScreen, customer, goBack, location } = props
     const [documents, dispatch] = props.state
-    const [location, setLocation] = useState(null)
     const [signature, setSignature] = useState(null)
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(null)
@@ -42,12 +40,9 @@ export const SignatureDraw = props => {
     }, [])
 
     useEffect(() => {
-        if (location && signature) handleSignatureMatch()
-    }, [location, signature])
+        if (signature) handleSignatureMatch()
+    }, [signature])
 
-    const getLocation = async () => {
-        await Geolocation.getCurrentPosition(position => setLocation(position.coords))
-    }
 
     const handleSignatureSteps = res => {
         if (res.data.status === 'OK') {
@@ -83,7 +78,7 @@ export const SignatureDraw = props => {
         requestData.append('type', document.id)
         requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
-        requestData.append('location', JSON.stringify(location))
+        if (location) requestData.append('location', JSON.stringify(location))
         requestData.append('files[]', signature)
 
         await api.sendDocument(customer.access, requestData)
@@ -96,6 +91,7 @@ export const SignatureDraw = props => {
                 handleSignatureSteps(res)
             })
             .catch(async error => {
+                alert(1)
                 await dispatch({
                     type: 'CHANGE_STATUS',
                     document_id: document.id,
@@ -113,12 +109,13 @@ export const SignatureDraw = props => {
                     {cancelable: false}
                 )
             })
+
+            setSignature(null)
     }
 
     const handleSignature = async signature => {
-        await getLocation()
-        setSignature(signature)
         setIsProcessStarted(true)
+        setSignature(signature)
     }
 
     const handleEmptySignature = () => {

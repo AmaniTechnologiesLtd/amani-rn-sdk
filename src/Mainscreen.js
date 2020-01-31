@@ -82,6 +82,15 @@ export const MainScreen = props => {
     }
 
     useEffect(() => {
+        const getLocation = async () => {
+            if (permissions.location === 'granted' || Platform.OS === 'ios') {
+                await Geolocation.getCurrentPosition(position => setLocation(position.coords))
+            }
+        }
+        getLocation()
+    }, [permissions])
+
+    useEffect(() => {
         if (Object.values(documents).every(item => item.passed === true)) {
             setControllerButton({
                 text: 'Doğrulamayı Bitir',
@@ -95,19 +104,6 @@ export const MainScreen = props => {
             const authData = props.authData
             const customerInformations = props.customerInformations
             api.login({ email: authData.appKey, password: authData.appPassword }).then((fRes) => {
-                // If already a customer get token
-                if (customerInformations.id) {
-                    api.getCustomer(customerInformations.id, fRes.data.token).then(async (sRes) => {
-                        setCustomer({ access: fRes.data.token, id: sRes.data.token })
-                        await dispatch({
-                            type: 'FILTER_DOCUMENTS',
-                            document_types: fRes.data.available_documents,
-                        })
-                        setIsLoading(false)
-                    }).catch(error => errorHandler(error))
-                    return
-                }
-
                 const formData = {
                     customerData: customerInformations,
                     token: fRes.data.token
@@ -133,15 +129,8 @@ export const MainScreen = props => {
     }, [documents])
 
     useEffect(() => {
-        const getLocation = async () => {
-            if (permissions.location === 'granted' || Platform.OS === 'ios') {
-                await Geolocation.getCurrentPosition(position => setLocation(position.coords))
-            }
-        }
-        getLocation()
         if (isStepsFinished) handleSendDocumentsRequest()
-    }, [isStepsFinished, location])
-
+    }, [isStepsFinished])
 
     const handleSendDocumentsRequest = async () => {
         setIsStepsFinished(false)
@@ -165,11 +154,8 @@ export const MainScreen = props => {
         requestData.append('type', selectedDocument.id)
         requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
-        requestData.append('location', JSON.stringify(location))
-
-        if (corners) {
-            corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
-        }
+        if (location) requestData.append('location', JSON.stringify(location))
+        if (corners) corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
 
         files.forEach(file => requestData.append('files[]', file))
 
@@ -213,14 +199,25 @@ export const MainScreen = props => {
 
     const checkIsNextStepDisabled = (document, index) => {
         if (document.id === 'SG') {
-            if (Object.values(documents).every(item => item.passed === true)) return false
+            if (Object.values(documents).every(item => (item.id === 'SG' || item.passed === true) )) return false
             return true
         }
         return Boolean(index !== 0 && documents[index -1].passed == null || document.passed)
     }
 
-    const handleCurrentModalStatus = (isPassed, isLocked) => {
-        if (isLocked) {
+    const handleCurrentModalStatus = (document, isLocked) => {
+        // If document is Signature and other documents are not succeed yet
+        if (document.id === 'SG' && !Object.values(documents).every(item => (item.id === 'SG' || item.passed === true))) {
+            return (
+                <Image
+                    resizeMode="contain"
+                    style={styles.moduleStatusIcon}
+                    source={require('../assets/locked-icon.png')}
+                />
+            )
+        }
+        // if document is not Signature and its locked
+        else if (isLocked && document.id !== 'SG') {
             return (
                 <Image
                     resizeMode="contain"
@@ -230,14 +227,14 @@ export const MainScreen = props => {
             )
         }
 
-        else if (isPassed === null) return
-        else if (isPassed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+        else if (document.passed === null) return
+        else if (document.passed === 'loading') return <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
 
         return (
             <Image
                 resizeMode="contain"
                 style={styles.moduleStatusIcon}
-                source={isPassed ? require('../assets/success.png') : require('../assets/failed.png')}
+                source={document.passed ? require('../assets/success.png') : require('../assets/failed.png')}
             />
         )
     }
@@ -259,7 +256,10 @@ export const MainScreen = props => {
                 onCapture={onDocumentCaptured}
                 document={selectedDocument}
                 onManualCropCorners={onDocumentCrop}
-                onClearDocument={setSelectedDocument}
+                onClearDocument={() => {
+                    setFiles([])
+                    setSelectedDocument(null)
+                }}
                 onStepsFinished={setIsStepsFinished}
             />
         )
@@ -269,6 +269,7 @@ export const MainScreen = props => {
         return (
             <ContractScreen
                 onContractDecline={() => setShowContract(false)}
+                location={location}
                 currentDocument={documents.find(document => document.id === 'SG')}
                 state={[documents, dispatch]}
                 customer={customer}
@@ -295,7 +296,7 @@ export const MainScreen = props => {
                                     <Text style={styles.moduleTitle}>{document.title}</Text>
                                 </View>
                                 <View style={styles.moduleStatusContainer}>
-                                    {handleCurrentModalStatus(document.passed, index !== 0 && documents[index -1].passed == null)}
+                                    {handleCurrentModalStatus(document, index !== 0 && documents[index -1].passed == null)}
                                 </View>
                             </View>
                         </TouchableOpacity>

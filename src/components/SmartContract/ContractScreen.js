@@ -23,7 +23,7 @@ import { SignatureDraw } from '../SignatureDraw/SignatureDraw'
 const { width, height } = Dimensions.get('window')
 
 export const ContractScreen = props => {
-    const { onContractDecline, currentDocument, customer } = props
+    const { onContractDecline, currentDocument, customer, location } = props
     const [showContract, setShowContract] = useState(false)
     const [showSignatureScreen, setShowSignatureScreen] = useState(false)
     const [isContractApproved, setIsContractApproved] = useState(false)
@@ -102,6 +102,7 @@ export const ContractScreen = props => {
             <SignatureDraw
                 document={currentDocument}
                 state={props.state}
+                location={location}
                 goBack={() => setShowSignatureScreen(false)}
                 goBackToMainScreen={onContractDecline}
                 customer={customer}
