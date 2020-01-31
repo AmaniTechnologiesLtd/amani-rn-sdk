@@ -140,11 +140,11 @@ export const MainScreen = props => {
         }
         getLocation()
         if (isStepsFinished) handleSendDocumentsRequest()
-        setIsStepsFinished(false)
     }, [isStepsFinished, location])
 
 
     const handleSendDocumentsRequest = async () => {
+        setIsStepsFinished(false)
         await dispatch({
             type: 'CHANGE_STATUS',
             document_id: selectedDocument.id,
