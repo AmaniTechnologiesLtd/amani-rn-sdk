@@ -46,7 +46,7 @@ export const MainScreen = props => {
         color: 'white'
     })
 
-    const { onCreateCustomer, onError, onExit } = props
+    const { onError, onExit } = props
 
     const checkPermissions = async () => {
         setPermission({
@@ -116,7 +116,6 @@ export const MainScreen = props => {
                         document_types: fRes.data.available_documents,
                     })
                     setIsLoading(false)
-                    onCreateCustomer({ id: sRes.data.id })
                 }).catch(error => errorHandler(error))
             }).catch(error => errorHandler(error))
         }
