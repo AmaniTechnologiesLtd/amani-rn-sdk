@@ -23,6 +23,7 @@ import { PoweredBy } from './PoweredBy'
 import { Loading } from './Loading'
 import { PreScreen } from './PreScreen'
 import { RequestHandlerScreen } from './RequestHandlerScreen'
+import TextBaloon from './TextBaloon'
 
 const { width, height } = Dimensions.get('window')
 
@@ -32,7 +33,8 @@ export const CaptureDocument = props => {
         document,
         onCapture,
         onManualCropCorners,
-        onStepsFinished
+        onStepsFinished,
+        onClearDocument
     } = props
 
     const [cameraType] = useState(
@@ -53,17 +55,18 @@ export const CaptureDocument = props => {
     const [versionGroup, setVersionGroup] = useState('')
     const [groupIndex, setGroupIndex] = useState(0)
     const [showPreScreen, setShowPreScreen] = useState(true)
+    const [showHelperBaloon, setShowHelperBaloon] = useState(document.id === 'UB' ? true : false)
     const [showRequestCondition, setShowRequestCondition] = useState(null)
 
     const camera = useRef(null)
 
 
     const goBack = async () => {
-        const { onClearDocument } = props
-        onClearDocument(null)
+        onClearDocument()
     }
 
     useEffect(() => {
+        setTimeout(() => setShowHelperBaloon(false), 2000)
         BackHandler.addEventListener('hardwareBackPress', () => {
                 goBack()
                 return true
@@ -147,12 +150,24 @@ export const CaptureDocument = props => {
     const handleManualCrop = async data => {
         setIsProcessStarted(true)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
-        onManualCropCorners({
-            topLeft: {x: parseInt(data.topLeft.x), y: parseInt(data.topLeft.y)},
-            topRight: {x: parseInt(data.topRight.x), y: parseInt(data.topRight.y)},
-            bottomLeft: {x: parseInt(data.bottomLeft.x), y: parseInt(data.bottomLeft.y)},
-            bottomRight: {x: parseInt(data.bottomRight.x), y: parseInt(data.bottomRight.y)},
-        })
+        onManualCropCorners([
+            [
+                parseInt(data.topLeft.x),
+                parseInt(data.topLeft.y),
+            ],
+            [
+                parseInt(data.topRight.x),
+                parseInt(data.topRight.y),
+            ],
+            [
+                parseInt(data.bottomLeft.x),
+                parseInt(data.bottomLeft.y),
+            ],
+            [
+                parseInt(data.bottomRight.x),
+                parseInt(data.bottomRight.y),
+            ],
+        ])
         setShowRequestCondition(true)
         setIsProcessStarted(false)
     }
@@ -161,6 +176,28 @@ export const CaptureDocument = props => {
         if(Object.keys(document.versions).length > 1) return true // If groups are more than one
         else if(document.versions[Object.keys(document.versions)[0]].length > 1) return true // If there is only one group but it has more than one versions
         return false
+    }
+
+    const showTextBaloon = message => {
+        return (
+            <View style={{position: 'absolute', right: 0, top: height * 0.06}}>
+                <TextBaloon
+                    borderColor="black"
+                    backgroundColor="white"
+                    triangleDirection="top"
+                    triangleOffset="87%"
+                    width={width * 0.5}
+                    borderWidth={1}
+                    borderRadius={10}
+                    triangleSize={10}
+                    disabled
+                >
+                    <Text>
+                        {message}
+                    </Text>
+                </TextBaloon>
+            </View>
+        )
     }
 
     if (isProcessStarted) {
@@ -216,6 +253,9 @@ export const CaptureDocument = props => {
                 <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
 
                     <SafeAreaView style={styles.topBar}>
+                        {showHelperBaloon && (
+                            showTextBaloon('Buradan PDF dosyası yükleyebilirsiniz.')
+                        )}
                         <TouchableOpacity
                             style={styles.topBarLeft}
                             onPress={goBack}
