@@ -107,7 +107,6 @@ cd ios && pod install
 | authData | true | object | - |
 | customerInformations | true | object | - |
 | server | false | string | tr |
-| onCreateCustomer | false | callback function | - |
 | onError | false | callback function | - |
 | onExit | false | callback function | - |
 
@@ -123,7 +122,7 @@ const authValues = {
 
 const customer = {
 
-    id: '512', // If you have a customer that already exists in Amani Service, pass the id here,
+    id_card_number: '00000000000', // If you have a customer that already exists in Amani Service, pass the id here,
 
     // Or create a new customer
     id_card_number: '00000000000', // Like TC Number
@@ -138,7 +137,6 @@ return (
         server="tr"
         authData={authValues}
         customerInformations={customer}
-        onCreateCustomer={customer => console.log(customer)}
         onError={error => console.log(error)}
         onExit={values => console.log(values)}
     />
