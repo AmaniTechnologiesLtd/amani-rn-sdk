@@ -66,7 +66,7 @@ export const CaptureDocument = props => {
     }
 
     useEffect(() => {
-        setTimeout(() => setShowHelperBaloon(false), 2000)
+        setTimeout(() => setShowHelperBaloon(false), 3500)
         BackHandler.addEventListener('hardwareBackPress', () => {
                 goBack()
                 return true
