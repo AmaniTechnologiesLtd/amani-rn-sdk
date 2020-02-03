@@ -20,7 +20,7 @@ import api from '../../services/api'
 
 
 export const SignatureDraw = props => {
-    const { document, goBackToMainScreen, customer, goBack, location } = props
+    const { document, goBackToMainScreen, customer, goBack, location, formData } = props
     const [documents, dispatch] = props.state
     const [signature, setSignature] = useState(null)
     const [currentStep, setCurrentStep] = useState(0)
@@ -78,6 +78,7 @@ export const SignatureDraw = props => {
         requestData.append('type', document.id)
         requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
+        requestData.append('additional_data', JSON.stringify(formData))
         if (location) requestData.append('location', JSON.stringify(location))
         requestData.append('files[]', signature)
 

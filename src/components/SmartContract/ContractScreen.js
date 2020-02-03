@@ -100,6 +100,7 @@ export const ContractScreen = props => {
     if (showSignatureScreen) {
         return (
             <SignatureDraw
+                formData={formData}
                 document={currentDocument}
                 state={props.state}
                 location={location}
