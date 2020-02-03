@@ -34,7 +34,8 @@ export const CaptureDocument = props => {
         onCapture,
         onManualCropCorners,
         onStepsFinished,
-        onClearDocument
+        onClearDocument,
+        onDecline
     } = props
 
     const [cameraType] = useState(
@@ -56,7 +57,8 @@ export const CaptureDocument = props => {
     const [groupIndex, setGroupIndex] = useState(0)
     const [showPreScreen, setShowPreScreen] = useState(true)
     const [showHelperBaloon, setShowHelperBaloon] = useState(document.id === 'UB' ? true : false)
-    const [showRequestCondition, setShowRequestCondition] = useState(null)
+    const [showRequestCondition, setShowRequestCondition] = useState(false)
+    const [capturedImageUrl, setCapturedImageUrl] = useState(null)
 
     const camera = useRef(null)
 
@@ -88,6 +90,7 @@ export const CaptureDocument = props => {
                 image = `data:image/jpeg;base64,${data.base64}`
                 if (document.versions[versionGroup][groupIndex].autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
+                setCapturedImageUrl(data.uri)
                 setShowRequestCondition(true)
                 setIsProcessStarted(false)
             }
@@ -149,6 +152,7 @@ export const CaptureDocument = props => {
 
     const handleManualCrop = async data => {
         setIsProcessStarted(true)
+        setCapturedImageUrl(data.image)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
         onManualCropCorners([
             [
@@ -207,9 +211,15 @@ export const CaptureDocument = props => {
     if (showRequestCondition) {
         return (
             <RequestHandlerScreen
-                documentTitle={document.title}
+                imageUrl={capturedImageUrl}
+                document={document}
+                step={currentStep}
                 isSucceed={true}
                 continueProcess={calculateNextStep}
+                onTryAgain={() => {
+                    onDecline()
+                    setShowRequestCondition(false)
+                }}
             />
         )
     }

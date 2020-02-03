@@ -192,6 +192,10 @@ export const MainScreen = props => {
         setFiles([...files, capture])
     }
 
+    const onDocumentDeclined = () => {
+        setFiles(files.slice(0,-1))
+    }
+
     const onDocumentCrop = cropData => {
         setCorners([...corners, cropData])
     }
@@ -253,6 +257,7 @@ export const MainScreen = props => {
         return (
             <CaptureDocument
                 onCapture={onDocumentCaptured}
+                onDecline={onDocumentDeclined}
                 document={selectedDocument}
                 onManualCropCorners={onDocumentCrop}
                 onClearDocument={() => {
