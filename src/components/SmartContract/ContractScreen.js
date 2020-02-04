@@ -204,7 +204,7 @@ export const ContractScreen = props => {
             <WebView style={{marginTop: height * 0.025}} javaScriptEnabled source={{html: content}} />
             <View style={styles.bottomBar}>
                 <View style={styles.bottomBarButton}>
-                <Text style={styles.bottomBarButtonText}> Onaylıyorum {' '}</Text>
+                <Text style={styles.bottomBarButtonText}> Onaylıyorum </Text>
                 {customCheckboxView()}
                 </View>
                 <TouchableOpacity onPress={handleContractProcess} style={styles.bottomBarButton}>
