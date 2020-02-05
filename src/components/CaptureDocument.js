@@ -21,8 +21,8 @@ import { SelfieMask } from './SelfieMask'
 import { ImageCropper } from './ImageCropper'
 import { PoweredBy } from './PoweredBy'
 import { Loading } from './Loading'
-import { PreScreen } from './PreScreen'
-import { RequestHandlerScreen } from './RequestHandlerScreen'
+import { VersionSelection } from './VersionSelection'
+import { DocumentConfirmationBox } from './DocumentConfirmationBox'
 import TextBaloon from './TextBaloon'
 
 const { width, height } = Dimensions.get('window')
@@ -55,9 +55,9 @@ export const CaptureDocument = props => {
     const [imageCrop, setImageCrop] = useState(null)
     const [versionGroup, setVersionGroup] = useState('')
     const [groupIndex, setGroupIndex] = useState(0)
-    const [showPreScreen, setShowPreScreen] = useState(true)
+    const [showVersionSelectionScreen, setShowVersionSelectionScreen] = useState(true)
     const [showHelperBaloon, setShowHelperBaloon] = useState(document.id === 'UB' ? true : false)
-    const [showRequestCondition, setShowRequestCondition] = useState(false)
+    const [showDocumentConfirmationBox, setShowDocumentConfirmationBox] = useState(false)
     const [capturedImageUrl, setCapturedImageUrl] = useState(null)
 
     const camera = useRef(null)
@@ -91,7 +91,7 @@ export const CaptureDocument = props => {
                 if (document.versions[versionGroup][groupIndex].autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
                 setCapturedImageUrl(data.uri)
-                setShowRequestCondition(true)
+                setShowDocumentConfirmationBox(true)
                 setIsProcessStarted(false)
             }
             setButtonDisabled(false)
@@ -105,20 +105,25 @@ export const CaptureDocument = props => {
         }).then(file => {
             RNFS.readFile(file.uri, 'base64').then(source => {
                 onCapture(`data:application/pdf;base64,${source}`)
-                setShowRequestCondition(true)
+                setShowDocumentConfirmationBox(true)
                 setIsProcessStarted(false)
             })
         }).catch(error => setIsProcessStarted(false))
     }
 
     const calculateNextStep = () => {
-        setShowRequestCondition(false)
+        setShowDocumentConfirmationBox(false)
         if (currentStep < document.steps.length - 1) {
             setCurrentStep(currentStep + 1)
             setImageCrop(null)
             return
         }
         onStepsFinished(true)
+    }
+
+    const handleDocumentRetake = () => {
+        onDecline()
+        setShowDocumentConfirmationBox(false)
     }
 
     const setPreviewPosition = event => {
@@ -172,7 +177,7 @@ export const CaptureDocument = props => {
                 parseInt(data.bottomRight.y),
             ],
         ])
-        setShowRequestCondition(true)
+        setShowDocumentConfirmationBox(true)
         setIsProcessStarted(false)
     }
 
@@ -208,32 +213,28 @@ export const CaptureDocument = props => {
         return <Loading />
     }
 
-    if (showRequestCondition) {
+    if (showDocumentConfirmationBox) {
         return (
-            <RequestHandlerScreen
-                imageUrl={capturedImageUrl}
+            <DocumentConfirmationBox
                 document={document}
-                step={currentStep}
                 isSucceed={true}
+                imageUrl={capturedImageUrl}
+                step={currentStep}
                 continueProcess={calculateNextStep}
-                onTryAgain={() => {
-                    onDecline()
-                    setShowRequestCondition(false)
-                }}
+                onTryAgain={handleDocumentRetake}
             />
         )
     }
 
-    if (checkPreScreenConditionForVersioning() && showPreScreen) {
+    if (checkPreScreenConditionForVersioning() && showVersionSelectionScreen) {
         return (
-            <PreScreen
-                screenKey="versioning"
+            <VersionSelection
+                goBack={goBack}
                 menuMode={(document.versions[Object.keys(document.versions)[0]].length > 1) ? 'vertical' : 'horizontal'}
                 versions={document.versions}
                 versionGroup={setVersionGroup}
                 groupIndex={setGroupIndex}
-                goBack={goBack}
-                preScreenOn={setShowPreScreen}
+                closeVersionSelected={() => setShowVersionSelectionScreen(false)}
             />
         )
     }

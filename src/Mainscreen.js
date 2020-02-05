@@ -28,6 +28,7 @@ import api from './services/api'
 const { width, height } = Dimensions.get('window')
 
 export const MainScreen = props => {
+    const { onError, onExit } = props
     const [documents, dispatch] = useReducer(documentsReducer, initialDocuments)
 
     const [isLoading, setIsLoading] = useState(true)
@@ -40,13 +41,12 @@ export const MainScreen = props => {
     const [customer, setCustomer] = useState({ access: null, customer: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
     const [location, setLocation] = useState(null)
+
     const [controllerButton, setControllerButton] = useState({
         text: 'Geri Dön',
         backgroundColor: 'gray',
         color: 'white'
     })
-
-    const { onError, onExit } = props
 
     const checkPermissions = async () => {
         setPermission({
@@ -200,6 +200,11 @@ export const MainScreen = props => {
         setCorners([...corners, cropData])
     }
 
+    const clearDocument = () => {
+        setFiles([])
+        setSelectedDocument(null)
+    }
+
     const checkIsNextStepDisabled = (document, index) => {
         if (document.id === 'SG') {
             if (Object.values(documents).every(item => (item.id === 'SG' || item.passed === true) )) return false
@@ -256,15 +261,12 @@ export const MainScreen = props => {
     if (selectedDocument) {
         return (
             <CaptureDocument
+                document={selectedDocument}
                 onCapture={onDocumentCaptured}
                 onDecline={onDocumentDeclined}
-                document={selectedDocument}
                 onManualCropCorners={onDocumentCrop}
-                onClearDocument={() => {
-                    setFiles([])
-                    setSelectedDocument(null)
-                }}
                 onStepsFinished={setIsStepsFinished}
+                onClearDocument={clearDocument}
             />
         )
     }
@@ -284,7 +286,7 @@ export const MainScreen = props => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="black" />
-            <Text style={{color: 'white', padding: 20, fontSize: width * 0.07}}> Doküman Seçim Ekranı </Text>
+            <Text style={styles.containerHeaderText}> Doküman Seçim Ekranı </Text>
 
             <View style={styles.modulesContainer}>
                 {documents.map((document, index) => {
@@ -325,6 +327,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'black',
         justifyContent: 'center',
+    },
+    containerHeaderText: {
+        color: 'white',
+        padding: 20,
+        fontSize: width * 0.07
     },
     modulesContainer: {
         justifyContent: 'center',
