@@ -33,6 +33,7 @@ export const MainScreen = props => {
 
     const [isLoading, setIsLoading] = useState(true)
     const [selectedDocument, setSelectedDocument] = useState(null)
+    const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null)
     const [cropDocument, setCropDocument] = useState(null)
     const [showContract, setShowContract] = useState(false)
     const [corners, setCorners] = useState([])
@@ -150,7 +151,7 @@ export const MainScreen = props => {
 
         const requestData = new FormData()
 
-        requestData.append('type', selectedDocument.id)
+        requestData.append('type', selectedDocumentVersion.title !== 'Diğer' ? selectedDocument.id : 'OT')
         requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
         if (location) requestData.append('location', JSON.stringify(location))
@@ -262,6 +263,7 @@ export const MainScreen = props => {
         return (
             <CaptureDocument
                 document={selectedDocument}
+                setSelectedDocumentVersion={setSelectedDocumentVersion}
                 onCapture={onDocumentCaptured}
                 onDecline={onDocumentDeclined}
                 onManualCropCorners={onDocumentCrop}

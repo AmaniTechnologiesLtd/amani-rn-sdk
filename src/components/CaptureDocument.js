@@ -35,6 +35,7 @@ export const CaptureDocument = props => {
         onManualCropCorners,
         onStepsFinished,
         onClearDocument,
+        setSelectedDocumentVersion,
         onDecline
     } = props
 
@@ -62,13 +63,13 @@ export const CaptureDocument = props => {
 
     const camera = useRef(null)
 
-
     const goBack = async () => {
         onClearDocument()
     }
 
+    if (showHelperBaloon) setTimeout(() => setShowHelperBaloon(false), 3500)
+
     useEffect(() => {
-        setTimeout(() => setShowHelperBaloon(false), 3500)
         BackHandler.addEventListener('hardwareBackPress', () => {
                 goBack()
                 return true
@@ -118,6 +119,7 @@ export const CaptureDocument = props => {
             setImageCrop(null)
             return
         }
+        setSelectedDocumentVersion(document.versions[versionGroup][groupIndex])
         onStepsFinished(true)
     }
 
