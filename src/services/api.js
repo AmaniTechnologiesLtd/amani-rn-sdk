@@ -16,6 +16,12 @@ export default {
                 'Authorization': `Token ${param.token}`,
             },
         }),
+    cropImage: (token, documentData) =>
+        axios.post('engine/autocapture', documentData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+            },
+        }),
     sendDocument: (token, documentData) =>
         axios.post('recognition/web/upload', documentData, {
             headers: {
