@@ -262,6 +262,7 @@ export const MainScreen = props => {
     if (selectedDocument) {
         return (
             <CaptureDocument
+                customer={customer}
                 document={selectedDocument}
                 setSelectedDocumentVersion={setSelectedDocumentVersion}
                 onCapture={onDocumentCaptured}

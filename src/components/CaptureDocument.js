@@ -36,6 +36,7 @@ export const CaptureDocument = props => {
         onStepsFinished,
         onClearDocument,
         setSelectedDocumentVersion,
+        customer,
         onDecline
     } = props
 
@@ -54,6 +55,7 @@ export const CaptureDocument = props => {
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(false)
     const [imageCrop, setImageCrop] = useState(null)
+    const [corners, setCorners] = useState(null)
     const [versionGroup, setVersionGroup] = useState('')
     const [groupIndex, setGroupIndex] = useState(0)
     const [showVersionSelectionScreen, setShowVersionSelectionScreen] = useState(true)
@@ -91,7 +93,7 @@ export const CaptureDocument = props => {
                 image = `data:image/jpeg;base64,${data.base64}`
                 if (document.versions[versionGroup][groupIndex].autoCrop) image = await handleAutoCrop(data)
                 onCapture(image)
-                setCapturedImageUrl(data.uri)
+                setCapturedImageUrl(image)
                 setShowDocumentConfirmationBox(true)
                 setIsProcessStarted(false)
             }
@@ -161,7 +163,7 @@ export const CaptureDocument = props => {
         setIsProcessStarted(true)
         setCapturedImageUrl(data.image)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
-        onManualCropCorners([
+        setCorners([
             [
                 parseInt(data.topLeft.x),
                 parseInt(data.topLeft.y),
@@ -179,6 +181,7 @@ export const CaptureDocument = props => {
                 parseInt(data.bottomRight.y),
             ],
         ])
+        onManualCropCorners(corners)
         setShowDocumentConfirmationBox(true)
         setIsProcessStarted(false)
     }
@@ -218,7 +221,9 @@ export const CaptureDocument = props => {
     if (showDocumentConfirmationBox) {
         return (
             <DocumentConfirmationBox
+                customer={customer}
                 document={document}
+                corners={corners}
                 isSucceed={true}
                 imageUrl={capturedImageUrl}
                 step={currentStep}
