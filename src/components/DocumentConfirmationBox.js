@@ -1,16 +1,19 @@
 // Global Dependencies
-import React, { useState } from 'react'
-import { View, Image, Text, TouchableOpacity, StatusBar, Dimensions, StyleSheet, ImageBackground } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Image, Text, TouchableOpacity, StatusBar, Dimensions, StyleSheet } from 'react-native'
 
 // Local files
+import api from '../services/api'
+import { Loading } from './Loading'
 import successImage from '../../assets/success_big.png'
 import failImage from '../../assets/failed_big.png'
 
 const { width, height } = Dimensions.get('window')
 
 export const DocumentConfirmationBox = props => {
-    const { imageUrl, isSucceed, document, onTryAgain, continueProcess, step } = props
+    const { imageUrl, isSucceed, document, onTryAgain, continueProcess, customer, corners, step } = props
     const [isImageApproved, setIsImageApproved] = useState(false)
+    const [imgSrc, setImgSrc] = useState(null)
 
     const status = {
         info: isSucceed ? `${document.title} başarı ile yüklendi.` : `${document.title} yüklenemedi.`,
@@ -18,7 +21,19 @@ export const DocumentConfirmationBox = props => {
         source: isSucceed ? successImage : failImage
     }
 
-    if (imageUrl && !isImageApproved) {
+    useEffect(() => {
+        if (!imgSrc) {
+            const requestData = new FormData()
+            if (corners) corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
+            requestData.append('files[]', imageUrl)
+
+            api.cropImage(customer.access, requestData).then(res => setImgSrc(res.data.image)).catch(err => setImgSrc(imageUrl))
+        }
+    }, [])
+
+    if (!imgSrc) return <Loading />
+
+    if (imgSrc && !isImageApproved) {
         return (
             <View style={styles.confirmationContainer}>
                 <StatusBar hidden />
@@ -27,9 +42,9 @@ export const DocumentConfirmationBox = props => {
                     {document.steps.length > 0 && document.steps[step].title.toLocaleUpperCase()}
                 </Text>
                 <Image
-                    resizeMode="cover"
+                    resizeMode="contain"
                     style={[styles.confirmationImagePreview, { transform: [{ scaleX: document.id != 'SE' ? 1 : -1}] }]}
-                    source={{uri: imageUrl}}
+                    source={{uri: imgSrc}}
                 />
                 <View style={styles.confirmationBottomBar}>
                     <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05 }]}>
@@ -109,7 +124,7 @@ const styles = StyleSheet.create({
     confirmationImagePreview: {
         width: width * 0.9,
         height: height * 0.5,
-        borderColor: 'white', borderWidth: 7
+        position: 'absolute',
     },
     confirmationBottomBar: {
         position: 'absolute',
