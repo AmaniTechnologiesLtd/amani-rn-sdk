@@ -13,6 +13,7 @@ const { width, height } = Dimensions.get('window')
 export const DocumentConfirmationBox = props => {
     const { imageUrl, isSucceed, document, onTryAgain, continueProcess, customer, corners, step } = props
     const [isImageApproved, setIsImageApproved] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null)
     const [imgSrc, setImgSrc] = useState(null)
 
     const status = {
@@ -22,16 +23,28 @@ export const DocumentConfirmationBox = props => {
     }
 
     useEffect(() => {
-        if (!imgSrc) {
+        if (!imgSrc && document.id !== 'UB') {
             const requestData = new FormData()
             if (corners) corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
             requestData.append('files[]', imageUrl)
 
-            api.cropImage(customer.access, requestData).then(res => setImgSrc(res.data.image)).catch(err => setImgSrc(imageUrl))
+            api.cropImage(customer.access, requestData).then(res => {
+                if (res.data.status === 'ERROR') {
+                    if (res.data.statusText) {
+                        setErrorMessage(res.data.statusText)
+                        return
+                    }
+                    setErrorMessage('Bir şeyler yanlış gitti')
+                }
+                setImgSrc(res.data.image)
+
+            }).catch(err => {
+                setErrorMessage('Bir şeyler yanlış gitti, tekrar deneyin')
+            })
         }
     }, [])
 
-    if (!imgSrc) return <Loading />
+    if (!imgSrc && document.id !== 'UB') return <Loading />
 
     if (imgSrc && !isImageApproved) {
         return (
@@ -46,13 +59,15 @@ export const DocumentConfirmationBox = props => {
                     style={[styles.confirmationImagePreview, { transform: [{ scaleX: document.id != 'SE' ? 1 : -1}] }]}
                     source={{uri: imgSrc}}
                 />
+                <Text style={{color: 'white', fontSize: width * 0.035, textAlign: 'center'}}> {errorMessage} </Text>
                 <View style={styles.confirmationBottomBar}>
-                    <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05 }]}>
+                    <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05, backgroundColor: 'white' }]}>
                         <Text style={styles.confirmationButtonText}>
                             TEKRAR DENE
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setIsImageApproved(true)} style={styles.confirmationBottomBarButton}>
+                    <TouchableOpacity disabled={!!errorMessage} onPress={() => setIsImageApproved(true)}
+                        style={[styles.confirmationBottomBarButton, { backgroundColor: errorMessage ? 'gray' : 'white' }]}>
                         <Text style={styles.confirmationButtonText}>
                             ONAYLA
                         </Text>
@@ -124,7 +139,6 @@ const styles = StyleSheet.create({
     confirmationImagePreview: {
         width: width * 0.9,
         height: height * 0.5,
-        position: 'absolute',
     },
     confirmationBottomBar: {
         position: 'absolute',
@@ -135,7 +149,6 @@ const styles = StyleSheet.create({
     },
     confirmationBottomBarButton: {
         flex: 0.5,
-        backgroundColor: 'white',
         justifyContent: 'center',
         borderRadius: 7
     },
