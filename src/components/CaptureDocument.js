@@ -163,7 +163,7 @@ export const CaptureDocument = props => {
         setIsProcessStarted(true)
         setCapturedImageUrl(data.image)
         onCapture(`data:image/jpeg;base64,${await RNFS.readFile(data.image, 'base64')}`)
-        setCorners([
+        const captureCorners = [
             [
                 parseInt(data.topLeft.x),
                 parseInt(data.topLeft.y),
@@ -180,8 +180,9 @@ export const CaptureDocument = props => {
                 parseInt(data.bottomRight.x),
                 parseInt(data.bottomRight.y),
             ],
-        ])
-        onManualCropCorners(corners)
+        ]
+        setCorners(captureCorners)
+        onManualCropCorners(captureCorners)
         setShowDocumentConfirmationBox(true)
         setIsProcessStarted(false)
     }
