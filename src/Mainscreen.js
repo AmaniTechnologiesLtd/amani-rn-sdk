@@ -160,23 +160,23 @@ export const MainScreen = props => {
         files.forEach(file => requestData.append('files[]', file))
 
         await api.sendDocument(customer.access, requestData)
-            .then(async res => {
+            .then(res => {
                 if (res.data.status === 'OK') {
-                    await dispatch({
+                    dispatch({
                         type: 'CHANGE_STATUS',
                         document_id: selectedDocument.id,
                         passed: true
                     })
                     return
                 }
-                await dispatch({
+                dispatch({
                     type: 'CHANGE_STATUS',
                     document_id: selectedDocument.id,
                     passed: false
                 })
             })
-            .catch(async error => {
-                await dispatch({
+            .catch(error => {
+                dispatch({
                     type: 'CHANGE_STATUS',
                     document_id: selectedDocument.id,
                     passed: false
