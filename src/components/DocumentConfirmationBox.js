@@ -51,8 +51,8 @@ export const DocumentConfirmationBox = props => {
             <View style={styles.confirmationContainer}>
                 <StatusBar hidden />
                 <Text style={styles.confirmationTitle}>
-                    {document.title.toLocaleUpperCase()} {"\n\n"}
-                    {document.steps.length > 0 && document.steps[step].title.toLocaleUpperCase()}
+                    {document.title} {"\n\n"}
+                    {document.steps.length > 0 && document.steps[step].title}
                 </Text>
                 <Image
                     resizeMode="contain"
