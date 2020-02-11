@@ -130,15 +130,6 @@ export const CaptureDocument = props => {
         setShowDocumentConfirmationBox(false)
     }
 
-    const setPreviewPosition = event => {
-        setPreviewArea({
-            previewAreaWidth: width,
-            previewAreaHeight: width * 0.63 + 50,
-            previewAreaX: event.nativeEvent.layout.x,
-            previewAreaY: event.nativeEvent.layout.y,
-        })
-    }
-
     const handleAutoCrop = async data => {
         const ratio = width / data.width
         const cropData = {
@@ -155,7 +146,6 @@ export const CaptureDocument = props => {
         const src = await ImageEditor.cropImage(data.uri, cropData).then(
             async path => await RNFS.readFile(path, 'base64')
         )
-
         return `data:image/jpeg;base64,${src}`
     }
 
@@ -317,15 +307,22 @@ export const CaptureDocument = props => {
                 </View>
                 {document.versions[versionGroup][groupIndex].aspectRatio && (
                     <View
-                        style={{ flexDirection: 'row' }}
-                        onLayout={setPreviewPosition}>
+                        style={{ flexDirection: 'row' }}>
                         <View style={styles.backDrop} />
                         <View
+                        onLayout={event => {
+                            setPreviewArea({
+                                previewAreaWidth: width * 0.85,
+                                previewAreaHeight: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
+                                previewAreaX: event.nativeEvent.layout.x,
+                                previewAreaY: event.nativeEvent.layout.y + width * 0.85,
+                            })
+                        }}
                             style={[
                                 styles.previewMiddle,
                                 {
                                     width: width * 0.85,
-                                    paddingTop: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
+                                    height: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
                                 },
                             ]}
                         />
@@ -334,8 +331,7 @@ export const CaptureDocument = props => {
                 )}
                 {document.id === 'SE' && (
                     <View
-                        style={{ flexDirection: 'row' }}
-                        onLayout={setPreviewPosition}>
+                        style={{ flexDirection: 'row' }}>
                         <View style={styles.backDrop} />
                         <View style={styles.selfieContainer}>
                             <SelfieMask />

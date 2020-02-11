@@ -24,8 +24,8 @@ export const initialDocuments = [
                 {
                     title: 'Eski Kimlik',
                     aspectRatio: 1.2,
-                    crop: true,
-                    autoCrop: false,
+                    crop: false,
+                    autoCrop: true,
                 },
                 {
                     title: 'Yeni Kimlik',
