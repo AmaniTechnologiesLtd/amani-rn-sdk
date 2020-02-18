@@ -13,69 +13,59 @@ const { width, height } = Dimensions.get('window')
 export const DocumentConfirmationBox = props => {
     const { imageUrl, isSucceed, document, onTryAgain, continueProcess, customer, corners, step } = props
     const [isImageApproved, setIsImageApproved] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null)
     const [imgSrc, setImgSrc] = useState(null)
 
-    const status = {
-        info: isSucceed ? `${document.title} başarı ile yüklendi.` : `${document.title} yüklenemedi.`,
-        buttonText: isSucceed ? 'DEVAM' : 'TEKRAR DENE',
-        source: isSucceed ? successImage : failImage
-    }
-
     useEffect(() => {
-        if (!imgSrc) {
+        if (!imgSrc && document.id !== 'UB') {
             const requestData = new FormData()
             if (corners) corners.forEach(corner => requestData.append('corners[]', JSON.stringify(corner)))
             requestData.append('files[]', imageUrl)
 
-            api.cropImage(customer.access, requestData).then(res => setImgSrc(res.data.image)).catch(err => setImgSrc(imageUrl))
+            api.cropImage(customer.access, requestData).then(res => {
+                if (res.data.status === 'ERROR') {
+                    if (res.data.statusText) {
+                        setErrorMessage(res.data.statusText)
+                        return
+                    }
+                    setErrorMessage('Bir şeyler yanlış gitti')
+                }
+                setImgSrc(res.data.image)
+
+            }).catch(err => {
+                setErrorMessage('Bir şeyler yanlış gitti, tekrar deneyin')
+            })
         }
     }, [])
 
     if (!imgSrc) return <Loading />
 
-    if (imgSrc && !isImageApproved) {
-        return (
-            <View style={styles.confirmationContainer}>
-                <StatusBar hidden />
-                <Text style={styles.confirmationTitle}>
-                    {document.title.toLocaleUpperCase()} {"\n\n"}
-                    {document.steps.length > 0 && document.steps[step].title.toLocaleUpperCase()}
-                </Text>
-                <Image
-                    resizeMode="contain"
-                    style={[styles.confirmationImagePreview, { transform: [{ scaleX: document.id != 'SE' ? 1 : -1}] }]}
-                    source={{uri: imgSrc}}
-                />
-                <View style={styles.confirmationBottomBar}>
-                    <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05 }]}>
-                        <Text style={styles.confirmationButtonText}>
-                            TEKRAR DENE
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setIsImageApproved(true)} style={styles.confirmationBottomBarButton}>
-                        <Text style={styles.confirmationButtonText}>
-                            ONAYLA
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-    }
-
     return (
-        <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
-            <View style={styles.childContainer}>
-                <Image source={status.source} resizeMode="contain" style={{width: width * 0.7}} />
-                <Text style={styles.statusInfoText}>
-                    {status.info}
-                </Text>
+        <View style={styles.confirmationContainer}>
+            <StatusBar hidden />
+            <Text style={styles.confirmationTitle}>
+                {document.title} {"\n\n"}
+                {document.steps.length > 0 && document.steps[step].title}
+            </Text>
+            <Image
+                resizeMode="contain"
+                style={[styles.confirmationImagePreview, { transform: [{ scaleX: document.id != 'SE' ? 1 : -1}] }]}
+                source={{uri: imgSrc}}
+            />
+            <Text style={{color: 'white', fontSize: width * 0.035, textAlign: 'center'}}> {errorMessage} </Text>
+            <View style={styles.confirmationBottomBar}>
+                <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05, backgroundColor: 'white' }]}>
+                    <Text style={styles.confirmationButtonText}>
+                        TEKRAR DENE
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity disabled={!!errorMessage} onPress={continueProcess}
+                    style={[styles.confirmationBottomBarButton, { backgroundColor: errorMessage ? 'gray' : 'white' }]}>
+                    <Text style={styles.confirmationButtonText}>
+                        ONAYLA
+                    </Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={continueProcess} style={styles.statusButton}>
-                <Text style={styles.statusButtonText}>
-                    {status.buttonText}
-                </Text>
-            </TouchableOpacity>
         </View>
     )
 }
@@ -124,7 +114,6 @@ const styles = StyleSheet.create({
     confirmationImagePreview: {
         width: width * 0.9,
         height: height * 0.5,
-        position: 'absolute',
     },
     confirmationBottomBar: {
         position: 'absolute',
@@ -135,7 +124,6 @@ const styles = StyleSheet.create({
     },
     confirmationBottomBarButton: {
         flex: 0.5,
-        backgroundColor: 'white',
         justifyContent: 'center',
         borderRadius: 7
     },
