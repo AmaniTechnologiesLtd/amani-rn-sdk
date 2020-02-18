@@ -24,8 +24,8 @@ export const initialDocuments = [
                 {
                     title: 'Eski Kimlik',
                     aspectRatio: 1.2,
-                    crop: true,
-                    autoCrop: false,
+                    crop: false,
+                    autoCrop: true,
                 },
                 {
                     title: 'Yeni Kimlik',
@@ -41,6 +41,32 @@ export const initialDocuments = [
                 },
             ]
         },
+    },
+    {
+        id: 'SE',
+        title: 'Selfie',
+        passed: null,
+        steps: [
+            {
+                title: '',
+                description:
+                    'Lütfen yüzünüzü belirtilen alanın içinde olacak şekilde konumlandırın',
+            },
+        ],
+        options: ['takePicture'],
+        type: 'video',
+        captureVideo: true,
+        cameraFacing: 'user',
+        duration: 3,
+        versions: {
+            '': [
+                {
+                    title: 'Selfie',
+                    crop: false,
+                    autoCrop: false,
+                }
+            ]
+        }
     },
     {
         id: 'PA',
@@ -163,32 +189,6 @@ export const initialDocuments = [
                 },
             ]
         },
-    },
-    {
-        id: 'SE',
-        title: 'Selfie',
-        passed: null,
-        steps: [
-            {
-                title: '',
-                description:
-                    'Lütfen yüzünüzü belirtilen alanın içinde olacak şekilde konumlandırın',
-            },
-        ],
-        options: ['takePicture'],
-        type: 'video',
-        captureVideo: true,
-        cameraFacing: 'user',
-        duration: 3,
-        versions: {
-            '': [
-                {
-                    title: 'Selfie',
-                    crop: false,
-                    autoCrop: false,
-                }
-            ]
-        }
     },
     {
         id: 'SG',
