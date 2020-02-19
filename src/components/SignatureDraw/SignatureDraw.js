@@ -22,7 +22,7 @@ import api from '../../services/api'
 export const SignatureDraw = props => {
     const { document, goBackToMainScreen, customer, goBack, location, formData } = props
     const [documents, dispatch] = props.state
-    const [signature, setSignature] = useState(null)
+    const [signature, setSignature] = useState([])
     const [currentStep, setCurrentStep] = useState(0)
     const [isProcessStarted, setIsProcessStarted] = useState(null)
 
@@ -40,20 +40,20 @@ export const SignatureDraw = props => {
     }, [])
 
     useEffect(() => {
-        if (signature) handleSignatureMatch()
+        if (signature.length === 2) handleSignatureMatch()
     }, [signature])
 
 
-    const handleSignatureSteps = res => {
-        if (res.data.status === 'OK') {
-            if (currentStep < document.steps.length - 1) {
-                setCurrentStep(currentStep + 1)
-                setIsProcessStarted(false)
-                return
-            }
-            goBackToMainScreen()
-        } else {
+    const calculateNextStep = () => {
+        if (currentStep < document.steps.length - 1) {
+            setCurrentStep(currentStep + 1)
             setIsProcessStarted(false)
+            return
+        }
+    }
+
+    const handleIsSignatureCorrect = res => {
+        if (res.data.status !== 'OK') {
             Alert.alert(
                 '',
                 'İmzanızı ne yazık ki eşleştiremedik. Lütfen tekrar deneyin.',
@@ -62,10 +62,15 @@ export const SignatureDraw = props => {
                 ],
                 {cancelable: false}
             )
+            setCurrentStep(0)
+            setSignature([])
+            return
         }
+        goBackToMainScreen()
     }
 
     const handleSignatureMatch = async () => {
+        setIsProcessStarted(true)
         const deviceData = {
             id: DeviceInfo.getUniqueId(),
             os: Platform.OS,
@@ -79,8 +84,7 @@ export const SignatureDraw = props => {
         requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
         requestData.append('additional_data', JSON.stringify(formData))
-        if (location) requestData.append('location', JSON.stringify(location))
-        requestData.append('files[]', signature)
+        signature.forEach(sign => requestData.append('files[]', sign))
 
         await api.sendDocument(customer.access, requestData)
             .then(async res => {
@@ -89,15 +93,16 @@ export const SignatureDraw = props => {
                     document_id: document.id,
                     passed: true
                 })
-                handleSignatureSteps(res)
+                handleIsSignatureCorrect(res)
             })
             .catch(async error => {
-                alert(1)
                 await dispatch({
                     type: 'CHANGE_STATUS',
                     document_id: document.id,
                     passed: false
                 })
+                setCurrentStep(0)
+                setSignature([])
                 Alert.alert(
                     '',
                     'Bir hata oluştu.',
@@ -110,13 +115,11 @@ export const SignatureDraw = props => {
                     {cancelable: false}
                 )
             })
-
-            setSignature(null)
     }
 
-    const handleSignature = async signature => {
-        setIsProcessStarted(true)
-        setSignature(signature)
+    const handleSignature = async drawnSignature => {
+        setSignature([...signature, drawnSignature])
+        calculateNextStep()
     }
 
     const handleEmptySignature = () => {
