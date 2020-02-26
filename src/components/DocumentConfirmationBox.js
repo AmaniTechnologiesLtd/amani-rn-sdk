@@ -16,12 +16,6 @@ export const DocumentConfirmationBox = props => {
     const [errorMessage, setErrorMessage] = useState(null)
     const [imgSrc, setImgSrc] = useState(null)
 
-    const status = {
-        info: isSucceed ? `${document.title} başarı ile yüklendi.` : `${document.title} yüklenemedi.`,
-        buttonText: isSucceed ? 'DEVAM' : 'TEKRAR DENE',
-        source: isSucceed ? successImage : failImage
-    }
-
     useEffect(() => {
         if (!imgSrc && document.id !== 'UB') {
             const requestData = new FormData()
@@ -46,51 +40,32 @@ export const DocumentConfirmationBox = props => {
 
     if (!imgSrc && document.id !== 'UB') return <Loading />
 
-    if (imgSrc && !isImageApproved) {
-        return (
-            <View style={styles.confirmationContainer}>
-                <StatusBar hidden />
-                <Text style={styles.confirmationTitle}>
-                    {document.title} {"\n\n"}
-                    {document.steps.length > 0 && document.steps[step].title}
-                </Text>
-                <Image
-                    resizeMode="contain"
-                    style={[styles.confirmationImagePreview, { transform: [{ scaleX: document.id != 'SE' ? 1 : -1}] }]}
-                    source={{uri: imgSrc}}
-                />
-                <Text style={{color: 'white', fontSize: width * 0.035, textAlign: 'center'}}> {errorMessage} </Text>
-                <View style={styles.confirmationBottomBar}>
-                    <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05, backgroundColor: 'white' }]}>
-                        <Text style={styles.confirmationButtonText}>
-                            TEKRAR DENE
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity disabled={!!errorMessage} onPress={() => setIsImageApproved(true)}
-                        style={[styles.confirmationBottomBarButton, { backgroundColor: errorMessage ? 'gray' : 'white' }]}>
-                        <Text style={styles.confirmationButtonText}>
-                            ONAYLA
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-    }
-
     return (
-        <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
-            <View style={styles.childContainer}>
-                <Image source={status.source} resizeMode="contain" style={{width: width * 0.7}} />
-                <Text style={styles.statusInfoText}>
-                    {status.info}
-                </Text>
+        <View style={styles.confirmationContainer}>
+            <StatusBar hidden />
+            <Text style={styles.confirmationTitle}>
+                {document.title} {"\n\n"}
+                {document.steps.length > 0 && document.steps[step].title}
+            </Text>
+            <Image
+                resizeMode="contain"
+                style={[styles.confirmationImagePreview, { transform: [{ scaleX: document.id != 'SE' ? 1 : -1}] }]}
+                source={{uri: imgSrc}}
+            />
+            <Text style={{color: 'white', fontSize: width * 0.035, textAlign: 'center'}}> {errorMessage} </Text>
+            <View style={styles.confirmationBottomBar}>
+                <TouchableOpacity onPress={onTryAgain} style={[styles.confirmationBottomBarButton, { marginRight: width * 0.05, backgroundColor: 'white' }]}>
+                    <Text style={styles.confirmationButtonText}>
+                        TEKRAR DENE
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity disabled={!!errorMessage} onPress={continueProcess}
+                    style={[styles.confirmationBottomBarButton, { backgroundColor: errorMessage ? 'gray' : 'white' }]}>
+                    <Text style={styles.confirmationButtonText}>
+                        ONAYLA
+                    </Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={continueProcess} style={styles.statusButton}>
-                <Text style={styles.statusButtonText}>
-                    {status.buttonText}
-                </Text>
-            </TouchableOpacity>
         </View>
     )
 }

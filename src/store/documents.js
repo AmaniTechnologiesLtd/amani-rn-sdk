@@ -43,6 +43,32 @@ export const initialDocuments = [
         },
     },
     {
+        id: 'SE',
+        title: 'Selfie',
+        passed: null,
+        steps: [
+            {
+                title: '',
+                description:
+                    'Lütfen yüzünüzü belirtilen alanın içinde olacak şekilde konumlandırın',
+            },
+        ],
+        options: ['takePicture'],
+        type: 'video',
+        captureVideo: true,
+        cameraFacing: 'user',
+        duration: 3,
+        versions: {
+            '': [
+                {
+                    title: 'Selfie',
+                    crop: false,
+                    autoCrop: false,
+                }
+            ]
+        }
+    },
+    {
         id: 'PA',
         title: 'Pasaport',
         passed: null,
@@ -163,32 +189,6 @@ export const initialDocuments = [
                 },
             ]
         },
-    },
-    {
-        id: 'SE',
-        title: 'Selfie',
-        passed: null,
-        steps: [
-            {
-                title: '',
-                description:
-                    'Lütfen yüzünüzü belirtilen alanın içinde olacak şekilde konumlandırın',
-            },
-        ],
-        options: ['takePicture'],
-        type: 'video',
-        captureVideo: true,
-        cameraFacing: 'user',
-        duration: 3,
-        versions: {
-            '': [
-                {
-                    title: 'Selfie',
-                    crop: false,
-                    autoCrop: false,
-                }
-            ]
-        }
     },
     {
         id: 'SG',

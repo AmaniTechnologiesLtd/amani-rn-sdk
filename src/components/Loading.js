@@ -9,7 +9,7 @@ import {
 
 export const Loading = () => (
     <View style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="black" />
+        <StatusBar hidden />
         <ActivityIndicator color="white" size="large" />
     </View>
 )

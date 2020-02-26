@@ -73,8 +73,8 @@ export const CaptureDocument = props => {
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', () => {
-                goBack()
-                return true
+            goBack()
+            return true
         })
         return () => BackHandler.removeEventListener('hardwareBackPress')
     }, [])
@@ -108,7 +108,7 @@ export const CaptureDocument = props => {
         }).then(file => {
             RNFS.readFile(file.uri, 'base64').then(source => {
                 onCapture(`data:application/pdf;base64,${source}`)
-                setShowDocumentConfirmationBox(true)
+                calculateNextStep()
                 setIsProcessStarted(false)
             })
         }).catch(error => setIsProcessStarted(false))
@@ -173,19 +173,19 @@ export const CaptureDocument = props => {
         ]
         setCorners(captureCorners)
         onManualCropCorners(captureCorners)
-        setShowDocumentConfirmationBox(true)
+        calculateNextStep()
         setIsProcessStarted(false)
     }
 
     const checkPreScreenConditionForVersioning = () => {
-        if(Object.keys(document.versions).length > 1) return true // If groups are more than one
-        else if(document.versions[Object.keys(document.versions)[0]].length > 1) return true // If there is only one group but it has more than one versions
+        if (Object.keys(document.versions).length > 1) return true // If groups are more than one
+        else if (document.versions[Object.keys(document.versions)[0]].length > 1) return true // If there is only one group but it has more than one versions
         return false
     }
 
     const showTextBaloon = message => {
         return (
-            <View style={{position: 'absolute', right: 0, top: height * 0.06}}>
+            <View style={{ position: 'absolute', right: 0, top: height * 0.06 }}>
                 <TextBaloon
                     borderColor="black"
                     backgroundColor="white"
@@ -259,108 +259,116 @@ export const CaptureDocument = props => {
                 type={cameraType}
                 captureAudio={false}
                 ratio="16:9">
-                <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
+                {buttonDisabled ?
+                    (
+                        <Loading />
+                    ) :
+                    (
+                        <>
+                            <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
 
-                    <SafeAreaView style={styles.topBar}>
-                        {showHelperBaloon && (
-                            showTextBaloon('Buradan PDF dosyası yükleyebilirsiniz.')
-                        )}
-                        <TouchableOpacity
-                            style={styles.topBarLeft}
-                            onPress={goBack}
-                            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
-                            <Image
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                }}
-                                resizeMode="contain" source={require('../../assets/back-arrow.png')}
-                            />
-                        </TouchableOpacity>
+                                <SafeAreaView style={styles.topBar}>
+                                    {showHelperBaloon && (
+                                        showTextBaloon('Buradan PDF dosyası yükleyebilirsiniz.')
+                                    )}
+                                    <TouchableOpacity
+                                        style={styles.topBarLeft}
+                                        onPress={goBack}
+                                        hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                                        <Image
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                            resizeMode="contain" source={require('../../assets/back-arrow.png')}
+                                        />
+                                    </TouchableOpacity>
 
-                        <Text style={styles.topBarTitle}> {document.versions[versionGroup][groupIndex].title} </Text>
+                                    <Text style={styles.topBarTitle}> {document.versions[versionGroup][groupIndex].title} </Text>
 
-                        {document.options.includes('fileUpload') && (
-                            <TouchableOpacity
-                                style={styles.topBarRight}
-                                onPress={() => pickAndTransformPdf()}
-                                hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
-                                <Image
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                    }}
-                                    resizeMode="cover"
-                                    source={require('../../assets/pdf-icon.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </SafeAreaView>
-                </View>
+                                    {document.options.includes('fileUpload') && (
+                                        <TouchableOpacity
+                                            style={styles.topBarRight}
+                                            onPress={() => pickAndTransformPdf()}
+                                            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
+                                            <Image
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                }}
+                                                resizeMode="cover"
+                                                source={require('../../assets/pdf-icon.png')}
+                                            />
+                                        </TouchableOpacity>
+                                    )}
+                                </SafeAreaView>
+                            </View>
 
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    {document.steps.length > 1 && (
-                        <Text style={styles.topText}>
-                            {document.steps[currentStep].title}
-                        </Text>
+                            <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                                {document.steps.length > 1 && (
+                                    <Text style={styles.topText}>
+                                        {document.steps[currentStep].title}
+                                    </Text>
+                                )}
+                            </View>
+                            {document.versions[versionGroup][groupIndex].aspectRatio && (
+                                <View
+                                    style={{ flexDirection: 'row' }}>
+                                    <View style={styles.backDrop} />
+                                    <View
+                                        onLayout={event => {
+                                            setPreviewArea({
+                                                previewAreaWidth: width * 0.85,
+                                                previewAreaHeight: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
+                                                previewAreaX: event.nativeEvent.layout.x,
+                                                previewAreaY: event.nativeEvent.layout.y + width * 0.85,
+                                            })
+                                        }}
+                                        style={[
+                                            styles.previewMiddle,
+                                            {
+                                                width: width * 0.85,
+                                                height: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
+                                            },
+                                        ]}
+                                    />
+                                    <View style={styles.backDrop} />
+                                </View>
+                            )}
+                            {document.id === 'SE' && (
+                                <View
+                                    style={{ flexDirection: 'row' }}>
+                                    <View style={styles.backDrop} />
+                                    <View style={styles.selfieContainer}>
+                                        <SelfieMask />
+                                    </View>
+                                    <View style={styles.backDrop} />
+                                </View>
+                            )}
+                            <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
+                                <Text style={styles.bottomText}>
+                                    {document.steps[currentStep].description}
+                                </Text>
+                            </View>
+                            <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
+                                <TouchableOpacity
+                                    style={styles.takePhotoButtonCircle}
+                                    disabled={buttonDisabled}
+                                    onPress={takePicture}>
+                                    <View style={[
+                                        styles.takePhotoButton,
+                                        {
+                                            backgroundColor: buttonDisabled
+                                                ? '#9e9e9e'
+                                                : 'white',
+                                        },
+                                    ]}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <PoweredBy />
+                        </>
                     )}
-                </View>
-                {document.versions[versionGroup][groupIndex].aspectRatio && (
-                    <View
-                        style={{ flexDirection: 'row' }}>
-                        <View style={styles.backDrop} />
-                        <View
-                        onLayout={event => {
-                            setPreviewArea({
-                                previewAreaWidth: width * 0.85,
-                                previewAreaHeight: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
-                                previewAreaX: event.nativeEvent.layout.x,
-                                previewAreaY: event.nativeEvent.layout.y + width * 0.85,
-                            })
-                        }}
-                            style={[
-                                styles.previewMiddle,
-                                {
-                                    width: width * 0.85,
-                                    height: width * 0.85 * document.versions[versionGroup][groupIndex].aspectRatio,
-                                },
-                            ]}
-                        />
-                        <View style={styles.backDrop} />
-                    </View>
-                )}
-                {document.id === 'SE' && (
-                    <View
-                        style={{ flexDirection: 'row' }}>
-                        <View style={styles.backDrop} />
-                        <View style={styles.selfieContainer}>
-                            <SelfieMask />
-                        </View>
-                        <View style={styles.backDrop} />
-                    </View>
-                )}
-                <View style={{ backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }}>
-                    <Text style={styles.bottomText}>
-                        {document.steps[currentStep].description}
-                    </Text>
-                </View>
-                <View style={[styles.topArea, { backgroundColor: document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent' }]}>
-                    <TouchableOpacity
-                        style={styles.takePhotoButtonCircle}
-                        disabled={buttonDisabled}
-                        onPress={takePicture}>
-                        <View style={[
-                                styles.takePhotoButton,
-                                {
-                                    backgroundColor: buttonDisabled
-                                        ? '#9e9e9e'
-                                        : 'white',
-                                },
-                            ]}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <PoweredBy />
             </RNCamera>
         </View>
     )
