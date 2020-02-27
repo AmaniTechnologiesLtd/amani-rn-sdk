@@ -137,7 +137,11 @@ export const MainScreen = props => {
         if (missingRules) {
             documents.map(doc => {
                 if (!missingRules.includes(doc.id)) {
-                    doc.passed = true
+                    dispatch({
+                        type: 'CHANGE_STATUS',
+                        document_id: doc.id,
+                        passed: true
+                    })
                 }
             })
             setIsLoading(false)
@@ -230,7 +234,7 @@ export const MainScreen = props => {
         return Boolean(index !== 0 && documents[index -1].passed == null || document.passed)
     }
 
-    const handleCurrentModalStatus = (document, isLocked) => {
+    const handleCurrentModalStatus = (document, index) => {
         // If document is Signature and other documents are not succeed yet
         if (document.id === 'SG' && !Object.values(documents).every(item => (item.id === 'SG' || item.passed === true))) {
             return (
@@ -242,7 +246,7 @@ export const MainScreen = props => {
             )
         }
         // if document is not Signature and its locked
-        else if (isLocked && document.id !== 'SG') {
+        else if (index !== 0 && documents[index -1].passed !== true && !document.passed && document.id !== 'SG') {
             return (
                 <Image
                     resizeMode="contain"
@@ -321,7 +325,7 @@ export const MainScreen = props => {
                                     <Text style={styles.moduleTitle}>{document.title}</Text>
                                 </View>
                                 <View style={styles.moduleStatusContainer}>
-                                    {handleCurrentModalStatus(document, index !== 0 && documents[index -1].passed == null)}
+                                {handleCurrentModalStatus(document, index)}
                                 </View>
                             </View>
                         </TouchableOpacity>
