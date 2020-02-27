@@ -32,6 +32,7 @@ export const MainScreen = props => {
     const [documents, dispatch] = useReducer(documentsReducer, initialDocuments)
 
     const [isLoading, setIsLoading] = useState(true)
+    const [missingRules, setMissingRules] = useState(null)
     const [selectedDocument, setSelectedDocument] = useState(null)
     const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null)
     const [cropDocument, setCropDocument] = useState(null)
@@ -116,7 +117,11 @@ export const MainScreen = props => {
                         type: 'FILTER_DOCUMENTS',
                         document_types: fRes.data.available_documents,
                     })
-                    setIsLoading(false)
+                    let rules = []
+                    await sRes.data.missing_rules.map(rule => {
+                        rules = rules.concat(rule.document_classes)
+                    })
+                    setMissingRules(rules)
                 }).catch(error => errorHandler(error))
             }).catch(error => errorHandler(error))
         }
@@ -126,7 +131,18 @@ export const MainScreen = props => {
         })
 
         return () => backHandler.remove()
-    }, [documents])
+    }, [])
+
+    useEffect(() => {
+        if (missingRules) {
+            documents.map(doc => {
+                if (!missingRules.includes(doc.id)) {
+                    doc.passed = true
+                }
+            })
+            setIsLoading(false)
+        }
+    }, [missingRules])
 
     useEffect(() => {
         if (isStepsFinished) handleSendDocumentsRequest()
