@@ -71,6 +71,11 @@ export const SignatureDraw = props => {
 
     const handleSignatureMatch = async () => {
         setIsProcessStarted(true)
+        await sendContractForm()
+        await sendSignatureDocuments()
+    }
+
+    const sendSignatureDocuments = async () => {
         const deviceData = {
             id: DeviceInfo.getUniqueId(),
             os: Platform.OS,
@@ -83,7 +88,6 @@ export const SignatureDraw = props => {
         requestData.append('type', document.id)
         requestData.append('customer_token', customer.id)
         requestData.append('device_data', JSON.stringify(deviceData))
-        requestData.append('additional_data', JSON.stringify(formData))
         signature.forEach(sign => requestData.append('files[]', sign))
 
         await api.sendDocument(customer.access, requestData)
@@ -115,6 +119,23 @@ export const SignatureDraw = props => {
                     {cancelable: false}
                 )
             })
+    }
+
+    const sendContractForm = async () => {
+        let customerData = customer.data
+
+        customerData = {...customerData, occupation: formData.job, address: {
+            city: formData.city,
+            province: formData.district,
+            address: formData.address
+        }}
+
+        const requestData = {
+            customerData,
+            token: customer.access
+        }
+
+        await api.createCustomer(requestData)
     }
 
     const handleSignature = async drawnSignature => {

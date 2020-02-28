@@ -40,7 +40,7 @@ export const MainScreen = props => {
     const [corners, setCorners] = useState([])
     const [files, setFiles] = useState([])
     const [isStepsFinished, setIsStepsFinished] = useState(false)
-    const [customer, setCustomer] = useState({ access: null, customer: null })
+    const [customer, setCustomer] = useState({ access: null, id: null, data: null })
     const [permissions, setPermission] = useState({camera: null, location: null})
     const [location, setLocation] = useState(null)
 
@@ -112,7 +112,7 @@ export const MainScreen = props => {
                 }
 
                 api.createCustomer(formData).then(async (sRes) => {
-                    setCustomer({ access: fRes.data.token, id: sRes.data.token })
+                    setCustomer({ access: fRes.data.token, id: sRes.data.token, data: customerInformations })
                     await dispatch({
                         type: 'FILTER_DOCUMENTS',
                         document_types: fRes.data.available_documents,
