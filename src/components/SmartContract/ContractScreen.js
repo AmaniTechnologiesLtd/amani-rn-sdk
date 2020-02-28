@@ -15,10 +15,12 @@ import {
     Dimensions
 } from 'react-native'
 import { WebView } from 'react-native-webview'
+import PickerModal from 'react-native-picker-modal-view'
 
 // Local files
 import { content } from './View/html'
 import { SignatureDraw } from '../SignatureDraw/SignatureDraw'
+import cities from "../../store/cities.json"
 
 const { width, height } = Dimensions.get('window')
 
@@ -114,7 +116,7 @@ export const ContractScreen = props => {
     if (!showContract) {
         return (
             <SafeAreaView style={styles.contactFormContainer}>
-                <StatusBar barStyle="dark-content" backgroundColor="white" />
+                <StatusBar barStyle="light-content" backgroundColor="black"/>
                 <View style={styles.topBar}>
                     <TouchableOpacity
                         style={styles.topBarLeft}
@@ -142,21 +144,64 @@ export const ContractScreen = props => {
                             />
                         </View>
                         <View style={styles.contactFormView}>
-                            <TextInput
-                                style={styles.contactFormInput}
-                                onChangeText={val => setFormData({...formData, city: val})}
-                                placeholder="İl"
-                                placeholderTextColor="gray"
-                                value={formData.city}
+                            <PickerModal
+                                renderSelectView={(disabled, selected, showModal) =>
+                                    <TouchableOpacity
+                                        disabled={disabled}
+                                        onPress={showModal}
+                                    >
+                                        <View style={{
+                                            width: width * 0.8,
+                                            justifyContent: 'center',
+                                            height: height * 0.05,
+                                            paddingHorizontal: width * 0.035,
+                                            borderWidth: 0.5,
+                                            borderColor: '#212121',
+                                        }}>
+                                            <Text style={{ color: formData.city ? '#212121' : 'gray' }}> {formData.city || 'İl'} </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                }
+                                onSelected={val => setFormData({ ...formData, city: val.Name, district: null })}
+                                onBackButtonPressed={() => {}}
+                                items={cities}
+                                sortingLanguage={'tr'}
+                                showToTopButton={true}
+                                showAlphabeticalIndex={true}
+                                autoGenerateAlphabeticalIndex={true}
+                                searchPlaceholderText={'Ara...'}
+                                autoSort={false}
                             />
                         </View>
                         <View style={styles.contactFormView}>
-                            <TextInput
-                                style={styles.contactFormInput}
-                                onChangeText={val => setFormData({...formData, district: val})}
-                                placeholder="İlçe"
-                                placeholderTextColor="gray"
-                                value={formData.district}
+                            <PickerModal
+                                renderSelectView={(disabled, selected, showModal) =>
+                                    <TouchableOpacity
+                                            style={{backgroundColor: !formData.city ? '#eeeeee' : 'white'}}
+                                            disabled={!formData.city}
+                                            onPress={showModal}
+                                        >
+                                        <View style={{
+                                            width: width * 0.8,
+                                            justifyContent: 'center',
+                                            height: height * 0.05,
+                                            paddingHorizontal: width * 0.035,
+                                            borderWidth: 0.5,
+                                            borderColor: '#212121',
+                                        }}>
+                                            <Text style={{ color: formData.district ? '#212121' : 'gray' }}> {formData.district || 'İlçe'} </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                }
+                                onSelected={val => setFormData({...formData, district: val.Name})}
+                                onBackButtonPressed={() => {}}
+                                items={cities.find(city => city.Name === (formData.city || 'Adana')).District}
+                                sortingLanguage={'tr'}
+                                showToTopButton={true}
+                                showAlphabeticalIndex={true}
+                                autoGenerateAlphabeticalIndex={true}
+                                searchPlaceholderText={'Ara...'}
+                                autoSort={false}
                             />
                         </View>
                         <View style={styles.contactFormView}>
