@@ -179,6 +179,10 @@ export const MainScreen = props => {
 
         files.forEach(file => requestData.append('files[]', file))
 
+        setCropDocument(null)
+        setFiles([])
+        setCorners([])
+
         await api.sendDocument(customer.access, requestData)
             .then(res => {
                 if (res.data.status === 'OK') {
@@ -202,10 +206,6 @@ export const MainScreen = props => {
                     passed: false
                 })
             })
-
-        setCropDocument(null)
-        setFiles([])
-        setCorners([])
     }
 
     const onDocumentCaptured = (capture) => {
@@ -246,7 +246,7 @@ export const MainScreen = props => {
             )
         }
         // if document is not Signature and its locked
-        else if (index !== 0 && documents[index -1].passed !== true && !document.passed && document.id !== 'SG') {
+        else if (index !== 0 && documents[index -1].passed !== true && documents[index -1].passed !== 'loading' && !document.passed && document.id !== 'SG') {
             return (
                 <Image
                     resizeMode="contain"
