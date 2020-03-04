@@ -1,4 +1,4 @@
 // Local files
-import Mainscreen from './src/Mainscreen'
+import Mainscreen from './src/Mainscreen';
 
-export default Mainscreen
+export default Mainscreen;
