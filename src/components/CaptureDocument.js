@@ -22,7 +22,7 @@ import {ImageCropper} from './ImageCropper';
 import {PoweredBy} from './PoweredBy';
 import {Loading} from './Loading';
 import {VersionSelection} from './VersionSelection';
-import {DocumentConfirmationBox} from './DocumentConfirmationBox';
+import {DocumentConfirmation} from 'amani-rn-sdk/src/components/DocumentConfirmation';
 import TextBaloon from './TextBaloon';
 import {backdropColor} from '../constants';
 
@@ -66,10 +66,9 @@ export const CaptureDocument = props => {
   const [showHelperBaloon, setShowHelperBaloon] = useState(
     document.id === 'UB' ? true : false,
   );
-  const [
-    showDocumentConfirmationBox,
-    setShowDocumentConfirmationBox,
-  ] = useState(false);
+  const [showDocumentConfirmation, setShowDocumentConfirmation] = useState(
+    false,
+  );
   const [capturedImageUrl, setCapturedImageUrl] = useState(null);
 
   const camera = useRef(null);
@@ -97,7 +96,7 @@ export const CaptureDocument = props => {
         quality: 0.7,
         orientation: 'portrait',
         base64: true,
-        width: 1080,
+        width: 1200,
         fixOrientation: true,
       })
       .then(async data => {
@@ -110,7 +109,7 @@ export const CaptureDocument = props => {
           }
           onCapture(image);
           setCapturedImageUrl(image);
-          setShowDocumentConfirmationBox(true);
+          setShowDocumentConfirmation(true);
           setIsProcessStarted(false);
         }
         setButtonDisabled(false);
@@ -133,7 +132,7 @@ export const CaptureDocument = props => {
   };
 
   const calculateNextStep = () => {
-    setShowDocumentConfirmationBox(false);
+    setShowDocumentConfirmation(false);
     if (currentStep < document.steps.length - 1) {
       setCurrentStep(currentStep + 1);
       setImageCrop(null);
@@ -145,7 +144,7 @@ export const CaptureDocument = props => {
 
   const handleDocumentRetake = () => {
     onDecline();
-    setShowDocumentConfirmationBox(false);
+    setShowDocumentConfirmation(false);
   };
 
   const handleAutoCrop = async data => {
@@ -156,8 +155,8 @@ export const CaptureDocument = props => {
         y: previewArea.previewAreaY,
       },
       size: {
-        height: 1080,
-        width: 1080,
+        height: 1200,
+        width: 1200,
       },
     };
 
@@ -219,13 +218,12 @@ export const CaptureDocument = props => {
     return <Loading />;
   }
 
-  if (showDocumentConfirmationBox) {
+  if (showDocumentConfirmation) {
     return (
-      <DocumentConfirmationBox
+      <DocumentConfirmation
         customer={customer}
         document={document}
         corners={corners}
-        isSucceed={true}
         imageUrl={capturedImageUrl}
         step={currentStep}
         continueProcess={calculateNextStep}

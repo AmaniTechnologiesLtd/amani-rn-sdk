@@ -46,6 +46,9 @@ export const initialDocuments = [
         },
       ],
     },
+    successTitle: 'Kimliğini başarıyla yükledin.',
+    successDescription:
+      'Biz kimliğini kontrol ederken selfie çekimi ile devam et.',
   },
   {
     id: 'SE',

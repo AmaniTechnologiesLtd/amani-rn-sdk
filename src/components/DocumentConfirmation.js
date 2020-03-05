@@ -12,15 +12,15 @@ import {
 } from 'react-native';
 
 // Local files
-import api from '../services/api';
-import {Loading} from './Loading';
+import api from 'amani-rn-sdk/src/services/api';
+import {Loading} from 'amani-rn-sdk/src/components/Loading';
 import mainBackground from '../../assets/main-bg.png';
 import orangeBackground from '../../assets/btn-orange.png';
 import backArrow from '../../assets/back-arrow.png';
 
 const {width, height} = Dimensions.get('window');
 
-export const DocumentConfirmationBox = props => {
+export const DocumentConfirmation = props => {
   const {
     imageUrl,
     document,
@@ -46,17 +46,28 @@ export const DocumentConfirmationBox = props => {
       api
         .cropImage(customer.access, requestData)
         .then(res => {
-          if (res.data.status === 'ERROR') {
-            if (res.data.statusText) {
-              setErrorMessage(res.data.statusText);
-              return;
-            }
-            setErrorMessage('Bir şeyler yanlış gitti');
-          }
           setImgSrc(res.data.image);
+          if (!res.data.cropped) {
+            setErrorMessage(
+              'Belgenizi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar çekin.',
+            );
+            return;
+          }
+          if (res.data.blur) {
+            setErrorMessage(
+              'Fotoğrafta bulanıklık tespit edildi.\n\nLütfen tekrar deneyin.',
+            );
+            return;
+          }
+          if (res.data.glare) {
+            setErrorMessage(
+              'Fotoğrafta parlama tespit edildi.\n\nLütfen tekrar deneyin.',
+            );
+            return;
+          }
         })
-        .catch(err => {
-          setErrorMessage('Bir şeyler yanlış gitti, tekrar deneyin');
+        .catch(() => {
+          setErrorMessage('Bir şeyler yanlış gitti. Lütfen tekrar deneyin.');
         });
     }
   }, []);
@@ -65,6 +76,7 @@ export const DocumentConfirmationBox = props => {
     return <Loading />;
   }
 
+  // Ask user for confirmation or show error messages
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -92,29 +104,26 @@ export const DocumentConfirmationBox = props => {
         ]}
         source={{uri: imgSrc}}
       />
-      <Text
-        style={{color: 'white', fontSize: width * 0.035, textAlign: 'center'}}>
-        {errorMessage}
-      </Text>
-      <View style={styles.confirmationBottomBar}>
+
+      <Text style={styles.errorMessageText}>{errorMessage}</Text>
+
+      <View style={styles.bottomBar}>
         <TouchableOpacity
           onPress={onTryAgain}
           style={[styles.bottomButtons, styles.tryAgainButton]}>
           <Text style={styles.bottomButtonText}>Tekrar Dene</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          disabled={!!errorMessage}
-          onPress={continueProcess}
-          style={[
-            styles.bottomButtons,
-            {backgroundColor: errorMessage ? 'gray' : 'white'},
-          ]}>
-          <ImageBackground
-            source={orangeBackground}
-            style={styles.bottomButtonBackground}>
-            <Text style={styles.bottomButtonText}>ONAYLA</Text>
-          </ImageBackground>
-        </TouchableOpacity>
+        {!errorMessage && (
+          <TouchableOpacity
+            onPress={continueProcess}
+            style={[styles.bottomButtons, styles.approveButton]}>
+            <ImageBackground
+              source={orangeBackground}
+              style={styles.bottomButtonBackground}>
+              <Text style={styles.bottomButtonText}>ONAYLA</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        )}
       </View>
     </ImageBackground>
   );
@@ -147,22 +156,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width * 0.045,
   },
-  statusInfoText: {
-    fontSize: 25,
-    textAlign: 'center',
-    marginTop: height * -0.055,
-    marginBottom: 20,
-  },
-  statusButton: {
-    justifyContent: 'center',
-    width: width * 0.9,
-    height: height * 0.06,
-    borderRadius: 5,
-  },
-  statusButtonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
   confirmationTitle: {
     color: 'white',
     fontSize: width * 0.06,
@@ -173,7 +166,34 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     height: height * 0.5,
   },
-  confirmationBottomBar: {
+  errorMessageText: {
+    color: 'white',
+    fontSize: width * 0.035,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  successMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successIcon: {
+    marginVertical: 20,
+  },
+  successTitle: {
+    color: 'white',
+    fontWeight: 'bold',
+    marginVertical: 10,
+    fontSize: height * 0.04,
+  },
+  successDescription: {
+    color: 'white',
+    marginVertical: 10,
+    marginHorizontal: 30,
+    fontSize: height * 0.02,
+    textAlign: 'center',
+  },
+  bottomBar: {
     position: 'absolute',
     bottom: height * 0,
     height: height * 0.07,
@@ -200,6 +220,8 @@ const styles = StyleSheet.create({
   tryAgainButton: {
     borderColor: 'white',
     borderWidth: 1,
-    marginRight: width * 0.05,
+  },
+  approveButton: {
+    marginLeft: width * 0.05,
   },
 });

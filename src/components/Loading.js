@@ -1,24 +1,23 @@
-// Global dependencies
-import React from 'react'
+import React from 'react';
 import {
-    View,
-    ActivityIndicator,
-    StyleSheet,
-    StatusBar
-} from 'react-native'
+  ActivityIndicator,
+  StyleSheet,
+  StatusBar,
+  ImageBackground,
+} from 'react-native';
+import mainBackground from '../../assets/main-bg.png';
 
 export const Loading = () => (
-    <View style={styles.container}>
-        <StatusBar hidden />
-        <ActivityIndicator color="white" size="large" />
-    </View>
-)
+  <ImageBackground source={mainBackground} style={styles.container}>
+    <StatusBar hidden />
+    <ActivityIndicator color="white" size="large" />
+  </ImageBackground>
+);
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-})
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

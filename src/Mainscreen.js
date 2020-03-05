@@ -20,6 +20,7 @@ import DeviceInfo from 'react-native-device-info';
 
 // Local files
 import {CaptureDocument} from './components/CaptureDocument';
+import {DocumentSuccess} from './components/DocumentSuccess';
 import {ContractScreen} from './components/SmartContract/ContractScreen';
 import {Loading} from './components/Loading';
 import {PoweredBy} from './components/PoweredBy';
@@ -30,8 +31,8 @@ import orangeBackground from '../assets/btn-orange.png';
 import mainBackground from '../assets/main-bg.png';
 import forwardArrow from '../assets/forward-arrow.png';
 import lockIcon from '../assets/locked-icon.png';
-import successIcon from '../assets/success.png';
-import failedIcon from '../assets/failed.png';
+import successIcon from '../assets/success-icon.png';
+import failedIcon from '../assets/failed-icon.png';
 
 const {width, height} = Dimensions.get('window');
 
@@ -40,10 +41,9 @@ export const MainScreen = props => {
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [missingRules, setMissingRules] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null);
-  const [setCropDocument] = useState(null);
+  // const [cropDocument, setCropDocument] = useState(null);
   const [showContract, setShowContract] = useState(false);
   const [corners, setCorners] = useState([]);
   const [files, setFiles] = useState([]);
@@ -53,6 +53,7 @@ export const MainScreen = props => {
     id: null,
     data: null,
   });
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
   const [permissions, setPermission] = useState({camera: null, location: null});
   const [location, setLocation] = useState(null);
 
@@ -148,11 +149,24 @@ export const MainScreen = props => {
                 type: 'FILTER_DOCUMENTS',
                 document_types: fRes.data.available_documents,
               });
+
+              // Check for missing documents
               let rules = [];
               await sRes.data.missing_rules.map(rule => {
                 rules = rules.concat(rule.document_classes);
               });
-              setMissingRules(rules);
+
+              documents.map(doc => {
+                if (!rules.includes(doc.id)) {
+                  dispatch({
+                    type: 'CHANGE_STATUS',
+                    document_id: doc.id,
+                    passed: true,
+                  });
+                }
+              });
+
+              setIsLoading(false);
             })
             .catch(error => errorHandler(error));
         })
@@ -170,21 +184,6 @@ export const MainScreen = props => {
   }, []);
 
   useEffect(() => {
-    if (missingRules) {
-      documents.map(doc => {
-        if (!missingRules.includes(doc.id)) {
-          dispatch({
-            type: 'CHANGE_STATUS',
-            document_id: doc.id,
-            passed: true,
-          });
-        }
-      });
-      setIsLoading(false);
-    }
-  }, [documents, missingRules]);
-
-  useEffect(() => {
     if (isStepsFinished) {
       handleSendDocumentsRequest();
     }
@@ -198,7 +197,7 @@ export const MainScreen = props => {
       passed: 'loading',
     });
 
-    setSelectedDocument(null);
+    setShowSuccessScreen(true);
 
     const deviceData = {
       id: DeviceInfo.getUniqueId(),
@@ -226,10 +225,6 @@ export const MainScreen = props => {
 
     files.forEach(file => requestData.append('files[]', file));
 
-    setCropDocument(null);
-    setFiles([]);
-    setCorners([]);
-
     await api
       .sendDocument(customer.access, requestData)
       .then(res => {
@@ -256,10 +251,18 @@ export const MainScreen = props => {
       });
   };
 
+  const clearSelectedDocument = () => {
+    setSelectedDocument(null);
+    // setCropDocument(null);
+    setFiles([]);
+    setCorners([]);
+    setShowSuccessScreen(false);
+  };
+
   const onDocumentCaptured = capture => {
-    if (selectedDocument.crop) {
-      setCropDocument(capture);
-    }
+    // if (selectedDocument.crop) {
+    //   setCropDocument(capture);
+    // }
     setFiles([...files, capture]);
   };
 
@@ -367,6 +370,15 @@ export const MainScreen = props => {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (showSuccessScreen) {
+    return (
+      <DocumentSuccess
+        document={selectedDocument}
+        continueProcess={clearSelectedDocument}
+      />
+    );
   }
 
   if (selectedDocument) {
