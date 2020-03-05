@@ -25,11 +25,13 @@ import {Loading} from './components/Loading';
 import {PoweredBy} from './components/PoweredBy';
 import {initialDocuments, documentsReducer} from './store/documents';
 import api from './services/api';
-import {backdropColor} from './constants';
 import blueBackground from '../assets/btn-blue.png';
 import orangeBackground from '../assets/btn-orange.png';
-import forwardArrow from '../assets/forward-arrow.png';
 import mainBackground from '../assets/main-bg.png';
+import forwardArrow from '../assets/forward-arrow.png';
+import lockIcon from '../assets/locked-icon.png';
+import successIcon from '../assets/success.png';
+import failedIcon from '../assets/failed.png';
 
 const {width, height} = Dimensions.get('window');
 
@@ -302,7 +304,7 @@ export const MainScreen = props => {
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={require('../assets/locked-icon.png')}
+          source={lockIcon}
         />
       );
     }
@@ -318,7 +320,7 @@ export const MainScreen = props => {
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={require('../assets/locked-icon.png')}
+          source={lockIcon}
         />
       );
     } else if (document.passed === null) {
@@ -339,11 +341,7 @@ export const MainScreen = props => {
       <Image
         resizeMode="contain"
         style={styles.moduleStatusIcon}
-        source={
-          document.passed
-            ? require('../assets/success.png')
-            : require('../assets/failed.png')
-        }
+        source={document.passed ? successIcon : failedIcon}
       />
     );
   };
@@ -359,10 +357,9 @@ export const MainScreen = props => {
           styles.container,
           {alignItems: 'center', paddingHorizontal: width * 0.07},
         ]}>
-        <StatusBar barStyle="light-content" backgroundColor="black" />
+        <StatusBar translucent backgroundColor="transparent" />
         <Text style={{color: 'white', fontSize: 18}}>
-          {' '}
-          Camera and Location permissions are not authorized{' '}
+          Camera and Location permissions are not authorized
         </Text>
       </View>
     );
@@ -401,7 +398,7 @@ export const MainScreen = props => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="black" />
+      <StatusBar translucent backgroundColor="transparent" />
       <Text style={styles.containerHeaderText}>
         Yüklemek İçin Bir Doküman Seç
       </Text>
@@ -452,7 +449,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     resizeMode: 'cover',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 40,
   },
   containerHeaderText: {
     color: 'white',

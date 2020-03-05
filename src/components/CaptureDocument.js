@@ -24,6 +24,7 @@ import {Loading} from './Loading';
 import {VersionSelection} from './VersionSelection';
 import {DocumentConfirmationBox} from './DocumentConfirmationBox';
 import TextBaloon from './TextBaloon';
+import {backdropColor} from '../constants';
 
 const {width, height} = Dimensions.get('window');
 
@@ -242,7 +243,7 @@ export const CaptureDocument = props => {
             ? 'vertical'
             : 'horizontal'
         }
-        versions={document.versions}
+        document={document}
         versionGroup={setVersionGroup}
         groupIndex={setGroupIndex}
         closeVersionSelected={() => setShowVersionSelectionScreen(false)}
@@ -265,7 +266,7 @@ export const CaptureDocument = props => {
 
   return (
     <View style={styles.cameraContainer}>
-      <StatusBar hidden />
+      <StatusBar translucent backgroundColor="transparent" />
       <RNCamera
         ref={camera}
         style={styles.preview}
@@ -279,7 +280,7 @@ export const CaptureDocument = props => {
             <View
               style={{
                 backgroundColor:
-                  document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent',
+                  document.id !== 'UB' ? backdropColor : 'transparent',
               }}>
               <SafeAreaView style={styles.topBar}>
                 {showHelperBaloon &&
@@ -299,8 +300,7 @@ export const CaptureDocument = props => {
                 </TouchableOpacity>
 
                 <Text style={styles.topBarTitle}>
-                  {' '}
-                  {document.versions[versionGroup][groupIndex].title}{' '}
+                  {document.versions[versionGroup][groupIndex].title}
                 </Text>
 
                 {document.options.includes('fileUpload') && (
@@ -326,7 +326,7 @@ export const CaptureDocument = props => {
                 styles.topArea,
                 {
                   backgroundColor:
-                    document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent',
+                    document.id !== 'UB' ? backdropColor : 'transparent',
                 },
               ]}>
               {document.steps.length > 1 && (
@@ -376,7 +376,7 @@ export const CaptureDocument = props => {
             <View
               style={{
                 backgroundColor:
-                  document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent',
+                  document.id !== 'UB' ? backdropColor : 'transparent',
               }}>
               <Text style={styles.bottomText}>
                 {document.steps[currentStep].description}
@@ -384,10 +384,10 @@ export const CaptureDocument = props => {
             </View>
             <View
               style={[
-                styles.topArea,
+                styles.bottomArea,
                 {
                   backgroundColor:
-                    document.id !== 'UB' ? 'rgba(0,0,0,0.70)' : 'transparent',
+                    document.id !== 'UB' ? backdropColor : 'transparent',
                 },
               ]}>
               <TouchableOpacity
@@ -415,7 +415,6 @@ export const CaptureDocument = props => {
 const styles = StyleSheet.create({
   cameraContainer: {
     flex: 1,
-    backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -458,12 +457,12 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 10,
     justifyContent: 'center',
-    paddingVertical: 15,
+    paddingTop: 30,
   },
   topBarLeft: {
     position: 'absolute',
     left: 10,
-    top: 15,
+    top: 30,
     width: width * 0.055,
     height: height * 0.03,
   },
@@ -482,28 +481,35 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    paddingBottom: 20,
   },
   topText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
   },
+  bottomArea: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
   bottomText: {
     color: 'white',
-    fontSize: height * 0.025,
-    paddingHorizontal: '5%',
+    fontSize: height * 0.02,
+    paddingHorizontal: '10%',
     textAlign: 'center',
     marginVertical: 10,
-    marginBottom: 40,
   },
   takePhotoButtonCircle: {
     alignItems: 'center',
     alignSelf: 'flex-end',
     borderRadius: 50,
-    padding: 3,
-    borderWidth: 1,
+    padding: 5,
+    borderWidth: 3,
     borderColor: 'white',
     marginBottom: height * 0.05,
   },
@@ -532,7 +538,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   backDrop: {
-    backgroundColor: 'rgba(0,0,0,0.70)',
+    backgroundColor: backdropColor,
     flex: 1,
   },
 });

@@ -1,1 +1,1 @@
-export const backdropColor = '#263B5B';
+export const backdropColor = 'rgba(38, 59, 91, 0.6)';

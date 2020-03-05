@@ -2,39 +2,44 @@ export const initialDocuments = [
   {
     id: 'ID',
     secondary_id: 'DL',
-    title: 'Kimlik & Sürücü Belgesi',
+    title: 'Kimliğini Doğrula',
     passed: null,
     steps: [
       {
-        title: 'Ön yüz',
+        title: 'Belgenin ön yüzünü fotoğrafını çek',
         description:
-          'Lütfen dokümanın ön yüzünü kutucuğun içinde olacak şekilde konumlandırın',
+          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol.',
+        confirmationTitle: 'Belgenin Ön Yüzü',
       },
       {
-        title: 'Arka yüz',
+        title: 'Belgenin arka yüzünü fotoğrafını çek',
         description:
-          'Lütfen dokümanın arka yüzünü kutucuğun içinde olacak şekilde konumlandırın',
+          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol.',
+        confirmationTitle: 'Belgenin Ön Yüzü',
       },
     ],
     options: ['takePicture'],
     captureVideo: false,
     cameraFacing: 'environment',
+    versionTitle: 'Kimlik Tipini Seçin',
+    versionDescription:
+      'Lütfen doğrulama işlemi için kullanacağın kimliğinin tipini seç. Eğer mevcutsa, yeni tip TC Kimlik Kartını kullanman önerilir.',
     versions: {
       '': [
         {
-          title: 'Eski Kimlik',
-          aspectRatio: 1.2,
-          crop: false,
-          autoCrop: true,
-        },
-        {
-          title: 'Yeni Kimlik',
+          title: 'T.C. Kimlik Kartı (Yeni Tip)',
           aspectRatio: 0.63,
           crop: false,
           autoCrop: true,
         },
         {
-          title: 'Yeni Sürücü Belgesi',
+          title: 'Nüfus Cüzdanı (Eski Tip)',
+          aspectRatio: 1.2,
+          crop: false,
+          autoCrop: true,
+        },
+        {
+          title: 'Ehliyet (Yeni Tip)',
           aspectRatio: 0.63,
           crop: false,
           autoCrop: true,
@@ -58,6 +63,8 @@ export const initialDocuments = [
     captureVideo: true,
     cameraFacing: 'user',
     duration: 3,
+    versionTitle: '',
+    versionDescription: '',
     versions: {
       '': [
         {
@@ -83,6 +90,8 @@ export const initialDocuments = [
     type: 'image',
     captureVideo: false,
     cameraFacing: 'environment',
+    versionTitle: '',
+    versionDescription: '',
     versions: {
       '': [
         {
@@ -109,6 +118,8 @@ export const initialDocuments = [
     type: 'image',
     captureVideo: false,
     cameraFacing: 'environment',
+    versionTitle: '',
+    versionDescription: '',
     versions: {
       '': [
         {
@@ -135,6 +146,9 @@ export const initialDocuments = [
     type: 'image',
     captureVideo: false,
     cameraFacing: 'environment',
+    versionTitle: 'Belge Tipini Seçin',
+    versionDescription:
+      'Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir fatura ya da ikametgah belgeni yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf) olarak yükleyebilirsin. \n\n Eğer yanında hiçbir belge yoksabu adımı şimdilik atlayabilir ya da hemen e-devletten ikametgah belgeni pdf olarak indirip yükleyebilirsin.',
     versions: {
       Devlet: [
         {
@@ -208,6 +222,8 @@ export const initialDocuments = [
     type: 'image',
     captureVideo: false,
     cameraFacing: null,
+    versionTitle: '',
+    versionDescription: '',
     versions: {
       '': [
         {
