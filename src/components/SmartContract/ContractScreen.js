@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,18 +13,18 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
-import {WebView} from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 import PickerModal from 'react-native-picker-modal-view';
 
 // Local files
-import {content} from './View/html';
-import {SignatureDraw} from '../SignatureDraw/SignatureDraw';
+import { content } from './View/html';
+import { SignatureDraw } from '../SignatureDraw/SignatureDraw';
 import cities from '../../store/cities.json';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const ContractScreen = props => {
-  const {onContractDecline, currentDocument, customer, location} = props;
+  const { onContractDecline, currentDocument, customer, location } = props;
   const [showContract, setShowContract] = useState(false);
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
@@ -54,7 +54,7 @@ const ContractScreen = props => {
             text: 'Anladım',
           },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
       return;
     }
@@ -65,12 +65,13 @@ const ContractScreen = props => {
     return (
       <TouchableOpacity
         onPress={() => setIsContractApproved(!isContractApproved)}
-        style={styles.customCheckboxOutline}>
+        style={styles.customCheckboxOutline}
+      >
         {isContractApproved && (
           <View style={styles.customCheckboxInline}>
             <Image
               source={require('../../../assets/checked.png')}
-              style={{height: height * 0.03}}
+              style={{ height: height * 0.03 }}
               resizeMode="contain"
             />
           </View>
@@ -90,7 +91,7 @@ const ContractScreen = props => {
               text: 'Anladım',
             },
           ],
-          {cancelable: false},
+          { cancelable: false },
         );
         return;
       }
@@ -120,7 +121,8 @@ const ContractScreen = props => {
           <TouchableOpacity
             style={styles.topBarLeft}
             onPress={onContractDecline}
-            hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+          >
             <Image
               style={{
                 width: '100%',
@@ -137,7 +139,7 @@ const ContractScreen = props => {
             <View style={styles.contactFormView}>
               <TextInput
                 style={styles.contactFormInput}
-                onChangeText={val => setFormData({...formData, job: val})}
+                onChangeText={val => setFormData({ ...formData, job: val })}
                 placeholder="Meslek"
                 placeholderTextColor="gray"
                 value={formData.job}
@@ -155,8 +157,11 @@ const ContractScreen = props => {
                         paddingHorizontal: width * 0.035,
                         borderWidth: 0.5,
                         borderColor: '#212121',
-                      }}>
-                      <Text style={{color: formData.city ? '#212121' : 'gray'}}>
+                      }}
+                    >
+                      <Text
+                        style={{ color: formData.city ? '#212121' : 'gray' }}
+                      >
                         {' '}
                         {formData.city || 'İl'}{' '}
                       </Text>
@@ -164,7 +169,7 @@ const ContractScreen = props => {
                   </TouchableOpacity>
                 )}
                 onSelected={val =>
-                  setFormData({...formData, city: val.Name, district: null})
+                  setFormData({ ...formData, city: val.Name, district: null })
                 }
                 onBackButtonPressed={() => {}}
                 items={cities}
@@ -184,7 +189,8 @@ const ContractScreen = props => {
                       backgroundColor: !formData.city ? '#eeeeee' : 'white',
                     }}
                     disabled={!formData.city}
-                    onPress={showModal}>
+                    onPress={showModal}
+                  >
                     <View
                       style={{
                         width: width * 0.8,
@@ -193,9 +199,13 @@ const ContractScreen = props => {
                         paddingHorizontal: width * 0.035,
                         borderWidth: 0.5,
                         borderColor: '#212121',
-                      }}>
+                      }}
+                    >
                       <Text
-                        style={{color: formData.district ? '#212121' : 'gray'}}>
+                        style={{
+                          color: formData.district ? '#212121' : 'gray',
+                        }}
+                      >
                         {' '}
                         {formData.district || 'İlçe'}{' '}
                       </Text>
@@ -203,7 +213,7 @@ const ContractScreen = props => {
                   </TouchableOpacity>
                 )}
                 onSelected={val =>
-                  setFormData({...formData, district: val.Name})
+                  setFormData({ ...formData, district: val.Name })
                 }
                 onBackButtonPressed={() => {}}
                 items={
@@ -221,7 +231,7 @@ const ContractScreen = props => {
             <View style={styles.contactFormView}>
               <TextInput
                 style={styles.multilineFormInput}
-                onChangeText={val => setFormData({...formData, address: val})}
+                onChangeText={val => setFormData({ ...formData, address: val })}
                 placeholder="Adres"
                 placeholderTextColor="gray"
                 multiline
@@ -230,11 +240,12 @@ const ContractScreen = props => {
                 value={formData.address}
               />
             </View>
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: 'center' }}>
               <TouchableOpacity
                 onPress={handleFormSubmit}
-                style={styles.contactFormButton}>
-                <Text style={{color: 'white'}}>Devam</Text>
+                style={styles.contactFormButton}
+              >
+                <Text style={{ color: 'white' }}>Devam</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -244,13 +255,14 @@ const ContractScreen = props => {
   }
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.topBar}>
         <TouchableOpacity
           style={styles.topBarLeft}
           onPress={onContractDecline}
-          hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+        >
           <Image
             style={{
               width: '100%',
@@ -262,9 +274,9 @@ const ContractScreen = props => {
         </TouchableOpacity>
       </View>
       <WebView
-        style={{marginTop: height * 0.025}}
+        style={{ marginTop: height * 0.025 }}
         javaScriptEnabled
-        source={{html: content}}
+        source={{ html: content }}
       />
       <View style={styles.bottomBar}>
         <View style={styles.bottomBarButton}>
@@ -273,7 +285,8 @@ const ContractScreen = props => {
         </View>
         <TouchableOpacity
           onPress={handleContractProcess}
-          style={styles.bottomBarButton}>
+          style={styles.bottomBarButton}
+        >
           <Text style={styles.bottomBarButtonText}> İmzala </Text>
         </TouchableOpacity>
       </View>

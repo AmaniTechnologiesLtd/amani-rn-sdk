@@ -1,9 +1,9 @@
 import React from 'react';
-import {Dimensions} from 'react-native';
-import {Svg, Defs, Rect, Mask, Ellipse} from 'react-native-svg';
-import {backdropColor} from '../constants';
+import { Dimensions } from 'react-native';
+import { Svg, Defs, Rect, Mask, Ellipse } from 'react-native-svg';
+import { backdropColor } from '../constants';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const SelfieMask = () => (
   <Svg width={height * 0.6} height={height * 0.6}>

@@ -1,5 +1,6 @@
 {
-  "extends": "@react-native-community",
+  "extends": ["@react-native-community", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
     "react-native/no-inline-styles": 0,
     "react-hooks/exhaustive-deps": 0

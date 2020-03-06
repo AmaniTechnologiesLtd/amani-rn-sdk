@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,21 +15,21 @@ import {
 import CustomCrop from './CustomCrop';
 
 export const ImageCropper = props => {
-  const {image, onCancel} = props;
-  const {width, height} = Dimensions.get('window');
+  const { image, onCancel } = props;
+  const { width, height } = Dimensions.get('window');
   const ratioX = image.width / width;
   const ratioY = image.height / height;
   let customCrop = useRef(null);
 
   const rectangleCoordinates = {
-    topLeft: {x: width * 0.15 * ratioX, y: height * 0.2 * ratioY},
-    topRight: {x: width * 0.85 * ratioX, y: height * 0.2 * ratioY},
-    bottomRight: {x: width * 0.85 * ratioX, y: height * 0.85 * ratioY},
-    bottomLeft: {x: width * 0.15 * ratioX, y: height * 0.85 * ratioY},
+    topLeft: { x: width * 0.15 * ratioX, y: height * 0.2 * ratioY },
+    topRight: { x: width * 0.85 * ratioX, y: height * 0.2 * ratioY },
+    bottomRight: { x: width * 0.85 * ratioX, y: height * 0.85 * ratioY },
+    bottomLeft: { x: width * 0.15 * ratioX, y: height * 0.85 * ratioY },
   };
 
   const getCropData = () => {
-    const {onCropped} = props;
+    const { onCropped } = props;
     onCropped(customCrop.getCropData());
   };
 
@@ -67,7 +67,8 @@ export const ImageCropper = props => {
             left: 25,
             bottom: 25,
             right: 25,
-          }}>
+          }}
+        >
           <Image
             style={{
               width: '100%',
@@ -130,5 +131,5 @@ const styles = StyleSheet.create({
     width: 30,
     height: 20,
   },
-  topBarTitle: {color: 'white', fontSize: 16},
+  topBarTitle: { color: 'white', fontSize: 16 },
 });

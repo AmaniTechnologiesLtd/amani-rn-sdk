@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const Loading = props => {
   const {
@@ -26,9 +26,10 @@ const Loading = props => {
         <TouchableOpacity
           style={styles.topBarLeft}
           onPress={onLeftButtonPressed}
-          hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+        >
           <Image
-            style={{width: '100%', height: '100%'}}
+            style={{ width: '100%', height: '100%' }}
             resizeMode="contain"
             source={leftButtonIcon}
           />
@@ -41,9 +42,10 @@ const Loading = props => {
         <TouchableOpacity
           style={styles.topBarRight}
           onPress={onLeftButtonPressed}
-          hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+        >
           <Image
-            style={{width: '100%', height: '100%'}}
+            style={{ width: '100%', height: '100%' }}
             resizeMode="contain"
             source={rightButtonIcon}
           />

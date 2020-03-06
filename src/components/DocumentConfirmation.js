@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -12,12 +12,12 @@ import {
 
 // Local files
 import api from 'amani-rn-sdk/src/services/api';
-import {Loading} from 'amani-rn-sdk/src/components/Loading';
+import { Loading } from 'amani-rn-sdk/src/components/Loading';
 import mainBackground from '../../assets/main-bg.png';
 import orangeBackground from '../../assets/btn-orange.png';
 import backArrow from '../../assets/back-arrow.png';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const DocumentConfirmation = props => {
   const {
@@ -83,9 +83,10 @@ export const DocumentConfirmation = props => {
         <TouchableOpacity
           style={styles.topBarLeft}
           onPress={onTryAgain}
-          hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+        >
           <Image
-            style={{width: '100%', height: '100%'}}
+            style={{ width: '100%', height: '100%' }}
             resizeMode="contain"
             source={backArrow}
           />
@@ -99,9 +100,9 @@ export const DocumentConfirmation = props => {
         resizeMode="contain"
         style={[
           styles.confirmationImagePreview,
-          {transform: [{scaleX: document.id !== 'SE' ? 1 : -1}]},
+          { transform: [{ scaleX: document.id !== 'SE' ? 1 : -1 }] },
         ]}
-        source={{uri: imgSrc}}
+        source={{ uri: imgSrc }}
       />
 
       <Text style={styles.errorMessageText}>{errorMessage}</Text>
@@ -109,16 +110,19 @@ export const DocumentConfirmation = props => {
       <View style={styles.bottomBar}>
         <TouchableOpacity
           onPress={onTryAgain}
-          style={[styles.bottomButtons, styles.tryAgainButton]}>
+          style={[styles.bottomButtons, styles.tryAgainButton]}
+        >
           <Text style={styles.bottomButtonText}>Tekrar Dene</Text>
         </TouchableOpacity>
         {!errorMessage && (
           <TouchableOpacity
             onPress={continueProcess}
-            style={[styles.bottomButtons, styles.approveButton]}>
+            style={[styles.bottomButtons, styles.approveButton]}
+          >
             <ImageBackground
               source={orangeBackground}
-              style={styles.bottomButtonBackground}>
+              style={styles.bottomButtonBackground}
+            >
               <Text style={styles.bottomButtonText}>ONAYLA</Text>
             </ImageBackground>
           </TouchableOpacity>

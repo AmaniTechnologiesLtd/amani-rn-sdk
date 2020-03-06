@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import {
   View,
   Text,
@@ -23,7 +23,7 @@ import DocumentSuccess from './components/DocumentSuccess';
 import ContractScreen from './components/SmartContract/ContractScreen';
 import Loading from './components/Loading';
 import PoweredBy from './components/PoweredBy';
-import {initialDocuments, documentsReducer} from './store/documents';
+import { initialDocuments, documentsReducer } from './store/documents';
 import api from './services/api';
 import TopBar from './components/TopBar';
 import orangeBackground from '../assets/btn-orange.png';
@@ -34,10 +34,10 @@ import lockIcon from '../assets/locked-icon.png';
 import successIcon from '../assets/success-icon.png';
 import failedIcon from '../assets/failed-icon.png';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const MainScreen = props => {
-  const {onError, onExit} = props;
+  const { onError, onExit } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +54,10 @@ export const MainScreen = props => {
     data: null,
   });
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
-  const [permissions, setPermission] = useState({camera: null, location: null});
+  const [permissions, setPermission] = useState({
+    camera: null,
+    location: null,
+  });
   const [location, setLocation] = useState(null);
 
   const [controllerButton, setControllerButton] = useState({
@@ -101,7 +104,7 @@ export const MainScreen = props => {
           onPress: () => onError(e.response.data.errors[0]),
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -130,7 +133,7 @@ export const MainScreen = props => {
       const authData = props.authData;
       const customerInformations = props.customerInformations;
       api
-        .login({email: authData.appKey, password: authData.appPassword})
+        .login({ email: authData.appKey, password: authData.appPassword })
         .then(fRes => {
           const formData = {
             customerData: customerInformations,
@@ -336,7 +339,7 @@ export const MainScreen = props => {
       );
     } else if (document.passed === 'loading') {
       return (
-        <ActivityIndicator style={{marginLeft: width * 0.06}} color="white" />
+        <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
       );
     }
 
@@ -358,10 +361,11 @@ export const MainScreen = props => {
       <View
         style={[
           styles.container,
-          {alignItems: 'center', paddingHorizontal: width * 0.07},
-        ]}>
+          { alignItems: 'center', paddingHorizontal: width * 0.07 },
+        ]}
+      >
         <StatusBar translucent backgroundColor="transparent" />
-        <Text style={{color: 'white', fontSize: 18}}>
+        <Text style={{ color: 'white', fontSize: 18 }}>
           Camera and Location permissions are not authorized
         </Text>
       </View>
@@ -411,12 +415,7 @@ export const MainScreen = props => {
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
-      <TopBar
-        onLeftButtonPressed={goBack}
-        leftButtonIcon={backArrow}
-        onRightButtonPressed={goBack}
-        rightButtonIcon={forwardArrow}
-      />
+      <TopBar onLeftButtonPressed={goBack} leftButtonIcon={backArrow} />
       <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
       <View style={styles.modulesContainer}>
         {documents.map((document, index) => {
@@ -429,7 +428,8 @@ export const MainScreen = props => {
                 document.id === 'SG'
                   ? setShowContract(true)
                   : setSelectedDocument(document)
-              }>
+              }
+            >
               <View style={styles.moduleContainer}>
                 <View style={styles.moduleTitleContainer}>
                   <Text style={styles.moduleTitle}>{document.title}</Text>
@@ -445,8 +445,9 @@ export const MainScreen = props => {
       <TouchableOpacity onPress={goBack} style={styles.controllerButton}>
         <ImageBackground
           source={orangeBackground}
-          style={styles.controllerBackground}>
-          <Text style={{color: controllerButton.color}}>
+          style={styles.controllerBackground}
+        >
+          <Text style={{ color: controllerButton.color }}>
             {controllerButton.text}
           </Text>
         </ImageBackground>

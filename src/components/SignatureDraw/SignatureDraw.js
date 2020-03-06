@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   SafeAreaView,
@@ -15,7 +15,7 @@ import DeviceInfo from 'react-native-device-info';
 
 // Local files
 import SignatureScreen from './index';
-import {Loading} from '../Loading';
+import { Loading } from '../Loading';
 import api from '../../services/api';
 
 export const SignatureDraw = props => {
@@ -64,8 +64,8 @@ export const SignatureDraw = props => {
       Alert.alert(
         '',
         'İmzanızı ne yazık ki eşleştiremedik. Lütfen tekrar deneyin.',
-        [{text: 'Tamam'}],
-        {cancelable: false},
+        [{ text: 'Tamam' }],
+        { cancelable: false },
       );
       setCurrentStep(0);
       setSignature([]);
@@ -122,7 +122,7 @@ export const SignatureDraw = props => {
               onPress: () => setIsProcessStarted(false),
             },
           ],
-          {cancelable: false},
+          { cancelable: false },
         );
       });
   };
@@ -157,8 +157,8 @@ export const SignatureDraw = props => {
     Alert.alert(
       'Warning',
       'Please make sure your signature is drawn.',
-      [{text: 'OK'}],
-      {cancelable: true},
+      [{ text: 'OK' }],
+      { cancelable: true },
     );
   };
 
@@ -173,7 +173,8 @@ export const SignatureDraw = props => {
         <TouchableOpacity
           style={styles.topBarLeft}
           onPress={goBack}
-          hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+        >
           <Image
             style={{
               width: '100%',
@@ -188,7 +189,7 @@ export const SignatureDraw = props => {
           {document.steps[currentStep].description}
         </Text>
       </SafeAreaView>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <SignatureScreen
           onOK={handleSignature}
           onEmpty={handleEmptySignature}
@@ -219,5 +220,5 @@ const styles = StyleSheet.create({
     width: 30,
     height: 20,
   },
-  topBarTitle: {color: 'white', fontSize: 16},
+  topBarTitle: { color: 'white', fontSize: 16 },
 });

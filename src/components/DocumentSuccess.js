@@ -14,10 +14,10 @@ import mainBackground from '../../assets/main-bg.png';
 import orangeBackground from '../../assets/btn-orange.png';
 import successIcon from '../../assets/success-icon.png';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const DocumentSuccess = props => {
-  const {document, continueProcess} = props;
+  const { document, continueProcess } = props;
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
@@ -39,10 +39,12 @@ const DocumentSuccess = props => {
       <View style={styles.bottomBar}>
         <TouchableOpacity
           onPress={continueProcess}
-          style={styles.bottomButtons}>
+          style={styles.bottomButtons}
+        >
           <ImageBackground
             source={orangeBackground}
-            style={styles.bottomButtonBackground}>
+            style={styles.bottomButtonBackground}
+          >
             <Text style={styles.bottomButtonText}>DEVAM</Text>
           </ImageBackground>
         </TouchableOpacity>

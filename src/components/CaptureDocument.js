@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,22 +10,22 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import RNFS from 'react-native-fs';
 import ImageEditor from '@react-native-community/image-editor';
 import DocumentPicker from 'react-native-document-picker';
 
 // Local files
-import {SelfieMask} from './SelfieMask';
-import {ImageCropper} from './ImageCropper';
-import {PoweredBy} from './PoweredBy';
-import {Loading} from './Loading';
-import {VersionSelection} from './VersionSelection';
-import {DocumentConfirmation} from 'amani-rn-sdk/src/components/DocumentConfirmation';
+import { SelfieMask } from './SelfieMask';
+import { ImageCropper } from './ImageCropper';
+import { PoweredBy } from './PoweredBy';
+import { Loading } from './Loading';
+import { VersionSelection } from './VersionSelection';
+import { DocumentConfirmation } from 'amani-rn-sdk/src/components/DocumentConfirmation';
 import TextBaloon from './TextBaloon';
-import {backdropColor} from '../constants';
+import { backdropColor } from '../constants';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const CaptureDocument = props => {
   const {
@@ -196,7 +196,7 @@ const CaptureDocument = props => {
 
   const showTextBaloon = message => {
     return (
-      <View style={{position: 'absolute', right: 0, top: height * 0.06}}>
+      <View style={{ position: 'absolute', right: 0, top: height * 0.06 }}>
         <TextBaloon
           borderColor="black"
           backgroundColor="white"
@@ -206,7 +206,8 @@ const CaptureDocument = props => {
           borderWidth={1}
           borderRadius={10}
           triangleSize={10}
-          disabled>
+          disabled
+        >
           <Text>{message}</Text>
         </TextBaloon>
       </View>
@@ -269,7 +270,8 @@ const CaptureDocument = props => {
         style={styles.preview}
         type={cameraType}
         captureAudio={false}
-        ratio="16:9">
+        ratio="16:9"
+      >
         {buttonDisabled ? (
           <Loading />
         ) : (
@@ -278,14 +280,16 @@ const CaptureDocument = props => {
               style={{
                 backgroundColor:
                   document.id !== 'UB' ? backdropColor : 'transparent',
-              }}>
+              }}
+            >
               <SafeAreaView style={styles.topBar}>
                 {showHelperBaloon &&
                   showTextBaloon('Buradan PDF dosyası yükleyebilirsiniz.')}
                 <TouchableOpacity
                   style={styles.topBarLeft}
                   onPress={goBack}
-                  hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+                  hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+                >
                   <Image
                     style={{
                       width: '100%',
@@ -304,7 +308,8 @@ const CaptureDocument = props => {
                   <TouchableOpacity
                     style={styles.topBarRight}
                     onPress={() => pickAndTransformPdf()}
-                    hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+                    hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+                  >
                     <Image
                       style={{
                         width: '100%',
@@ -325,7 +330,8 @@ const CaptureDocument = props => {
                   backgroundColor:
                     document.id !== 'UB' ? backdropColor : 'transparent',
                 },
-              ]}>
+              ]}
+            >
               {document.steps.length > 1 && (
                 <Text style={styles.topText}>
                   {document.steps[currentStep].title}
@@ -333,7 +339,7 @@ const CaptureDocument = props => {
               )}
             </View>
             {document.versions[versionGroup][groupIndex].aspectRatio && (
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <View style={styles.backDrop} />
                 <View
                   onLayout={event => {
@@ -362,7 +368,7 @@ const CaptureDocument = props => {
               </View>
             )}
             {document.id === 'SE' && (
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <View style={styles.backDrop} />
                 <View style={styles.selfieContainer}>
                   <SelfieMask />
@@ -374,7 +380,8 @@ const CaptureDocument = props => {
               style={{
                 backgroundColor:
                   document.id !== 'UB' ? backdropColor : 'transparent',
-              }}>
+              }}
+            >
               <Text style={styles.bottomText}>
                 {document.steps[currentStep].description}
               </Text>
@@ -386,11 +393,13 @@ const CaptureDocument = props => {
                   backgroundColor:
                     document.id !== 'UB' ? backdropColor : 'transparent',
                 },
-              ]}>
+              ]}
+            >
               <TouchableOpacity
                 style={styles.takePhotoButtonCircle}
                 disabled={buttonDisabled}
-                onPress={takePicture}>
+                onPress={takePicture}
+              >
                 <View
                   style={[
                     styles.takePhotoButton,

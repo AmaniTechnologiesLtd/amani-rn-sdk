@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   SafeAreaView,
@@ -16,7 +16,7 @@ import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import forwardArrow from '../../assets/forward-arrow.png';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const VersionSelection = props => {
   const {
@@ -49,9 +49,10 @@ export const VersionSelection = props => {
           <TouchableOpacity
             style={styles.topBarLeft}
             onPress={goBack}
-            hitSlop={{top: 25, left: 25, bottom: 25, right: 25}}>
+            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+          >
             <Image
-              style={{width: '100%', height: '100%'}}
+              style={{ width: '100%', height: '100%' }}
               resizeMode="contain"
               source={backArrow}
             />
@@ -77,16 +78,19 @@ export const VersionSelection = props => {
                     menuMode === 'horizontal'
                       ? styles.horizontalGroupViewContainer
                       : styles.verticalGroupViewContainer
-                  }>
+                  }
+                >
                   {document.versions[group].map((version, versionKey) => {
                     return (
                       <TouchableOpacity
                         key={versionKey}
                         onPress={() => handleVersionChoice(group, versionKey)}
-                        style={styles.versionButton}>
+                        style={styles.versionButton}
+                      >
                         <ImageBackground
                           source={blueBackground}
-                          style={styles.buttonBackground}>
+                          style={styles.buttonBackground}
+                        >
                           <Text style={styles.versionTitle}>
                             {version.title}
                           </Text>

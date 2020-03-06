@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
-import {WebView} from 'react-native-webview';
+import React, { Component } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 // Local files
-import {content} from './View/html';
-import {SignaturePad} from './View/js/signature_pad';
-import {AppContent} from './View/js/app';
+import { content } from './View/html';
+import { SignaturePad } from './View/js/signature_pad';
+import { AppContent } from './View/js/app';
 
 const styles = StyleSheet.create({
   webBg: {
@@ -35,7 +35,7 @@ class SignatureView extends Component {
 
   constructor(props) {
     super(props);
-    const {clearText, confirmText, emptyText, webStyle} = props;
+    const { clearText, confirmText, emptyText, webStyle } = props;
     this.state = {
       base64DataUrl: props.dataURL || null,
       isLoading: true,
@@ -47,11 +47,11 @@ class SignatureView extends Component {
     html = html.replace('<%confirm%>', confirmText);
     html = html.replace('<%clear%>', clearText);
 
-    this.source = {html};
+    this.source = { html };
   }
 
   getSignature = e => {
-    const {onOK, onEmpty} = this.props;
+    const { onOK, onEmpty } = this.props;
     if (e.nativeEvent.data === 'EMPTY') {
       onEmpty();
     } else {
@@ -60,7 +60,7 @@ class SignatureView extends Component {
   };
 
   renderError = e => {
-    const {nativeEvent} = e;
+    const { nativeEvent } = e;
     console.warn('WebView error: ', nativeEvent);
   };
 
@@ -73,7 +73,7 @@ class SignatureView extends Component {
           onMessage={this.getSignature}
           javaScriptEnabled={true}
           onError={this.renderError}
-          onLoadEnd={() => this.setState({isLoading: false})}
+          onLoadEnd={() => this.setState({ isLoading: false })}
         />
         {this.state.isLoading && (
           <View style={styles.loadingOverlayContainer}>
