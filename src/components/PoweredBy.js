@@ -1,19 +1,22 @@
-// Global dependencies
-import React from 'react'
-import {
-    StyleSheet,
-    Image,
-} from 'react-native'
+import React from 'react';
+import {StyleSheet, Image} from 'react-native';
 
-export const PoweredBy = () => <Image style={styles.poweredBy}  source={require('../../assets/powered-by.png')}/>
+const PoweredBy = () => (
+  <Image
+    style={styles.poweredBy}
+    source={require('../../assets/powered-by.png')}
+  />
+);
+
+export default PoweredBy;
 
 const styles = StyleSheet.create({
-    poweredBy: {
-        position: 'absolute',
-        bottom: 10,
-        height: 12,
-        width: 104,
-        alignSelf: 'center',
-        resizeMode: 'contain'
-    }
-})
+  poweredBy: {
+    position: 'absolute',
+    bottom: 10,
+    height: 12,
+    width: 104,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+  },
+});

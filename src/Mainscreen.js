@@ -1,4 +1,3 @@
-// Global dependencies
 import React, {useState, useEffect, useReducer} from 'react';
 import {
   View,
@@ -19,16 +18,17 @@ import Geolocation from 'react-native-geolocation-service';
 import DeviceInfo from 'react-native-device-info';
 
 // Local files
-import {CaptureDocument} from './components/CaptureDocument';
-import {DocumentSuccess} from './components/DocumentSuccess';
-import {ContractScreen} from './components/SmartContract/ContractScreen';
-import {Loading} from './components/Loading';
-import {PoweredBy} from './components/PoweredBy';
+import CaptureDocument from './components/CaptureDocument';
+import DocumentSuccess from './components/DocumentSuccess';
+import ContractScreen from './components/SmartContract/ContractScreen';
+import Loading from './components/Loading';
+import PoweredBy from './components/PoweredBy';
 import {initialDocuments, documentsReducer} from './store/documents';
 import api from './services/api';
-import blueBackground from '../assets/btn-blue.png';
+import TopBar from './components/TopBar';
 import orangeBackground from '../assets/btn-orange.png';
 import mainBackground from '../assets/main-bg.png';
+import backArrow from '../assets/back-arrow.png';
 import forwardArrow from '../assets/forward-arrow.png';
 import lockIcon from '../assets/locked-icon.png';
 import successIcon from '../assets/success-icon.png';
@@ -411,10 +411,13 @@ export const MainScreen = props => {
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
-      <Text style={styles.containerHeaderText}>
-        Yüklemek İçin Bir Doküman Seç
-      </Text>
-
+      <TopBar
+        onLeftButtonPressed={goBack}
+        leftButtonIcon={backArrow}
+        onRightButtonPressed={goBack}
+        rightButtonIcon={forwardArrow}
+      />
+      <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
       <View style={styles.modulesContainer}>
         {documents.map((document, index) => {
           return (
@@ -427,18 +430,14 @@ export const MainScreen = props => {
                   ? setShowContract(true)
                   : setSelectedDocument(document)
               }>
-              <ImageBackground
-                source={blueBackground}
-                style={styles.buttonBackground}>
-                <View style={styles.moduleContainer}>
-                  <View style={styles.moduleTitleContainer}>
-                    <Text style={styles.moduleTitle}>{document.title}</Text>
-                  </View>
-                  <View style={styles.moduleStatusContainer}>
-                    {handleCurrentModalStatus(document, index)}
-                  </View>
+              <View style={styles.moduleContainer}>
+                <View style={styles.moduleTitleContainer}>
+                  <Text style={styles.moduleTitle}>{document.title}</Text>
                 </View>
-              </ImageBackground>
+                <View style={styles.moduleStatusContainer}>
+                  {handleCurrentModalStatus(document, index)}
+                </View>
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -467,6 +466,7 @@ const styles = StyleSheet.create({
   containerHeaderText: {
     color: 'white',
     fontSize: width * 0.06,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   modulesContainer: {
@@ -478,9 +478,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   moduleButton: {
-    backgroundColor: 'green',
+    backgroundColor: 'rgba(14, 37, 70, 0.6)',
+    padding: 15,
     justifyContent: 'center',
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.03,
     overflow: 'hidden',
     borderRadius: 10,
   },

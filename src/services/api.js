@@ -1,4 +1,3 @@
-// Global dependencies
 import axios from 'axios';
 
 const servers = {

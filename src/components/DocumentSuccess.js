@@ -1,4 +1,3 @@
-// Global Dependencies
 import React from 'react';
 import {
   View,
@@ -17,7 +16,7 @@ import successIcon from '../../assets/success-icon.png';
 
 const {width, height} = Dimensions.get('window');
 
-export const DocumentSuccess = props => {
+const DocumentSuccess = props => {
   const {document, continueProcess} = props;
 
   return (
@@ -51,6 +50,8 @@ export const DocumentSuccess = props => {
     </ImageBackground>
   );
 };
+
+export default DocumentSuccess;
 
 const styles = StyleSheet.create({
   container: {

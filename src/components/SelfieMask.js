@@ -1,4 +1,3 @@
-// Global dependencies
 import React from 'react';
 import {Dimensions} from 'react-native';
 import {Svg, Defs, Rect, Mask, Ellipse} from 'react-native-svg';

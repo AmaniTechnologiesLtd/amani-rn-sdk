@@ -1,4 +1,3 @@
-// Global dependencies
 import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
@@ -28,7 +27,7 @@ import {backdropColor} from '../constants';
 
 const {width, height} = Dimensions.get('window');
 
-export const CaptureDocument = props => {
+const CaptureDocument = props => {
   const {
     document,
     onCapture,
@@ -409,6 +408,8 @@ export const CaptureDocument = props => {
     </View>
   );
 };
+
+export default CaptureDocument;
 
 const styles = StyleSheet.create({
   cameraContainer: {

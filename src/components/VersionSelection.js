@@ -1,4 +1,3 @@
-// Global dependencies
 import React, {useEffect} from 'react';
 import {
   View,

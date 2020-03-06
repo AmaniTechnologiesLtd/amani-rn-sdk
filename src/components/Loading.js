@@ -7,12 +7,14 @@ import {
 } from 'react-native';
 import mainBackground from '../../assets/main-bg.png';
 
-export const Loading = () => (
+const Loading = () => (
   <ImageBackground source={mainBackground} style={styles.container}>
     <StatusBar hidden />
     <ActivityIndicator color="white" size="large" />
   </ImageBackground>
 );
+
+export default Loading;
 
 const styles = StyleSheet.create({
   container: {
