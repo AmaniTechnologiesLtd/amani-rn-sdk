@@ -57,8 +57,7 @@ export const initialDocuments = [
     steps: [
       {
         title: '',
-        description:
-          'Lütfen yüzünüzü belirtilen alanın içinde olacak şekilde konumlandırın',
+        description: 'Lütfen yüzünü işaretli alana yerleştir',
       },
     ],
     options: ['takePicture'],
@@ -77,6 +76,9 @@ export const initialDocuments = [
         },
       ],
     },
+    successTitle: "Selfie'ni başarıyla yükledin.",
+    successDescription:
+      "Biz selfie'ni kontrol ederken lütfen adresini doğrulama adımına geç.\n\nAdresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla.",
   },
   {
     id: 'PA',
@@ -151,13 +153,14 @@ export const initialDocuments = [
     cameraFacing: 'environment',
     versionTitle: 'Belge Tipini Seçin',
     versionDescription:
-      'Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir fatura ya da ikametgah belgeni yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf) olarak yükleyebilirsin. \n\n Eğer yanında hiçbir belge yoksabu adımı şimdilik atlayabilir ya da hemen e-devletten ikametgah belgeni pdf olarak indirip yükleyebilirsin.',
+      'Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir fatura ya da ikametgah belgeni yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf) olarak yükleyebilirsin.\n\nEğer yanında hiçbir belge yoksabu adımı şimdilik atlayabilir ya da hemen e-devletten ikametgah belgeni pdf olarak indirip yükleyebilirsin.',
     versions: {
       Devlet: [
         {
           title: 'E-Devlet İkametgah',
           crop: true,
           autoCrop: false,
+          edevlet: true,
         },
       ],
       GSM: [
@@ -200,12 +203,14 @@ export const initialDocuments = [
       ],
       Diğer: [
         {
-          title: 'Diğer',
+          title: 'Diğer Tüm Kurumlar',
           crop: true,
           autoCrop: false,
         },
       ],
     },
+    successTitle: 'Adres belgeni başarıyla yükledin.',
+    successDescription: 'Sözleşmeyi imzalamak için devam et.',
   },
   {
     id: 'SG',
@@ -213,11 +218,11 @@ export const initialDocuments = [
     passed: null,
     steps: [
       {
-        title: 'İmzanızı Çizin',
+        title: 'İmzanızı Atın',
         description: '1/2',
       },
       {
-        title: 'İmzanızı Tekrar Çizin',
+        title: 'İmzanızı Tekrar Atın',
         description: '2/2',
       },
     ],
@@ -252,7 +257,7 @@ export const documentsReducer = (state, action) => {
           (document.secondary_id &&
             document.secondary_id.includes(action.document_id))
         ) {
-          const updateDoc = {...document, passed: action.passed};
+          const updateDoc = { ...document, passed: action.passed };
           return updateDoc;
         }
         return document;

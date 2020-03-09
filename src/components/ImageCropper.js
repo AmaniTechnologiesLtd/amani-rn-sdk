@@ -1,22 +1,25 @@
 import React, { useRef, useEffect } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  Image,
-  Text,
-  StatusBar,
+  ImageBackground,
   BackHandler,
-  SafeAreaView,
 } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 // Local files
 import CustomCrop from './CustomCrop';
+import TopBar from './TopBar';
+import PoweredBy from './PoweredBy';
+import backArrow from '../../assets/back-arrow.png';
+import orangeBackground from '../../assets/btn-orange.png';
 
-export const ImageCropper = props => {
-  const { image, onCancel } = props;
-  const { width, height } = Dimensions.get('window');
+const ImageCropper = props => {
+  const { image, title, onCancel } = props;
   const ratioX = image.width / width;
   const ratioY = image.height / height;
   let customCrop = useRef(null);
@@ -44,41 +47,13 @@ export const ImageCropper = props => {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden />
-      <SafeAreaView style={styles.topBar}>
-        <TouchableOpacity style={styles.topBarLeft} onPress={onCancel}>
-          <Image
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            resizeMode="contain"
-            source={require('../../assets/back-arrow.png')}
-          />
-        </TouchableOpacity>
+      <TopBar
+        onLeftButtonPressed={onCancel}
+        leftButtonIcon={backArrow}
+        title={title}
+        style={styles.topBar}
+      />
 
-        <Text style={styles.topBarTitle}>Crop Image</Text>
-
-        <TouchableOpacity
-          style={styles.topBarRight}
-          onPress={getCropData}
-          hitSlop={{
-            top: 25,
-            left: 25,
-            bottom: 25,
-            right: 25,
-          }}
-        >
-          <Image
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            resizeMode="contain"
-            source={require('../../assets/crop.png')}
-          />
-        </TouchableOpacity>
-      </SafeAreaView>
       <CustomCrop
         ref={ref => (customCrop = ref)}
         style={styles.customCrop}
@@ -88,11 +63,25 @@ export const ImageCropper = props => {
         width={image.width}
         overlayColor="#ffffff"
         overlayStrokeColor="#ffffff"
-        handlerColor="#212121"
+        overlayStrokeWidth={2}
+        handlerColor="#00FFD1"
       />
+      <View style={styles.bottomBar}>
+        <TouchableOpacity onPress={getCropData} style={styles.cropButton}>
+          <ImageBackground
+            source={orangeBackground}
+            style={styles.cropButtonBackground}
+          >
+            <Text style={styles.cropButtonText}>FOTOĞRAFI KIRP</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+        <PoweredBy />
+      </View>
     </View>
   );
 };
+
+export default ImageCropper;
 
 const styles = StyleSheet.create({
   container: {
@@ -107,29 +96,41 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   topBar: {
-    flexDirection: 'row',
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     zIndex: 10,
+    paddingTop: 40,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: '#263B5B',
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    paddingHorizontal: 30,
+    paddingTop: 20,
+    paddingBottom: 40,
+    backgroundColor: '#263B5B',
+  },
+  cropButton: {
+    flex: 1,
     justifyContent: 'center',
-    paddingVertical: 15,
-    backgroundColor: 'rgba(0,0,0,0.70)',
+    borderRadius: 10,
+    overflow: 'hidden',
   },
-  topBarLeft: {
-    position: 'absolute',
-    left: 10,
-    top: 15,
-    width: 30,
-    height: 20,
+  cropButtonText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: width * 0.04,
+    color: 'white',
   },
-  topBarRight: {
-    position: 'absolute',
-    right: 10,
-    top: 15,
-    width: 30,
-    height: 20,
+  cropButtonBackground: {
+    resizeMode: 'cover',
+    padding: 15,
   },
-  topBarTitle: { color: 'white', fontSize: 16 },
 });

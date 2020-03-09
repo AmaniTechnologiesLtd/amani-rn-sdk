@@ -26,7 +26,6 @@ import PoweredBy from './components/PoweredBy';
 import { initialDocuments, documentsReducer } from './store/documents';
 import api from './services/api';
 import TopBar from './components/TopBar';
-import orangeBackground from '../assets/btn-orange.png';
 import mainBackground from '../assets/main-bg.png';
 import backArrow from '../assets/back-arrow.png';
 import forwardArrow from '../assets/forward-arrow.png';
@@ -59,12 +58,6 @@ export const MainScreen = props => {
     location: null,
   });
   const [location, setLocation] = useState(null);
-
-  const [controllerButton, setControllerButton] = useState({
-    text: 'Geri Dön',
-    backgroundColor: 'transparent',
-    color: 'white',
-  });
 
   const checkPermissions = async () => {
     setPermission({
@@ -120,13 +113,14 @@ export const MainScreen = props => {
   }, [permissions]);
 
   useEffect(() => {
-    if (Object.values(documents).every(item => item.passed === true)) {
-      setControllerButton({
-        text: 'Doğrulamayı Bitir',
-        backgroundColor: '#00e676',
-        color: '#212121',
-      });
-    }
+    // Check if every document finished
+    // if (Object.values(documents).every(item => item.passed === true)) {
+    //   setControllerButton({
+    //     text: 'Doğrulamayı Bitir',
+    //     backgroundColor: '#00e676',
+    //     color: '#212121',
+    //   });
+    // }
 
     if (isLoading) {
       api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr');
@@ -442,16 +436,6 @@ export const MainScreen = props => {
           );
         })}
       </View>
-      <TouchableOpacity onPress={goBack} style={styles.controllerButton}>
-        <ImageBackground
-          source={orangeBackground}
-          style={styles.controllerBackground}
-        >
-          <Text style={{ color: controllerButton.color }}>
-            {controllerButton.text}
-          </Text>
-        </ImageBackground>
-      </TouchableOpacity>
       <PoweredBy />
     </ImageBackground>
   );
@@ -462,7 +446,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 25,
   },
   containerHeaderText: {
     color: 'white',
@@ -506,18 +490,6 @@ const styles = StyleSheet.create({
   moduleStatusIcon: {
     width: width * 0.15,
     height: height * 0.025,
-  },
-  controllerButton: {
-    overflow: 'hidden',
-    borderRadius: 10,
-    backgroundColor: 'green',
-    flexDirection: 'row',
-  },
-  controllerBackground: {
-    flex: 1,
-    padding: 20,
-    resizeMode: 'cover',
-    alignItems: 'center',
   },
 });
 

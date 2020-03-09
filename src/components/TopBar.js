@@ -14,17 +14,18 @@ const { width, height } = Dimensions.get('window');
 const Loading = props => {
   const {
     title,
+    style,
     onLeftButtonPressed,
     leftButtonIcon,
     onRightButtonPressed,
     rightButtonIcon,
   } = props;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <StatusBar translucent backgroundColor="transparent" />
       {onLeftButtonPressed && leftButtonIcon && (
         <TouchableOpacity
-          style={styles.topBarLeft}
+          style={[styles.topBarLeft, styles.topBarIcon]}
           onPress={onLeftButtonPressed}
           hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
         >
@@ -38,9 +39,9 @@ const Loading = props => {
 
       <Text style={styles.topBarCenter}>{title}</Text>
 
-      {onRightButtonPressed && rightButtonIcon && (
+      {onRightButtonPressed && rightButtonIcon ? (
         <TouchableOpacity
-          style={styles.topBarRight}
+          style={[styles.topBarRight, styles.topBarIcon]}
           onPress={onLeftButtonPressed}
           hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
         >
@@ -50,6 +51,8 @@ const Loading = props => {
             source={rightButtonIcon}
           />
         </TouchableOpacity>
+      ) : (
+        <View style={styles.topBarIcon} />
       )}
     </View>
   );
@@ -65,15 +68,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     width: '100%',
   },
-  topBarLeft: {
+  topBarIcon: {
     width: width * 0.055,
     height: height * 0.03,
   },
+  topBarLeft: {},
   topBarCenter: {
     color: 'white',
   },
-  topBarRight: {
-    width: width * 0.055,
-    height: height * 0.03,
-  },
+  topBarRight: {},
 });

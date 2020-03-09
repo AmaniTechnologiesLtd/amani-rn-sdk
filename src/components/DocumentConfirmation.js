@@ -4,22 +4,22 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  StatusBar,
   Dimensions,
   StyleSheet,
   ImageBackground,
 } from 'react-native';
 
 // Local files
-import api from 'amani-rn-sdk/src/services/api';
-import { Loading } from 'amani-rn-sdk/src/components/Loading';
+import api from '../services/api';
+import Loading from './Loading';
+import TopBar from './TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import orangeBackground from '../../assets/btn-orange.png';
 import backArrow from '../../assets/back-arrow.png';
 
 const { width, height } = Dimensions.get('window');
 
-export const DocumentConfirmation = props => {
+const DocumentConfirmation = props => {
   const {
     imageUrl,
     document,
@@ -34,12 +34,19 @@ export const DocumentConfirmation = props => {
 
   useEffect(() => {
     if (!imgSrc && document.id !== 'UB') {
+      // If it is selfie do not send to autocropper
+      if (document.id === 'SE') {
+        setImgSrc(imageUrl);
+        return;
+      }
+
       const requestData = new FormData();
       if (corners) {
         corners.forEach(corner =>
           requestData.append('corners[]', JSON.stringify(corner)),
         );
       }
+      requestData.append('type', document.id);
       requestData.append('files[]', imageUrl);
 
       api
@@ -78,21 +85,12 @@ export const DocumentConfirmation = props => {
   // Ask user for confirmation or show error messages
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
-      <View style={styles.topBar}>
-        <TouchableOpacity
-          style={styles.topBarLeft}
-          onPress={onTryAgain}
-          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-        >
-          <Image
-            style={{ width: '100%', height: '100%' }}
-            resizeMode="contain"
-            source={backArrow}
-          />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>{document.title}</Text>
-      </View>
+      <TopBar
+        onLeftButtonPressed={onTryAgain}
+        leftButtonIcon={backArrow}
+        title={document.title}
+      />
+
       <Text style={styles.confirmationTitle}>
         {document.steps.length > 0 && document.steps[step].confirmationTitle}
       </Text>
@@ -132,32 +130,15 @@ export const DocumentConfirmation = props => {
   );
 };
 
+export default DocumentConfirmation;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
-  },
-  topBar: {
-    flexDirection: 'row',
-    zIndex: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 15,
-    position: 'relative',
-    width: '100%',
-  },
-  topBarLeft: {
-    position: 'absolute',
-    left: 0,
-    top: 15,
-    width: width * 0.055,
-    height: height * 0.03,
-  },
-  topBarTitle: {
-    color: 'white',
-    fontSize: width * 0.045,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
   confirmationTitle: {
     color: 'white',
@@ -167,7 +148,7 @@ const styles = StyleSheet.create({
   },
   confirmationImagePreview: {
     width: width * 0.9,
-    height: height * 0.5,
+    height: height * 0.7,
   },
   errorMessageText: {
     color: 'white',

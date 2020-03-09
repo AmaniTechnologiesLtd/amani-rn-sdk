@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const servers = {
+  // tr: 'http://192.168.42.205:8000/api/v1/',
   tr: 'https://tr.amani.ai/api/v1/',
   uae: 'https://uae.amani.ai/api/v1/',
 };

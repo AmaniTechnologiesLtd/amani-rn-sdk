@@ -1,24 +1,25 @@
 import React, { useEffect } from 'react';
 import {
   View,
-  SafeAreaView,
+  ScrollView,
   TouchableOpacity,
   Image,
   Text,
   BackHandler,
-  StatusBar,
   Dimensions,
   StyleSheet,
   ImageBackground,
 } from 'react-native';
 import blueBackground from '../../assets/btn-blue.png';
+import darkBlueBackground from '../../assets/btn-dark-blue.png';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import forwardArrow from '../../assets/forward-arrow.png';
+import TopBar from './TopBar';
 
 const { width, height } = Dimensions.get('window');
 
-export const VersionSelection = props => {
+const VersionSelection = props => {
   const {
     document,
     versionGroup,
@@ -42,76 +43,76 @@ export const VersionSelection = props => {
   };
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <ImageBackground source={mainBackground} style={styles.container}>
-        <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.topBar}>
-          <TouchableOpacity
-            style={styles.topBarLeft}
-            onPress={goBack}
-            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-          >
-            <Image
-              style={{ width: '100%', height: '100%' }}
-              resizeMode="contain"
-              source={backArrow}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.childContainer}>
-          <Text style={styles.childContainerTitle}>
-            {document.versionTitle}
-          </Text>
+    <ImageBackground source={mainBackground} style={styles.container}>
+      <TopBar
+        onLeftButtonPressed={goBack}
+        leftButtonIcon={backArrow}
+        style={{ paddingHorizontal: 20 }}
+      />
 
-          <Text style={styles.childContainerDescription}>
-            {document.versionDescription}
-          </Text>
+      <ScrollView style={styles.childContainer}>
+        <Text style={styles.childContainerTitle}>{document.versionTitle}</Text>
 
-          {Object.keys(document.versions).map((group, groupKey) => {
-            return (
-              <View key={groupKey}>
-                <Text style={styles.groupTitle}>
-                  {group.toLocaleUpperCase()}
-                </Text>
-                <View
-                  style={
-                    menuMode === 'horizontal'
-                      ? styles.horizontalGroupViewContainer
-                      : styles.verticalGroupViewContainer
-                  }
-                >
-                  {document.versions[group].map((version, versionKey) => {
-                    return (
-                      <TouchableOpacity
-                        key={versionKey}
-                        onPress={() => handleVersionChoice(group, versionKey)}
-                        style={styles.versionButton}
+        <Text style={styles.childContainerDescription}>
+          {document.versionDescription}
+        </Text>
+
+        {Object.keys(document.versions).map((group, groupKey) => {
+          return (
+            <View key={groupKey}>
+              <Text style={styles.groupTitle}>{group}</Text>
+              <View
+                style={
+                  menuMode === 'horizontal'
+                    ? styles.horizontalGroupViewContainer
+                    : styles.verticalGroupViewContainer
+                }
+              >
+                {document.versions[group].map((version, versionKey) => {
+                  return (
+                    <TouchableOpacity
+                      key={versionKey}
+                      onPress={() => handleVersionChoice(group, versionKey)}
+                      style={
+                        menuMode === 'horizontal'
+                          ? styles.versionButtonHorizontal
+                          : styles.versionButtonVertical
+                      }
+                    >
+                      <ImageBackground
+                        source={
+                          menuMode === 'horizontal'
+                            ? darkBlueBackground
+                            : blueBackground
+                        }
+                        style={
+                          menuMode === 'horizontal'
+                            ? styles.horizontalButtonBackground
+                            : styles.verticalButtonBackground
+                        }
                       >
-                        <ImageBackground
-                          source={blueBackground}
-                          style={styles.buttonBackground}
-                        >
-                          <Text style={styles.versionTitle}>
-                            {version.title}
-                          </Text>
+                        <Text style={styles.versionTitle}>{version.title}</Text>
+                        {menuMode !== 'horizontal' && (
                           <Image
                             resizeMode="contain"
                             style={styles.buttonIcon}
                             source={forwardArrow}
                           />
-                        </ImageBackground>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
+                        )}
+                      </ImageBackground>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
-            );
-          })}
-        </View>
-      </ImageBackground>
-    </SafeAreaView>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </ImageBackground>
   );
 };
+
+export default VersionSelection;
 
 const styles = StyleSheet.create({
   safeContainer: {
@@ -119,12 +120,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 20,
     paddingTop: 30,
   },
   childContainer: {
-    flex: 1,
-    marginTop: 20,
+    paddingHorizontal: 20,
   },
   childContainerTitle: {
     fontSize: height * 0.03,
@@ -136,30 +135,12 @@ const styles = StyleSheet.create({
     fontSize: height * 0.022,
     color: '#CAE0F5',
   },
-  topBar: {
-    flexDirection: 'row',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 15,
-  },
-  topBarLeft: {
-    position: 'absolute',
-    left: 0,
-    top: 5,
-    width: width * 0.055,
-    height: height * 0.03,
-  },
   horizontalGroupViewContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: width * 0.9,
     backgroundColor: 'transparent',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 10,
     marginBottom: 10,
   },
   verticalGroupViewContainer: {
@@ -170,19 +151,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   groupTitle: {
-    fontSize: width * 0.06,
+    fontSize: width * 0.05,
     margin: 3,
     color: 'white',
     textAlign: 'left',
   },
-  versionButton: {
+  versionButtonVertical: {
     marginBottom: 10,
     borderRadius: 10,
-    width: '100%',
+    width: '99%',
+    overflow: 'hidden',
   },
-  buttonBackground: {
+  versionButtonHorizontal: {
+    overflow: 'hidden',
+    borderRadius: 10,
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  horizontalButtonBackground: {
     resizeMode: 'cover',
-    padding: 20,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  verticalButtonBackground: {
+    resizeMode: 'cover',
+    paddingVertical: 20,
+    paddingHorizontal: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

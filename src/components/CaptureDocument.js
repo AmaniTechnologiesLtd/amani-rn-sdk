@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  StatusBar,
   Image,
   BackHandler,
   Dimensions,
@@ -16,13 +15,16 @@ import ImageEditor from '@react-native-community/image-editor';
 import DocumentPicker from 'react-native-document-picker';
 
 // Local files
-import { SelfieMask } from './SelfieMask';
-import { ImageCropper } from './ImageCropper';
-import { PoweredBy } from './PoweredBy';
-import { Loading } from './Loading';
-import { VersionSelection } from './VersionSelection';
-import { DocumentConfirmation } from 'amani-rn-sdk/src/components/DocumentConfirmation';
-import TextBaloon from './TextBaloon';
+import SelfieMask from './SelfieMask';
+import ImageCropper from './ImageCropper';
+import TopBar from './TopBar';
+import PoweredBy from './PoweredBy';
+import Loading from './Loading';
+import VersionSelection from './VersionSelection';
+import DocumentConfirmation from './DocumentConfirmation';
+import backArrow from '../../assets/back-arrow.png';
+import pdfIcon from '../../assets/pdf-icon.png';
+import eDevletIcon from '../../assets/edevlet-icon.png';
 import { backdropColor } from '../constants';
 
 const { width, height } = Dimensions.get('window');
@@ -62,9 +64,6 @@ const CaptureDocument = props => {
   const [showVersionSelectionScreen, setShowVersionSelectionScreen] = useState(
     true,
   );
-  const [showHelperBaloon, setShowHelperBaloon] = useState(
-    document.id === 'UB' ? true : false,
-  );
   const [showDocumentConfirmation, setShowDocumentConfirmation] = useState(
     false,
   );
@@ -75,10 +74,6 @@ const CaptureDocument = props => {
   const goBack = async () => {
     onClearDocument();
   };
-
-  if (showHelperBaloon) {
-    setTimeout(() => setShowHelperBaloon(false), 3500);
-  }
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', () => {
@@ -194,26 +189,6 @@ const CaptureDocument = props => {
     return false;
   };
 
-  const showTextBaloon = message => {
-    return (
-      <View style={{ position: 'absolute', right: 0, top: height * 0.06 }}>
-        <TextBaloon
-          borderColor="black"
-          backgroundColor="white"
-          triangleDirection="top"
-          triangleOffset="87%"
-          width={width * 0.5}
-          borderWidth={1}
-          borderRadius={10}
-          triangleSize={10}
-          disabled
-        >
-          <Text>{message}</Text>
-        </TextBaloon>
-      </View>
-    );
-  };
-
   if (isProcessStarted) {
     return <Loading />;
   }
@@ -253,6 +228,7 @@ const CaptureDocument = props => {
     return (
       <ImageCropper
         image={imageCrop}
+        title={document.versions[versionGroup][groupIndex].title}
         onCancel={() => {
           setImageCrop(false);
           return true; // Added for react navigation not to intervene
@@ -263,8 +239,7 @@ const CaptureDocument = props => {
   }
 
   return (
-    <View style={styles.cameraContainer}>
-      <StatusBar translucent backgroundColor="transparent" />
+    <View style={styles.container}>
       <RNCamera
         ref={camera}
         style={styles.preview}
@@ -276,59 +251,32 @@ const CaptureDocument = props => {
           <Loading />
         ) : (
           <>
-            <View
+            <SafeAreaView
               style={{
-                backgroundColor:
-                  document.id !== 'UB' ? backdropColor : 'transparent',
+                paddingTop: 30,
+                backgroundColor: document.versions[versionGroup][groupIndex]
+                  .aspectRatio
+                  ? backdropColor
+                  : '#263B5B',
               }}
             >
-              <SafeAreaView style={styles.topBar}>
-                {showHelperBaloon &&
-                  showTextBaloon('Buradan PDF dosyası yükleyebilirsiniz.')}
-                <TouchableOpacity
-                  style={styles.topBarLeft}
-                  onPress={goBack}
-                  hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-                >
-                  <Image
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    resizeMode="contain"
-                    source={require('../../assets/back-arrow.png')}
-                  />
-                </TouchableOpacity>
-
-                <Text style={styles.topBarTitle}>
-                  {document.versions[versionGroup][groupIndex].title}
-                </Text>
-
-                {document.options.includes('fileUpload') && (
-                  <TouchableOpacity
-                    style={styles.topBarRight}
-                    onPress={() => pickAndTransformPdf()}
-                    hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-                  >
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                      }}
-                      resizeMode="cover"
-                      source={require('../../assets/pdf-icon.png')}
-                    />
-                  </TouchableOpacity>
-                )}
-              </SafeAreaView>
-            </View>
+              <TopBar
+                style={{ paddingHorizontal: 20 }}
+                onLeftButtonPressed={goBack}
+                leftButtonIcon={backArrow}
+                title={document.versions[versionGroup][groupIndex].title}
+              />
+            </SafeAreaView>
 
             <View
               style={[
                 styles.topArea,
                 {
-                  backgroundColor:
-                    document.id !== 'UB' ? backdropColor : 'transparent',
+                  backgroundColor: document.versions[versionGroup][groupIndex]
+                    .aspectRatio
+                    ? backdropColor
+                    : 'transparent',
+                  maxHeight: document.id === 'SE' ? height * 0.005 : 'auto',
                 },
               ]}
             >
@@ -338,6 +286,7 @@ const CaptureDocument = props => {
                 </Text>
               )}
             </View>
+
             {document.versions[versionGroup][groupIndex].aspectRatio && (
               <View style={{ flexDirection: 'row' }}>
                 <View style={styles.backDrop} />
@@ -367,19 +316,21 @@ const CaptureDocument = props => {
                 <View style={styles.backDrop} />
               </View>
             )}
+
             {document.id === 'SE' && (
               <View style={{ flexDirection: 'row' }}>
-                <View style={styles.backDrop} />
                 <View style={styles.selfieContainer}>
                   <SelfieMask />
                 </View>
-                <View style={styles.backDrop} />
               </View>
             )}
+
             <View
               style={{
-                backgroundColor:
-                  document.id !== 'UB' ? backdropColor : 'transparent',
+                backgroundColor: document.versions[versionGroup][groupIndex]
+                  .aspectRatio
+                  ? backdropColor
+                  : 'transparent',
               }}
             >
               <Text style={styles.bottomText}>
@@ -390,11 +341,30 @@ const CaptureDocument = props => {
               style={[
                 styles.bottomArea,
                 {
-                  backgroundColor:
-                    document.id !== 'UB' ? backdropColor : 'transparent',
+                  backgroundColor: document.versions[versionGroup][groupIndex]
+                    .aspectRatio
+                    ? backdropColor
+                    : '#263B5B',
+                  flex: document.versions[versionGroup][groupIndex].aspectRatio
+                    ? 1
+                    : 0,
                 },
               ]}
             >
+              {document.versions[versionGroup][groupIndex].edevlet && (
+                <TouchableOpacity
+                  style={styles.eDevlet}
+                  onPress={pickAndTransformPdf}
+                  hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+                >
+                  <Image
+                    style={styles.fileUploadIcon}
+                    resizeMode="cover"
+                    source={eDevletIcon}
+                  />
+                </TouchableOpacity>
+              )}
+
               <TouchableOpacity
                 style={styles.takePhotoButtonCircle}
                 disabled={buttonDisabled}
@@ -409,6 +379,20 @@ const CaptureDocument = props => {
                   ]}
                 />
               </TouchableOpacity>
+
+              {document.options.includes('fileUpload') && (
+                <TouchableOpacity
+                  style={styles.fileUpload}
+                  onPress={pickAndTransformPdf}
+                  hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
+                >
+                  <Image
+                    style={styles.fileUploadIcon}
+                    resizeMode="cover"
+                    source={pdfIcon}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             <PoweredBy />
           </>
@@ -421,7 +405,7 @@ const CaptureDocument = props => {
 export default CaptureDocument;
 
 const styles = StyleSheet.create({
-  cameraContainer: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -458,33 +442,6 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 2,
   },
-  topBar: {
-    flexDirection: 'row',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    justifyContent: 'center',
-    paddingTop: 30,
-  },
-  topBarLeft: {
-    position: 'absolute',
-    left: 10,
-    top: 30,
-    width: width * 0.055,
-    height: height * 0.03,
-  },
-  topBarRight: {
-    position: 'absolute',
-    right: 10,
-    top: 15,
-    width: width * 0.055,
-    height: height * 0.03,
-  },
-  topBarTitle: {
-    color: 'white',
-    fontSize: width * 0.045,
-  },
   topArea: {
     flex: 1,
     flexDirection: 'row',
@@ -504,6 +461,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
+    position: 'relative',
   },
   bottomText: {
     color: 'white',
@@ -536,10 +494,19 @@ const styles = StyleSheet.create({
     height: height * 0.1,
     marginTop: -(height * 0.015),
   },
+  fileUpload: {
+    position: 'absolute',
+    bottom: width * 0.06,
+    right: 10,
+  },
   fileUploadIcon: {
-    width: width * 0.07,
-    height: height * 0.1,
-    marginTop: -(height * 0.015),
+    width: 80,
+    height: 80,
+  },
+  eDevlet: {
+    position: 'absolute',
+    bottom: width * 0.06,
+    left: 10,
   },
   previewMiddle: {
     borderColor: 'white',

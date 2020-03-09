@@ -5,7 +5,7 @@ import { backdropColor } from '../constants';
 
 const { width, height } = Dimensions.get('window');
 
-export const SelfieMask = () => (
+const SelfieMask = () => (
   <Svg width={height * 0.6} height={height * 0.6}>
     <Defs>
       <Mask id="mask" x="0" y="0" height="100%" width="100%">
@@ -27,3 +27,5 @@ export const SelfieMask = () => (
     />
   </Svg>
 );
+
+export default SelfieMask;
