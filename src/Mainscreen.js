@@ -277,44 +277,29 @@ export const MainScreen = props => {
   };
 
   const checkIsNextStepDisabled = (document, index) => {
-    if (document.id === 'SG') {
-      if (
-        Object.values(documents).every(
-          item => item.id === 'SG' || item.passed === true,
-        )
-      ) {
-        return false;
-      }
-      return true;
-    }
-    return Boolean(
-      (index !== 0 && documents[index - 1].passed == null) || document.passed,
-    );
+    return false;
+    // if (document.id === 'SG') {
+    //   if (
+    //     Object.values(documents).every(
+    //       item => item.id === 'SG' || item.passed === true,
+    //     )
+    //   ) {
+    //     return false;
+    //   }
+    //   return true;
+    // }
+    // return Boolean(
+    //   (index !== 0 && documents[index - 1].passed == null) || document.passed,
+    // );
   };
 
   const handleCurrentModalStatus = (document, index) => {
-    // If document is Signature and other documents are not succeed yet
-    if (
-      document.id === 'SG' &&
-      !Object.values(documents).every(
-        item => item.id === 'SG' || item.passed === true,
-      )
-    ) {
-      return (
-        <Image
-          resizeMode="contain"
-          style={styles.moduleStatusIcon}
-          source={lockIcon}
-        />
-      );
-    }
     // if document is not Signature and its locked
-    else if (
+    if (
       index !== 0 &&
       documents[index - 1].passed !== true &&
       documents[index - 1].passed !== 'loading' &&
-      !document.passed &&
-      document.id !== 'SG'
+      !document.passed
     ) {
       return (
         <Image

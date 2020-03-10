@@ -1,32 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  SafeAreaView,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-  Text,
-  Alert,
-  StyleSheet,
-  BackHandler,
-  Platform,
-} from 'react-native';
+import { View, Alert, StyleSheet, BackHandler, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 // Local files
+import TopBar from '../TopBar';
 import SignatureScreen from './index';
-import { Loading } from '../Loading';
+import Loading from '../Loading';
+import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
 
-export const SignatureDraw = props => {
-  const {
-    document,
-    goBackToMainScreen,
-    customer,
-    goBack,
-    location,
-    formData,
-  } = props;
+const SignatureDraw = props => {
+  const { document, goBackToMainScreen, customer, goBack, formData } = props;
   const [documents, dispatch] = props.state;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
@@ -46,7 +30,7 @@ export const SignatureDraw = props => {
   }, []);
 
   useEffect(() => {
-    if (signature.length === 2) {
+    if (signature.length === document.steps.length) {
       handleSignatureMatch();
     }
   }, [signature]);
@@ -154,12 +138,9 @@ export const SignatureDraw = props => {
   };
 
   const handleEmptySignature = () => {
-    Alert.alert(
-      'Warning',
-      'Please make sure your signature is drawn.',
-      [{ text: 'OK' }],
-      { cancelable: true },
-    );
+    Alert.alert('Dikkat!', 'İmza alanı boş olamaz', [{ text: 'OK' }], {
+      cancelable: true,
+    });
   };
 
   if (isProcessStarted) {
@@ -167,28 +148,14 @@ export const SignatureDraw = props => {
   }
 
   return (
-    <View style={styles.signatureContainer}>
-      <StatusBar hidden />
-      <SafeAreaView style={styles.topBar}>
-        <TouchableOpacity
-          style={styles.topBarLeft}
-          onPress={goBack}
-          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-        >
-          <Image
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            resizeMode="contain"
-            source={require('../../../assets/back-arrow.png')}
-          />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>
-          {document.steps[currentStep].title}{' '}
-          {document.steps[currentStep].description}
-        </Text>
-      </SafeAreaView>
+    <View style={styles.container}>
+      <TopBar
+        style={{ paddingHorizontal: 20, paddingTop: 40 }}
+        onLeftButtonPressed={goBack}
+        leftButtonIcon={backArrow}
+        title={document.steps[currentStep].title}
+      />
+
       <View style={{ flex: 1 }}>
         <SignatureScreen
           onOK={handleSignature}
@@ -199,10 +166,12 @@ export const SignatureDraw = props => {
   );
 };
 
+export default SignatureDraw;
+
 const styles = StyleSheet.create({
-  signatureContainer: {
+  container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#263B5B',
   },
   topBar: {
     flexDirection: 'row',

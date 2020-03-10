@@ -1,9 +1,9 @@
-export const content = (script) =>
+export const content = script =>
   `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Signature Pad demo</title>
+  <title>Amani Signature Pad</title>
   <meta name="description" content="Signature Pad - HTML5 canvas based smooth signature drawing using variable width spline interpolation.">
 
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
@@ -79,7 +79,8 @@ export const content = (script) =>
     .m-signature-pad--footer {
       position: absolute;
       bottom: 0px;
-      height: 7.5vh;
+      background-color: #263B5B;
+      height: 18vh;
       display:flex;
       width:100%;
       flex-direction:row;
@@ -88,12 +89,11 @@ export const content = (script) =>
     .m-signature-pad--footer
       .button {
         flex-grow:1;
-        width: 50%;
+        width: 45%;
         position: absolute;
         bottom: 0;
-        background-color: black;
-        height: 100%;
         padding: 0 20px;
+        background-color: #263B5B;
         line-height: 32px;
         text-align: center;
         color: #FFF;
@@ -106,12 +106,28 @@ export const content = (script) =>
     .m-signature-pad--footer
       .button.clear {
         left: 0;
+        border: 1px solid #D5D5D5;
+        box-sizing: border-box;
+        box-shadow: 0px 2px 16px rgba(38, 33, 48, 0.4);
+        border-radius: 10px;
+        margin: 15px 10px;
+        padding: 10px;
       }
 
     .m-signature-pad--footer
       .button.save {
         right: 0;
+        background: linear-gradient(176.14deg, #FFD439 -197.62%, #DB6400 283.46%);
+        margin: 15px 10px;
+        padding: 10px;
+        border-radius: 10px;
       }
+
+    .m-signature-pad--footer-text {
+      color: #fff;
+      font-size: 14px;
+      margin: 10px auto;
+    }
 
     @media screen and (max-width: 1024px) {
       .m-signature-pad {
@@ -161,6 +177,7 @@ export const content = (script) =>
       <canvas></canvas>
     </div>
     <div class="m-signature-pad--footer">
+      <p class="m-signature-pad--footer-text">Atacağınız imza kimliğinizdeki imzaya benzemeli</p>
       <button type="button" class="button clear" data-action="clear">Temizle</button>
       <button type="button" class="button save" data-action="save">Onayla</button>
     </div>

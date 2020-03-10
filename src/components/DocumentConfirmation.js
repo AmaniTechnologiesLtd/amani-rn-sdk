@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   confirmationImagePreview: {
     width: width * 0.9,
-    height: height * 0.7,
+    height: height * 0.6,
   },
   errorMessageText: {
     color: 'white',

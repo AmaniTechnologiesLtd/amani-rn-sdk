@@ -214,16 +214,16 @@ export const initialDocuments = [
   },
   {
     id: 'SG',
-    title: 'Sözleşme',
+    title: 'Dijital Sözleşme',
     passed: null,
     steps: [
       {
         title: 'İmzanızı Atın',
-        description: '1/2',
+        description: '',
       },
       {
-        title: 'İmzanızı Tekrar Atın',
-        description: '2/2',
+        title: 'İmzanı Tekrar At',
+        description: '',
       },
     ],
     options: ['takePicture'],

@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StatusBar,
+  ImageBackground,
   TextInput,
   Alert,
   Image,
@@ -13,12 +13,18 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import { WebView } from 'react-native-webview';
 import PickerModal from 'react-native-picker-modal-view';
 
 // Local files
+import TopBar from '../TopBar';
+import mainBackground from '../../../assets/main-bg.png';
+import backArrow from '../../../assets/back-arrow.png';
+import blueBackground from '../../../assets/btn-blue.png';
+import orangeBackground from '../../../assets/btn-orange.png';
 import { content } from './View/html';
-import { SignatureDraw } from '../SignatureDraw/SignatureDraw';
+import SignatureDraw from '../SignatureDraw/SignatureDraw';
 import cities from '../../store/cities.json';
 
 const { width, height } = Dimensions.get('window');
@@ -47,8 +53,8 @@ const ContractScreen = props => {
   const handleContractProcess = async () => {
     if (!isContractApproved) {
       Alert.alert(
-        '',
-        'Sözleşmeyi kabul etmeden imzalama ekranına geçemezsiniz.',
+        'Dikkat!',
+        'Sözleşmeyi kabul etmeden imzalama ekranına geçemezsiniz',
         [
           {
             text: 'Anladım',
@@ -99,6 +105,55 @@ const ContractScreen = props => {
     setShowContract(true);
   };
 
+  const selectCityView = (disabled, selected, showModal) => (
+    <TouchableOpacity
+      disabled={disabled}
+      onPress={showModal}
+      style={{ width: '100%' }}
+    >
+      <View style={styles.contactFormInput}>
+        <Text style={{ color: formData.city ? 'white' : '#CAE0F5' }}>
+          {formData.city || 'İl'}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const selectProvinceView = (disabled, selected, showModal) => (
+    <TouchableOpacity
+      style={{ width: '100%' }}
+      disabled={disabled}
+      onPress={showModal}
+    >
+      <View style={styles.contactFormInput}>
+        <Text
+          style={{
+            color: formData.district ? 'white' : '#CAE0F5',
+          }}
+        >
+          {formData.district || 'İlçe'}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  /* For changing list item style. Not working properly for now
+  const listItem = (selected, item) => (
+    <View style={{ backgroundColor: '#263B5B' }}>
+      <View
+        style={{
+          marginHorizontal: 10,
+          paddingVertical: 10,
+          borderBottomWidth: 0.5,
+          borderColor: '#ffffff',
+        }}
+      >
+        <Text style={{ color: 'white' }}>{item.Name}</Text>
+      </View>
+    </View>
+  );
+  */
+
   if (showSignatureScreen) {
     return (
       <SignatureDraw
@@ -115,59 +170,30 @@ const ContractScreen = props => {
 
   if (!showContract) {
     return (
-      <SafeAreaView style={styles.contactFormContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="black" />
-        <View style={styles.topBar}>
-          <TouchableOpacity
-            style={styles.topBarLeft}
-            onPress={onContractDecline}
-            hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-          >
-            <Image
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-              resizeMode="contain"
-              source={require('../../../assets/back-arrow-black.png')}
-            />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Text style={styles.contactFormTitle}> SÖZLEŞME FORMU </Text>
+      <ImageBackground source={mainBackground} style={styles.container}>
+        <TopBar
+          style={{ paddingHorizontal: 20, paddingTop: 40 }}
+          onLeftButtonPressed={() => setShowContract(false)}
+          leftButtonIcon={backArrow}
+          title={currentDocument.title}
+        />
+        <View style={styles.contactForm}>
+          <Text style={styles.contactFormTitle}>
+            Sözleşmeni hazırlayabilmemiz için lütfen gerekli alanları doldur
+          </Text>
           <View>
             <View style={styles.contactFormView}>
               <TextInput
                 style={styles.contactFormInput}
                 onChangeText={val => setFormData({ ...formData, job: val })}
                 placeholder="Meslek"
-                placeholderTextColor="gray"
+                placeholderTextColor="#CAE0F5"
                 value={formData.job}
               />
             </View>
             <View style={styles.contactFormView}>
               <PickerModal
-                renderSelectView={(disabled, selected, showModal) => (
-                  <TouchableOpacity disabled={disabled} onPress={showModal}>
-                    <View
-                      style={{
-                        width: width * 0.8,
-                        justifyContent: 'center',
-                        height: height * 0.05,
-                        paddingHorizontal: width * 0.035,
-                        borderWidth: 0.5,
-                        borderColor: '#212121',
-                      }}
-                    >
-                      <Text
-                        style={{ color: formData.city ? '#212121' : 'gray' }}
-                      >
-                        {' '}
-                        {formData.city || 'İl'}{' '}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
+                renderSelectView={selectCityView}
                 onSelected={val =>
                   setFormData({ ...formData, city: val.Name, district: null })
                 }
@@ -183,35 +209,8 @@ const ContractScreen = props => {
             </View>
             <View style={styles.contactFormView}>
               <PickerModal
-                renderSelectView={(disabled, selected, showModal) => (
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: !formData.city ? '#eeeeee' : 'white',
-                    }}
-                    disabled={!formData.city}
-                    onPress={showModal}
-                  >
-                    <View
-                      style={{
-                        width: width * 0.8,
-                        justifyContent: 'center',
-                        height: height * 0.05,
-                        paddingHorizontal: width * 0.035,
-                        borderWidth: 0.5,
-                        borderColor: '#212121',
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: formData.district ? '#212121' : 'gray',
-                        }}
-                      >
-                        {' '}
-                        {formData.district || 'İlçe'}{' '}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
+                disabled={!formData.city}
+                renderSelectView={selectProvinceView}
                 onSelected={val =>
                   setFormData({ ...formData, district: val.Name })
                 }
@@ -226,68 +225,81 @@ const ContractScreen = props => {
                 autoGenerateAlphabeticalIndex={true}
                 searchPlaceholderText={'Ara...'}
                 autoSort={false}
+                style={{ backgroundColor: '#263B5B' }}
               />
             </View>
             <View style={styles.contactFormView}>
               <TextInput
                 style={styles.multilineFormInput}
                 onChangeText={val => setFormData({ ...formData, address: val })}
-                placeholder="Adres"
-                placeholderTextColor="gray"
+                placeholder="Açık Adres"
+                placeholderTextColor="#CAE0F5"
                 multiline
-                numberOfLines={Platform.OS === 'ios' ? null : 12}
-                minHeight={Platform.OS === 'ios' && 12 ? 12 * 12 : null}
+                numberOfLines={Platform.OS === 'ios' ? null : 6}
+                minHeight={Platform.OS === 'ios' && 6 ? 6 * 6 : null}
                 value={formData.address}
               />
             </View>
-            <View style={{ alignItems: 'center' }}>
-              <TouchableOpacity
-                onPress={handleFormSubmit}
-                style={styles.contactFormButton}
+
+            <ImageBackground
+              source={blueBackground}
+              style={styles.addresNoteBackground}
+            >
+              <Text style={styles.addressNote}>
+                Adres bilgisini yüklediğin belgeden aldık. Eksik veya yanlış
+                kısımlar varsa tıklayıp düzenleyebilirsin.
+              </Text>
+            </ImageBackground>
+
+            <TouchableOpacity
+              onPress={handleFormSubmit}
+              style={styles.contactFormButton}
+            >
+              <ImageBackground
+                source={orangeBackground}
+                style={styles.contactFromButtonBackground}
               >
-                <Text style={{ color: 'white' }}>Devam</Text>
-              </TouchableOpacity>
-            </View>
+                <Text style={styles.contactFromButtonText}>DEVAM</Text>
+              </ImageBackground>
+            </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
+      </ImageBackground>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.topBar}>
-        <TouchableOpacity
-          style={styles.topBarLeft}
-          onPress={onContractDecline}
-          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-        >
-          <Image
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            resizeMode="contain"
-            source={require('../../../assets/back-arrow-black.png')}
-          />
-        </TouchableOpacity>
-      </View>
-      <WebView
-        style={{ marginTop: height * 0.025 }}
-        javaScriptEnabled
-        source={{ html: content }}
+    <SafeAreaView style={styles.container}>
+      <TopBar
+        style={{ paddingHorizontal: 20, paddingTop: 40 }}
+        onLeftButtonPressed={() => setShowContract(false)}
+        leftButtonIcon={backArrow}
+        title={currentDocument.title}
       />
+
+      <WebView style={{}} source={{ html: content }} />
+
       <View style={styles.bottomBar}>
-        <View style={styles.bottomBarButton}>
-          <Text style={styles.bottomBarButtonText}> Onaylıyorum </Text>
-          {customCheckboxView()}
+        <View style={styles.approveButton}>
+          <CheckBox
+            value={isContractApproved}
+            onValueChange={setIsContractApproved}
+            tintColors={{ true: 'white', false: 'white' }}
+          />
+          <Text style={styles.approveButtonText}>
+            Sözleşmeyi okudum, anladım ve doğruluğunu teyit ediyorum
+          </Text>
         </View>
         <TouchableOpacity
           onPress={handleContractProcess}
           style={styles.bottomBarButton}
         >
-          <Text style={styles.bottomBarButtonText}> İmzala </Text>
+          <ImageBackground
+            source={orangeBackground}
+            style={styles.bottomBarButtonBackground}
+          >
+            <Text style={styles.contactFromButtonText}>İMZALA</Text>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -297,42 +309,58 @@ const ContractScreen = props => {
 export default ContractScreen;
 
 const styles = StyleSheet.create({
-  contactFormContainer: {
+  container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#263B5B',
+  },
+  contactForm: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingBottom: 20,
   },
   contactFormView: {
     alignItems: 'center',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   contactFormTitle: {
-    textAlign: 'center',
-    fontSize: height * 0.04,
+    fontSize: height * 0.025,
     padding: 20,
+    fontWeight: 'bold',
+    color: 'white',
   },
   contactFormInput: {
-    width: width * 0.8,
-    height: height * 0.05,
-    paddingHorizontal: width * 0.035,
-    borderWidth: 0.5,
-    borderColor: '#212121',
-    color: '#212121',
+    width: '100%',
+    paddingHorizontal: 0,
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderColor: 'rgba(255, 255, 255, .3)',
+    color: '#FFFFFF',
   },
   multilineFormInput: {
-    width: width * 0.8,
-    paddingHorizontal: width * 0.035,
-    borderWidth: 0.5,
+    width: '100%',
+    borderBottomWidth: 2,
     textAlignVertical: 'top',
-    borderColor: '#212121',
-    color: '#212121',
+    borderColor: 'rgba(255, 255, 255, .3)',
+    color: '#FFFFFF',
   },
   contactFormButton: {
-    backgroundColor: '#212121',
-    height: height * 0.05,
-    width: width * 0.8,
+    width: '90%',
+    marginHorizontal: 20,
     justifyContent: 'center',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  contactFromButtonBackground: {
+    paddingVertical: 20,
+    resizeMode: 'cover',
     alignItems: 'center',
-    borderRadius: 5,
+  },
+  contactFromButtonText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: width * 0.04,
+    color: 'white',
   },
   customCheckboxOutline: {
     borderColor: 'white',
@@ -340,6 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: height * 0.035,
     height: height * 0.035,
+    marginLeft: 5,
   },
   customCheckboxInline: {
     height: '100%',
@@ -347,35 +376,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  topBar: {
-    flexDirection: 'row',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    justifyContent: 'center',
-    paddingVertical: 15,
+  addressNote: {
+    color: 'white',
   },
-  topBarLeft: {
-    position: 'absolute',
-    left: 10,
-    top: 15,
-    width: width * 0.055,
-    height: height * 0.03,
+  addresNoteBackground: {
+    margin: 20,
+    padding: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   bottomBar: {
-    flex: 0.06,
-    backgroundColor: 'black',
-    flexDirection: 'row',
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#263B5B',
   },
-  bottomBarButton: {
-    flex: 0.5,
+  approveButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 10,
   },
-  bottomBarButtonText: {
+  approveButtonText: {
     color: 'white',
-    textAlign: 'center',
+    paddingRight: 20,
+  },
+  bottomBarButton: {
+    width: '100%',
+    justifyContent: 'center',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  bottomBarButtonBackground: {
+    paddingVertical: 20,
+    resizeMode: 'cover',
+    alignItems: 'center',
   },
 });

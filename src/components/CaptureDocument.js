@@ -61,9 +61,7 @@ const CaptureDocument = props => {
   const [corners, setCorners] = useState(null);
   const [versionGroup, setVersionGroup] = useState('');
   const [groupIndex, setGroupIndex] = useState(0);
-  const [showVersionSelectionScreen, setShowVersionSelectionScreen] = useState(
-    true,
-  );
+  const [showVersionSelection, setShowVersionSelection] = useState(true);
   const [showDocumentConfirmation, setShowDocumentConfirmation] = useState(
     false,
   );
@@ -71,8 +69,13 @@ const CaptureDocument = props => {
 
   const camera = useRef(null);
 
-  const goBack = async () => {
-    onClearDocument();
+  const goBack = () => {
+    console.log(showVersionSelection);
+    if (checkForVersions() && !showVersionSelection) {
+      setShowVersionSelection(true);
+    } else {
+      onClearDocument();
+    }
   };
 
   useEffect(() => {
@@ -178,14 +181,15 @@ const CaptureDocument = props => {
     setIsProcessStarted(false);
   };
 
-  const checkPreScreenConditionForVersioning = () => {
-    if (Object.keys(document.versions).length > 1) {
+  const checkForVersions = () => {
+    // If groups are more than one
+    // If there is only one group but it has more than one versions
+    if (
+      Object.keys(document.versions).length > 1 ||
+      document.versions[Object.keys(document.versions)[0]].length > 1
+    ) {
       return true;
     }
-    // If groups are more than one
-    else if (document.versions[Object.keys(document.versions)[0]].length > 1) {
-      return true;
-    } // If there is only one group but it has more than one versions
     return false;
   };
 
@@ -207,7 +211,7 @@ const CaptureDocument = props => {
     );
   }
 
-  if (checkPreScreenConditionForVersioning() && showVersionSelectionScreen) {
+  if (checkForVersions() && showVersionSelection) {
     return (
       <VersionSelection
         goBack={goBack}
@@ -219,7 +223,7 @@ const CaptureDocument = props => {
         document={document}
         versionGroup={setVersionGroup}
         groupIndex={setGroupIndex}
-        closeVersionSelected={() => setShowVersionSelectionScreen(false)}
+        closeVersionSelected={() => setShowVersionSelection(false)}
       />
     );
   }
@@ -254,10 +258,11 @@ const CaptureDocument = props => {
             <SafeAreaView
               style={{
                 paddingTop: 30,
-                backgroundColor: document.versions[versionGroup][groupIndex]
-                  .aspectRatio
-                  ? backdropColor
-                  : '#263B5B',
+                backgroundColor:
+                  document.versions[versionGroup][groupIndex].aspectRatio ||
+                  document.id === 'SE'
+                    ? backdropColor
+                    : '#263B5B',
               }}
             >
               <TopBar
@@ -272,10 +277,11 @@ const CaptureDocument = props => {
               style={[
                 styles.topArea,
                 {
-                  backgroundColor: document.versions[versionGroup][groupIndex]
-                    .aspectRatio
-                    ? backdropColor
-                    : 'transparent',
+                  backgroundColor:
+                    document.versions[versionGroup][groupIndex].aspectRatio ||
+                    document.id === 'SE'
+                      ? backdropColor
+                      : 'transparent',
                   maxHeight: document.id === 'SE' ? height * 0.005 : 'auto',
                 },
               ]}
@@ -327,10 +333,11 @@ const CaptureDocument = props => {
 
             <View
               style={{
-                backgroundColor: document.versions[versionGroup][groupIndex]
-                  .aspectRatio
-                  ? backdropColor
-                  : 'transparent',
+                backgroundColor:
+                  document.versions[versionGroup][groupIndex].aspectRatio ||
+                  document.id === 'SE'
+                    ? backdropColor
+                    : 'transparent',
               }}
             >
               <Text style={styles.bottomText}>
@@ -341,13 +348,16 @@ const CaptureDocument = props => {
               style={[
                 styles.bottomArea,
                 {
-                  backgroundColor: document.versions[versionGroup][groupIndex]
-                    .aspectRatio
-                    ? backdropColor
-                    : '#263B5B',
-                  flex: document.versions[versionGroup][groupIndex].aspectRatio
-                    ? 1
-                    : 0,
+                  backgroundColor:
+                    document.versions[versionGroup][groupIndex].aspectRatio ||
+                    document.id === 'SE'
+                      ? backdropColor
+                      : '#263B5B',
+                  flex:
+                    document.versions[versionGroup][groupIndex].aspectRatio ||
+                    document.id === 'SE'
+                      ? 1
+                      : 0,
                 },
               ]}
             >
