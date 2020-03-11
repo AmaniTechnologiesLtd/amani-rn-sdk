@@ -1,22 +1,14 @@
 import React, { useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  ImageBackground,
-  BackHandler,
-} from 'react-native';
+import { View, StyleSheet, Dimensions, BackHandler } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 // Local files
 import CustomCrop from './CustomCrop';
 import TopBar from './TopBar';
+import OrangeButton from './OrangeButton';
 import PoweredBy from './PoweredBy';
 import backArrow from '../../assets/back-arrow.png';
-import orangeBackground from '../../assets/btn-orange.png';
 
 const ImageCropper = props => {
   const { image, title, onCancel } = props;
@@ -67,14 +59,7 @@ const ImageCropper = props => {
         handlerColor="#00FFD1"
       />
       <View style={styles.bottomBar}>
-        <TouchableOpacity onPress={getCropData} style={styles.cropButton}>
-          <ImageBackground
-            source={orangeBackground}
-            style={styles.cropButtonBackground}
-          >
-            <Text style={styles.cropButtonText}>FOTOĞRAFI KIRP</Text>
-          </ImageBackground>
-        </TouchableOpacity>
+        <OrangeButton onPress={getCropData} text="FOTOĞRAFI KIRP" />
         <PoweredBy />
       </View>
     </View>
@@ -113,24 +98,8 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 10,
     paddingHorizontal: 30,
-    paddingTop: 20,
-    paddingBottom: 40,
+    paddingTop: 10,
+    paddingBottom: 30,
     backgroundColor: '#263B5B',
-  },
-  cropButton: {
-    flex: 1,
-    justifyContent: 'center',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  cropButtonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: width * 0.04,
-    color: 'white',
-  },
-  cropButtonBackground: {
-    resizeMode: 'cover',
-    padding: 15,
   },
 });

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
+  ScrollView,
   Text,
   TouchableOpacity,
   ImageBackground,
   TextInput,
   Alert,
-  Image,
   SafeAreaView,
   StyleSheet,
   BackHandler,
@@ -18,19 +18,26 @@ import { WebView } from 'react-native-webview';
 import PickerModal from 'react-native-picker-modal-view';
 
 // Local files
+import api from '../../services/api';
 import TopBar from '../TopBar';
 import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
-import orangeBackground from '../../../assets/btn-orange.png';
+import OrangeButton from '../OrangeButton';
 import { content } from './View/html';
 import SignatureDraw from '../SignatureDraw/SignatureDraw';
 import cities from '../../store/cities.json';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const ContractScreen = props => {
-  const { onContractDecline, currentDocument, customer, location } = props;
+  const {
+    onContractDecline,
+    currentDocument,
+    customer,
+    location,
+    dispatch,
+  } = props;
   const [showContract, setShowContract] = useState(false);
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
@@ -43,6 +50,7 @@ const ContractScreen = props => {
   });
 
   useEffect(() => {
+    getCustomerData();
     BackHandler.addEventListener('hardwareBackPress', () => {
       onContractDecline();
       return true;
@@ -50,40 +58,27 @@ const ContractScreen = props => {
     return () => BackHandler.removeEventListener('hardwareBackPress');
   }, []);
 
-  const handleContractProcess = async () => {
-    if (!isContractApproved) {
-      Alert.alert(
-        'Dikkat!',
-        'Sözleşmeyi kabul etmeden imzalama ekranına geçemezsiniz',
-        [
-          {
-            text: 'Anladım',
-          },
-        ],
-        { cancelable: false },
-      );
-      return;
-    }
-    setShowSignatureScreen(true);
-  };
+  const getCustomerData = async () => {
+    try {
+      const response = await api.getCustomer({
+        id: customer.id,
+        token: customer.access,
+      });
 
-  const customCheckboxView = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => setIsContractApproved(!isContractApproved)}
-        style={styles.customCheckboxOutline}
-      >
-        {isContractApproved && (
-          <View style={styles.customCheckboxInline}>
-            <Image
-              source={require('../../../assets/checked.png')}
-              style={{ height: height * 0.03 }}
-              resizeMode="contain"
-            />
-          </View>
-        )}
-      </TouchableOpacity>
-    );
+      setFormData({
+        ...formData,
+        city: response.data.address.city ? response.data.address.city : null,
+        district: response.data.address.province
+          ? response.data.address.province
+          : null,
+        address: response.data.address.address
+          ? response.data.address.address
+          : null,
+        job: response.data.occupation ? response.data.occupation : null,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleFormSubmit = async () => {
@@ -103,6 +98,10 @@ const ContractScreen = props => {
       }
     }
     setShowContract(true);
+  };
+
+  const charsLeft = max => {
+    return formData.address ? max - formData.address.length : max;
   };
 
   const selectCityView = (disabled, selected, showModal) => (
@@ -159,7 +158,7 @@ const ContractScreen = props => {
       <SignatureDraw
         formData={formData}
         document={currentDocument}
-        state={props.state}
+        dispatch={dispatch}
         location={location}
         goBack={() => setShowSignatureScreen(false)}
         goBackToMainScreen={onContractDecline}
@@ -173,11 +172,11 @@ const ContractScreen = props => {
       <ImageBackground source={mainBackground} style={styles.container}>
         <TopBar
           style={{ paddingHorizontal: 20, paddingTop: 40 }}
-          onLeftButtonPressed={() => setShowContract(false)}
+          onLeftButtonPressed={onContractDecline}
           leftButtonIcon={backArrow}
           title={currentDocument.title}
         />
-        <View style={styles.contactForm}>
+        <ScrollView style={styles.contactForm}>
           <Text style={styles.contactFormTitle}>
             Sözleşmeni hazırlayabilmemiz için lütfen gerekli alanları doldur
           </Text>
@@ -235,10 +234,12 @@ const ContractScreen = props => {
                 placeholder="Açık Adres"
                 placeholderTextColor="#CAE0F5"
                 multiline
-                numberOfLines={Platform.OS === 'ios' ? null : 6}
-                minHeight={Platform.OS === 'ios' && 6 ? 6 * 6 : null}
+                maxLength={100}
+                numberOfLines={Platform.OS === 'ios' ? null : 4}
+                minHeight={Platform.OS === 'ios' && 3 ? 3 * 3 : null}
                 value={formData.address}
               />
+              <Text style={styles.charCount}>{charsLeft(100)} / 100</Text>
             </View>
 
             <ImageBackground
@@ -251,19 +252,13 @@ const ContractScreen = props => {
               </Text>
             </ImageBackground>
 
-            <TouchableOpacity
+            <OrangeButton
               onPress={handleFormSubmit}
-              style={styles.contactFormButton}
-            >
-              <ImageBackground
-                source={orangeBackground}
-                style={styles.contactFromButtonBackground}
-              >
-                <Text style={styles.contactFromButtonText}>DEVAM</Text>
-              </ImageBackground>
-            </TouchableOpacity>
+              text="DEVAM"
+              style={{ marginHorizontal: 20 }}
+            />
           </View>
-        </View>
+        </ScrollView>
       </ImageBackground>
     );
   }
@@ -286,21 +281,19 @@ const ContractScreen = props => {
             onValueChange={setIsContractApproved}
             tintColors={{ true: 'white', false: 'white' }}
           />
-          <Text style={styles.approveButtonText}>
-            Sözleşmeyi okudum, anladım ve doğruluğunu teyit ediyorum
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={handleContractProcess}
-          style={styles.bottomBarButton}
-        >
-          <ImageBackground
-            source={orangeBackground}
-            style={styles.bottomBarButtonBackground}
+          <TouchableOpacity
+            onPress={() => setIsContractApproved(!isContractApproved)}
           >
-            <Text style={styles.contactFromButtonText}>İMZALA</Text>
-          </ImageBackground>
-        </TouchableOpacity>
+            <Text style={styles.approveButtonText}>
+              Sözleşmeyi okudum, anladım ve doğruluğunu teyit ediyorum
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <OrangeButton
+          onPress={() => setShowSignatureScreen(true)}
+          disabled={!isContractApproved}
+          text="İMZALA"
+        />
       </View>
     </SafeAreaView>
   );
@@ -315,7 +308,6 @@ const styles = StyleSheet.create({
   },
   contactForm: {
     flex: 1,
-    justifyContent: 'space-between',
     paddingBottom: 20,
   },
   contactFormView: {
@@ -344,23 +336,11 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, .3)',
     color: '#FFFFFF',
   },
-  contactFormButton: {
-    width: '90%',
-    marginHorizontal: 20,
-    justifyContent: 'center',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  contactFromButtonBackground: {
-    paddingVertical: 20,
-    resizeMode: 'cover',
-    alignItems: 'center',
-  },
-  contactFromButtonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: width * 0.04,
-    color: 'white',
+  charCount: {
+    color: '#76889B',
+    fontSize: height * 0.02,
+    marginTop: 3,
+    alignSelf: 'flex-start',
   },
   customCheckboxOutline: {
     borderColor: 'white',

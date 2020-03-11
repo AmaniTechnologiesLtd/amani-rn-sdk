@@ -32,6 +32,7 @@ import forwardArrow from '../assets/forward-arrow.png';
 import lockIcon from '../assets/locked-icon.png';
 import successIcon from '../assets/success-icon.png';
 import failedIcon from '../assets/failed-icon.png';
+import seperatorIcon from '../assets/seperator-icon.png';
 
 const { width, height } = Dimensions.get('window');
 
@@ -139,7 +140,7 @@ export const MainScreen = props => {
             .then(async sRes => {
               setCustomer({
                 access: fRes.data.token,
-                id: sRes.data.token,
+                id: sRes.data.id,
                 data: customerInformations,
               });
               await dispatch({
@@ -209,7 +210,7 @@ export const MainScreen = props => {
       'type',
       selectedDocumentVersion.title !== 'Diğer' ? selectedDocument.id : 'OT',
     );
-    requestData.append('customer_token', customer.id);
+    requestData.append('customer_id', customer.id);
     requestData.append('device_data', JSON.stringify(deviceData));
     if (location) {
       requestData.append('location', JSON.stringify(location));
@@ -385,7 +386,7 @@ export const MainScreen = props => {
         onContractDecline={() => setShowContract(false)}
         location={location}
         currentDocument={documents.find(document => document.id === 'SG')}
-        state={[documents, dispatch]}
+        dispatch={dispatch}
         customer={customer}
       />
     );
@@ -399,25 +400,36 @@ export const MainScreen = props => {
       <View style={styles.modulesContainer}>
         {documents.map((document, index) => {
           return (
-            <TouchableOpacity
-              disabled={checkIsNextStepDisabled(document, index)}
-              style={styles.moduleButton}
-              key={document.id}
-              onPress={() =>
-                document.id === 'SG'
-                  ? setShowContract(true)
-                  : setSelectedDocument(document)
-              }
-            >
-              <View style={styles.moduleContainer}>
-                <View style={styles.moduleTitleContainer}>
-                  <Text style={styles.moduleTitle}>{document.title}</Text>
+            <>
+              <TouchableOpacity
+                disabled={checkIsNextStepDisabled(document, index)}
+                style={styles.moduleButton}
+                key={document.id}
+                onPress={() =>
+                  document.id === 'SG'
+                    ? setShowContract(true)
+                    : setSelectedDocument(document)
+                }
+              >
+                <View style={styles.moduleContainer}>
+                  <View style={styles.moduleTitleContainer}>
+                    <Text style={styles.moduleTitle}>{document.title}</Text>
+                  </View>
+                  <View style={styles.moduleStatusContainer}>
+                    {handleCurrentModalStatus(document, index)}
+                  </View>
                 </View>
-                <View style={styles.moduleStatusContainer}>
-                  {handleCurrentModalStatus(document, index)}
+              </TouchableOpacity>
+              {index < documents.length - 1 && (
+                <View style={styles.moduleSeperator}>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.seperatorIcon}
+                    source={seperatorIcon}
+                  />
                 </View>
-              </View>
-            </TouchableOpacity>
+              )}
+            </>
           );
         })}
       </View>
@@ -437,7 +449,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width * 0.06,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginVertical: 30,
   },
   modulesContainer: {
     justifyContent: 'center',
@@ -451,9 +463,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(14, 37, 70, 0.6)',
     padding: 15,
     justifyContent: 'center',
-    marginBottom: height * 0.03,
     overflow: 'hidden',
     borderRadius: 10,
+  },
+  moduleSeperator: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginVertical: 5,
   },
   buttonBackground: {
     resizeMode: 'cover',

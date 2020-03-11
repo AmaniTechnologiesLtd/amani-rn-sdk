@@ -15,6 +15,12 @@ export default {
         Authorization: `Token ${param.token}`,
       },
     }),
+  getCustomer: param =>
+    axios.get(`customer/detail/${param.id}`, {
+      headers: {
+        Authorization: `Token ${param.token}`,
+      },
+    }),
   cropImage: (token, documentData) =>
     axios.post('engine/autocapture', documentData, {
       headers: {

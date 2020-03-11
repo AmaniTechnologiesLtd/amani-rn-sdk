@@ -131,6 +131,7 @@ var SignaturePad = (function (document) {
             self._ctx.drawImage(image, 0, 0, width, height);
         };
         this._isEmpty = false;
+        document.getElementById('onayla').disabled = false;
     };
 
     SignaturePad.prototype._strokeUpdate = function (event) {
@@ -211,6 +212,7 @@ var SignaturePad = (function (document) {
         this._lastWidth = (this.minWidth + this.maxWidth) / 2;
         this._isEmpty = true;
         this._ctx.fillStyle = this.penColor;
+        document.getElementById('onayla').disabled = true;
     };
 
     SignaturePad.prototype._createPoint = function (event) {
@@ -293,6 +295,7 @@ var SignaturePad = (function (document) {
         ctx.moveTo(x, y);
         ctx.arc(x, y, size, 0, 2 * Math.PI, false);
         this._isEmpty = false;
+        document.getElementById('onayla').disabled = false;
     };
 
     SignaturePad.prototype._drawCurve = function (curve, startWidth, endWidth) {

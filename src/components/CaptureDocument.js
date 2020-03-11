@@ -18,6 +18,7 @@ import DocumentPicker from 'react-native-document-picker';
 import SelfieMask from './SelfieMask';
 import ImageCropper from './ImageCropper';
 import TopBar from './TopBar';
+import EDevlet from './EDevlet';
 import PoweredBy from './PoweredBy';
 import Loading from './Loading';
 import VersionSelection from './VersionSelection';
@@ -57,6 +58,7 @@ const CaptureDocument = props => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessStarted, setIsProcessStarted] = useState(false);
+  const [showEDevlet, setShowEDevlet] = useState(false);
   const [imageCrop, setImageCrop] = useState(null);
   const [corners, setCorners] = useState(null);
   const [versionGroup, setVersionGroup] = useState('');
@@ -195,6 +197,10 @@ const CaptureDocument = props => {
 
   if (isProcessStarted) {
     return <Loading />;
+  }
+
+  if (showEDevlet) {
+    return <EDevlet onGoBack={() => setShowEDevlet(false)} />;
   }
 
   if (showDocumentConfirmation) {
@@ -364,7 +370,7 @@ const CaptureDocument = props => {
               {document.versions[versionGroup][groupIndex].edevlet && (
                 <TouchableOpacity
                   style={styles.eDevlet}
-                  onPress={pickAndTransformPdf}
+                  onPress={() => setShowEDevlet(true)}
                   hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
                 >
                   <Image

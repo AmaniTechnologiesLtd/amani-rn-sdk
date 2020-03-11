@@ -3,15 +3,14 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
   StatusBar,
   Dimensions,
   StyleSheet,
   ImageBackground,
 } from 'react-native';
 
+import OrangeButton from './OrangeButton';
 import mainBackground from '../../assets/main-bg.png';
-import orangeBackground from '../../assets/btn-orange.png';
 import successIcon from '../../assets/success-icon.png';
 
 const { width, height } = Dimensions.get('window');
@@ -37,17 +36,11 @@ const DocumentSuccess = props => {
       </View>
 
       <View style={styles.bottomBar}>
-        <TouchableOpacity
+        <OrangeButton
           onPress={continueProcess}
-          style={styles.bottomButtons}
-        >
-          <ImageBackground
-            source={orangeBackground}
-            style={styles.bottomButtonBackground}
-          >
-            <Text style={styles.bottomButtonText}>DEVAM</Text>
-          </ImageBackground>
-        </TouchableOpacity>
+          text="DEVAM"
+          style={{ flex: 1 }}
+        />
       </View>
     </ImageBackground>
   );
@@ -96,18 +89,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     overflow: 'hidden',
-  },
-  bottomButtonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: width * 0.04,
-    color: 'white',
-  },
-  bottomButtonBackground: {
-    resizeMode: 'cover',
-    padding: 20,
-  },
-  approveButton: {
-    marginLeft: width * 0.05,
   },
 });

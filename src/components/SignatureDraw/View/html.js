@@ -118,10 +118,17 @@ export const content = script =>
       .button.save {
         right: 0;
         background: linear-gradient(176.14deg, #FFD439 -197.62%, #DB6400 283.46%);
+        box-shadow: 0px 2px 16px rgba(38, 33, 48, 0.4);
         margin: 15px 10px;
         padding: 10px;
         border-radius: 10px;
+        font-weight: bold;
       }
+
+      .m-signature-pad--footer
+        .button:disabled {
+          opacity: 0.7;
+        }
 
     .m-signature-pad--footer-text {
       color: #fff;
@@ -178,8 +185,8 @@ export const content = script =>
     </div>
     <div class="m-signature-pad--footer">
       <p class="m-signature-pad--footer-text">Atacağınız imza kimliğinizdeki imzaya benzemeli</p>
-      <button type="button" class="button clear" data-action="clear">Temizle</button>
-      <button type="button" class="button save" data-action="save">Onayla</button>
+      <button id="clear" type="button" class="button clear" data-action="clear">Temizle</button>
+      <button id="onayla" type="button" class="button save" data-action="save">ONAYLA</button>
     </div>
   </div>
 

@@ -10,8 +10,14 @@ import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
 
 const SignatureDraw = props => {
-  const { document, goBackToMainScreen, customer, goBack, formData } = props;
-  const [documents, dispatch] = props.state;
+  const {
+    document,
+    goBackToMainScreen,
+    customer,
+    goBack,
+    formData,
+    dispatch,
+  } = props;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessStarted, setIsProcessStarted] = useState(null);
@@ -75,7 +81,7 @@ const SignatureDraw = props => {
     const requestData = new FormData();
 
     requestData.append('type', document.id);
-    requestData.append('customer_token', customer.id);
+    requestData.append('customer_id', customer.id);
     requestData.append('device_data', JSON.stringify(deviceData));
     signature.forEach(sign => requestData.append('files[]', sign));
 
@@ -133,6 +139,7 @@ const SignatureDraw = props => {
   };
 
   const handleSignature = async drawnSignature => {
+    setIsProcessStarted(true);
     setSignature([...signature, drawnSignature]);
     calculateNextStep();
   };

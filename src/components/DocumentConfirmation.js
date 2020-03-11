@@ -13,8 +13,8 @@ import {
 import api from '../services/api';
 import Loading from './Loading';
 import TopBar from './TopBar';
+import OrangeButton from './OrangeButton';
 import mainBackground from '../../assets/main-bg.png';
-import orangeBackground from '../../assets/btn-orange.png';
 import backArrow from '../../assets/back-arrow.png';
 
 const { width, height } = Dimensions.get('window');
@@ -113,17 +113,11 @@ const DocumentConfirmation = props => {
           <Text style={styles.bottomButtonText}>Tekrar Dene</Text>
         </TouchableOpacity>
         {!errorMessage && (
-          <TouchableOpacity
+          <OrangeButton
             onPress={continueProcess}
-            style={[styles.bottomButtons, styles.approveButton]}
-          >
-            <ImageBackground
-              source={orangeBackground}
-              style={styles.bottomButtonBackground}
-            >
-              <Text style={styles.bottomButtonText}>ONAYLA</Text>
-            </ImageBackground>
-          </TouchableOpacity>
+            text="ONAYLA"
+            style={{ marginLeft: width * 0.05, flex: 1 }}
+          />
         )}
       </View>
     </ImageBackground>
@@ -197,15 +191,8 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     color: 'white',
   },
-  bottomButtonBackground: {
-    resizeMode: 'cover',
-    padding: 20,
-  },
   tryAgainButton: {
     borderColor: 'white',
     borderWidth: 1,
-  },
-  approveButton: {
-    marginLeft: width * 0.05,
   },
 });

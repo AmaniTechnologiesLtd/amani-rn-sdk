@@ -35,7 +35,7 @@ class SignatureView extends Component {
 
   constructor(props) {
     super(props);
-    const { clearText, confirmText, emptyText, webStyle } = props;
+    const { clearText, confirmText, webStyle } = props;
     this.state = {
       base64DataUrl: props.dataURL || null,
       isLoading: true,
