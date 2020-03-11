@@ -1,28 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 // Local files
 import { content } from './View/html';
 import { SignaturePad } from './View/js/signature_pad';
 import { AppContent } from './View/js/app';
-
-const styles = StyleSheet.create({
-  webBg: {
-    width: '100%',
-    backgroundColor: '#FFF',
-    flex: 1,
-  },
-  loadingOverlayContainer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 class SignatureView extends Component {
   static defaultProps = {
@@ -75,14 +58,17 @@ class SignatureView extends Component {
           onError={this.renderError}
           onLoadEnd={() => this.setState({ isLoading: false })}
         />
-        {this.state.isLoading && (
-          <View style={styles.loadingOverlayContainer}>
-            <ActivityIndicator />
-          </View>
-        )}
       </View>
     );
   }
 }
 
 export default SignatureView;
+
+const styles = StyleSheet.create({
+  webBg: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    flex: 1,
+  },
+});

@@ -64,6 +64,7 @@ export const content = script =>
       right: 0;
       top: 0;
       bottom: 0;
+      background: #ffffff;
     }
 
     .m-signature-pad--body
@@ -74,6 +75,7 @@ export const content = script =>
         width: 100%;
         height: 100%;
         border-radius: 4px;
+        background: #ffffff;
       }
 
     .m-signature-pad--footer {

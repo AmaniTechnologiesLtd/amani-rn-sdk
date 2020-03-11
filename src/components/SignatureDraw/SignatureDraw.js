@@ -59,6 +59,7 @@ const SignatureDraw = props => {
       );
       setCurrentStep(0);
       setSignature([]);
+      setIsProcessStarted(false);
       return;
     }
     goBackToMainScreen();

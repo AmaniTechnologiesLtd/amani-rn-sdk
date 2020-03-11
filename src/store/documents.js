@@ -76,9 +76,11 @@ export const initialDocuments = [
         },
       ],
     },
-    successTitle: "Selfie'ni başarıyla yükledin.",
+    successTitle: "Selfie'ni başarıyla yükledin",
     successDescription:
-      "Biz selfie'ni kontrol ederken lütfen adresini doğrulama adımına geç.\n\nAdresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla.",
+      "Biz selfie'ni kontrol ederken lütfen adresini doğrulama adımına geç",
+    nextStepDescription:
+      'Adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
   },
   {
     id: 'PA',

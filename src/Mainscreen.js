@@ -19,7 +19,7 @@ import DeviceInfo from 'react-native-device-info';
 
 // Local files
 import CaptureDocument from './components/CaptureDocument';
-import DocumentSuccess from './components/DocumentSuccess';
+import MessageScreen from './components/MessageScreen';
 import ContractScreen from './components/SmartContract/ContractScreen';
 import Loading from './components/Loading';
 import PoweredBy from './components/PoweredBy';
@@ -358,9 +358,14 @@ export const MainScreen = props => {
 
   if (showSuccessScreen) {
     return (
-      <DocumentSuccess
-        document={selectedDocument}
-        continueProcess={clearSelectedDocument}
+      <MessageScreen
+        type="success"
+        header="Tebrikler!"
+        title={selectedDocument.successTitle}
+        message={selectedDocument.successDescription}
+        nextStepMessage={selectedDocument.nextStepDescription}
+        buttonText="DEVAM"
+        onClick={clearSelectedDocument}
       />
     );
   }
