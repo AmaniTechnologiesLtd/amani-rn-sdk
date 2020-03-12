@@ -6,6 +6,7 @@ import DeviceInfo from 'react-native-device-info';
 import TopBar from '../TopBar';
 import SignatureScreen from './index';
 import Loading from '../Loading';
+import MessageScreen from '../MessageScreen';
 import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
 
@@ -20,6 +21,7 @@ const SignatureDraw = props => {
   } = props;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
+  const [notMatched, setNotMatched] = useState(false);
   const [isProcessStarted, setIsProcessStarted] = useState(null);
 
   useEffect(() => {
@@ -51,12 +53,7 @@ const SignatureDraw = props => {
 
   const handleIsSignatureCorrect = res => {
     if (res.data.status !== 'OK') {
-      Alert.alert(
-        '',
-        'İmzanızı ne yazık ki eşleştiremedik. Lütfen tekrar deneyin.',
-        [{ text: 'Tamam' }],
-        { cancelable: false },
-      );
+      setNotMatched(true);
       setCurrentStep(0);
       setSignature([]);
       setIsProcessStarted(false);
@@ -153,6 +150,18 @@ const SignatureDraw = props => {
 
   if (isProcessStarted) {
     return <Loading />;
+  }
+
+  if (notMatched) {
+    return (
+      <MessageScreen
+        type="error"
+        header="İmzanızı eşleştiremedik!"
+        title="Dijital imzanız kimliğinizdeki imza ile aynı olmalıdır"
+        buttonText="TEKRAR DENE"
+        onClick={() => setNotMatched(false)}
+      />
+    );
   }
 
   return (

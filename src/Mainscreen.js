@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, Fragment } from 'react';
 import {
   View,
   Text,
@@ -278,20 +278,20 @@ export const MainScreen = props => {
   };
 
   const checkIsNextStepDisabled = (document, index) => {
-    return false;
-    // if (document.id === 'SG') {
-    //   if (
-    //     Object.values(documents).every(
-    //       item => item.id === 'SG' || item.passed === true,
-    //     )
-    //   ) {
-    //     return false;
-    //   }
-    //   return true;
-    // }
-    // return Boolean(
-    //   (index !== 0 && documents[index - 1].passed == null) || document.passed,
-    // );
+    // return false;
+    if (document.id === 'SG') {
+      if (
+        Object.values(documents).every(
+          item => item.id === 'SG' || item.passed === true,
+        )
+      ) {
+        return false;
+      }
+      return true;
+    }
+    return Boolean(
+      (index !== 0 && documents[index - 1].passed == null) || document.passed,
+    );
   };
 
   const handleCurrentModalStatus = (document, index) => {
@@ -405,11 +405,10 @@ export const MainScreen = props => {
       <View style={styles.modulesContainer}>
         {documents.map((document, index) => {
           return (
-            <>
+            <Fragment key={document.id}>
               <TouchableOpacity
                 disabled={checkIsNextStepDisabled(document, index)}
                 style={styles.moduleButton}
-                key={document.id}
                 onPress={() =>
                   document.id === 'SG'
                     ? setShowContract(true)
@@ -434,7 +433,7 @@ export const MainScreen = props => {
                   />
                 </View>
               )}
-            </>
+            </Fragment>
           );
         })}
       </View>
@@ -476,6 +475,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     marginVertical: 5,
+    paddingRight: 10,
   },
   buttonBackground: {
     resizeMode: 'cover',

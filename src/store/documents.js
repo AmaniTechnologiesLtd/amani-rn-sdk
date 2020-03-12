@@ -8,13 +8,13 @@ export const initialDocuments = [
       {
         title: 'Belgenin ön yüzünü fotoğrafını çek',
         description:
-          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol.',
+          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Belgenin Ön Yüzü',
       },
       {
         title: 'Belgenin arka yüzünü fotoğrafını çek',
         description:
-          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol.',
+          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Belgenin Ön Yüzü',
       },
     ],
@@ -23,7 +23,7 @@ export const initialDocuments = [
     cameraFacing: 'environment',
     versionTitle: 'Kimlik Tipini Seçin',
     versionDescription:
-      'Lütfen doğrulama işlemi için kullanacağın kimliğinin tipini seç. Eğer mevcutsa, yeni tip TC Kimlik Kartını kullanman önerilir.',
+      'Lütfen doğrulama işlemi için kullanacağın kimliğinin tipini seç. Eğer mevcutsa, yeni tip TC Kimlik Kartını kullanman önerilir',
     versions: {
       '': [
         {
@@ -46,9 +46,9 @@ export const initialDocuments = [
         },
       ],
     },
-    successTitle: 'Kimliğini başarıyla yükledin.',
+    successTitle: 'Kimliğini başarıyla yükledin',
     successDescription:
-      'Biz kimliğini kontrol ederken selfie çekimi ile devam et.',
+      'Biz kimliğini kontrol ederken selfie çekimi ile devam et',
   },
   {
     id: 'SE',
@@ -159,7 +159,7 @@ export const initialDocuments = [
     versions: {
       Devlet: [
         {
-          title: 'E-Devlet İkametgah',
+          title: 'E-Devlet İkametgah Belgesi',
           crop: true,
           autoCrop: false,
           edevlet: true,
@@ -167,7 +167,7 @@ export const initialDocuments = [
       ],
       GSM: [
         {
-          title: 'Turk Telekom',
+          title: 'Türk Telekom',
           crop: true,
           autoCrop: false,
         },
@@ -211,8 +211,8 @@ export const initialDocuments = [
         },
       ],
     },
-    successTitle: 'Adres belgeni başarıyla yükledin.',
-    successDescription: 'Sözleşmeyi imzalamak için devam et.',
+    successTitle: 'Adres belgeni başarıyla yükledin',
+    successDescription: 'Sözleşmeyi imzalamak için devam et',
   },
   {
     id: 'SG',
