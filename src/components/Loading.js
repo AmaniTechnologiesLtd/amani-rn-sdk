@@ -9,7 +9,7 @@ import mainBackground from '../../assets/main-bg.png';
 
 const Loading = () => (
   <ImageBackground source={mainBackground} style={styles.container}>
-    <StatusBar hidden />
+    <StatusBar translucent backgroundColor="transparent" />
     <ActivityIndicator color="white" size="large" />
   </ImageBackground>
 );

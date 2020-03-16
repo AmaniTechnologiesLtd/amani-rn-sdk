@@ -29,7 +29,7 @@ const SignatureDraw = props => {
       await dispatch({
         type: 'CHANGE_STATUS',
         document_id: document.id,
-        passed: false,
+        status: 'PENDING_REVIEW',
       });
       goBack();
       return true;
@@ -89,7 +89,7 @@ const SignatureDraw = props => {
         await dispatch({
           type: 'CHANGE_STATUS',
           document_id: document.id,
-          passed: true,
+          status: 'PENDING_REVIEW',
         });
         handleIsSignatureCorrect(res);
       })
@@ -97,7 +97,7 @@ const SignatureDraw = props => {
         await dispatch({
           type: 'CHANGE_STATUS',
           document_id: document.id,
-          passed: false,
+          status: 'PENDING_REVIEW',
         });
         setCurrentStep(0);
         setSignature([]);

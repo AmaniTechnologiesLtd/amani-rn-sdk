@@ -9,7 +9,7 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import OrangeButton from './OrangeButton';
+import Button from 'amani-rn-sdk/src/components/Button';
 import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import failedIcon from '../../assets/failed-icon.png';
@@ -57,7 +57,7 @@ const MessageScreen = props => {
       </View>
 
       <View style={styles.bottomBar}>
-        <OrangeButton
+        <Button
           onPress={onClick}
           text={buttonText}
           style={[styles.buttonStyle, { flex: 1 }]}

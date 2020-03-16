@@ -7,7 +7,6 @@ import {
   Dimensions,
   StyleSheet,
   Image,
-  StatusBar,
   BackHandler,
   PermissionsAndroid,
   Platform,
@@ -26,11 +25,13 @@ import PoweredBy from './components/PoweredBy';
 import { initialDocuments, documentsReducer } from './store/documents';
 import api from './services/api';
 import TopBar from './components/TopBar';
+import AppliedScreen from './components/AppliedScreen';
 import mainBackground from '../assets/main-bg.png';
 import backArrow from '../assets/back-arrow.png';
 import forwardArrow from '../assets/forward-arrow.png';
 import lockIcon from '../assets/locked-icon.png';
 import successIcon from '../assets/success-icon.png';
+import pendingIcon from '../assets/step-pending-icon.png';
 import failedIcon from '../assets/failed-icon.png';
 import seperatorIcon from '../assets/seperator-icon.png';
 
@@ -43,7 +44,6 @@ export const MainScreen = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null);
-  // const [cropDocument, setCropDocument] = useState(null);
   const [showContract, setShowContract] = useState(false);
   const [corners, setCorners] = useState([]);
   const [files, setFiles] = useState([]);
@@ -82,7 +82,7 @@ export const MainScreen = props => {
     documents.forEach(element => {
       callbackData.push({
         [element.id]: documents.find(document => document.id === element.id)
-          .passed,
+          .status,
       });
     });
     onExit(callbackData);
@@ -149,17 +149,16 @@ export const MainScreen = props => {
               });
 
               // Check for missing documents
-              let rules = [];
-              await sRes.data.missing_rules.map(rule => {
-                rules = rules.concat(rule.document_classes);
-              });
-
               documents.map(doc => {
-                if (!rules.includes(doc.id)) {
+                const rule = sRes.data.rules.find(element =>
+                  element.document_classes.includes(doc.id),
+                );
+
+                if (rule) {
                   dispatch({
                     type: 'CHANGE_STATUS',
                     document_id: doc.id,
-                    passed: true,
+                    status: rule.status,
                   });
                 }
               });
@@ -192,7 +191,7 @@ export const MainScreen = props => {
     await dispatch({
       type: 'CHANGE_STATUS',
       document_id: selectedDocument.id,
-      passed: 'loading',
+      status: 'PROCESSING',
     });
 
     setShowSuccessScreen(true);
@@ -230,37 +229,33 @@ export const MainScreen = props => {
           dispatch({
             type: 'CHANGE_STATUS',
             document_id: selectedDocument.id,
-            passed: true,
+            status: 'PENDING_REVIEW',
           });
           return;
         }
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
-          passed: false,
+          status: 'PENDING_REVIEW',
         });
       })
       .catch(error => {
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
-          passed: false,
+          status: 'PENDING_REVIEW',
         });
       });
   };
 
   const clearSelectedDocument = () => {
     setSelectedDocument(null);
-    // setCropDocument(null);
     setFiles([]);
     setCorners([]);
     setShowSuccessScreen(false);
   };
 
   const onDocumentCaptured = capture => {
-    // if (selectedDocument.crop) {
-    //   setCropDocument(capture);
-    // }
     setFiles([...files, capture]);
   };
 
@@ -277,30 +272,29 @@ export const MainScreen = props => {
     setSelectedDocument(null);
   };
 
+  const checkPreviousSteps = (index, statuses) => {
+    return documents.some((document, docIndex) => {
+      if (docIndex < index) {
+        return statuses.includes(document.status);
+      }
+      return false;
+    });
+  };
+
   const checkIsNextStepDisabled = (document, index) => {
     // return false;
-    if (document.id === 'SG') {
-      if (
-        Object.values(documents).every(
-          item => item.id === 'SG' || item.passed === true,
-        )
-      ) {
-        return false;
-      }
-      return true;
-    }
+
     return Boolean(
-      (index !== 0 && documents[index - 1].passed == null) || document.passed,
+      (index !== 0 &&
+        checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])) ||
+        ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
     );
   };
 
-  const handleCurrentModalStatus = (document, index) => {
-    // if document is not Signature and its locked
+  const modalStatusIcon = (document, index) => {
     if (
-      index !== 0 &&
-      documents[index - 1].passed !== true &&
-      documents[index - 1].passed !== 'loading' &&
-      !document.passed
+      !['APPROVED', 'PENDING_REVIEW'].includes(document.status) &&
+      (index !== 0 && checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED']))
     ) {
       return (
         <Image
@@ -309,7 +303,7 @@ export const MainScreen = props => {
           source={lockIcon}
         />
       );
-    } else if (document.passed === null) {
+    } else if (document.status === 'NOT_UPLOADED') {
       return (
         <Image
           resizeMode="contain"
@@ -317,18 +311,34 @@ export const MainScreen = props => {
           source={forwardArrow}
         />
       );
-    } else if (document.passed === 'loading') {
+    } else if (document.status === 'PENDING_REVIEW') {
       return (
-        <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+        <Image
+          resizeMode="contain"
+          style={styles.moduleStatusIcon}
+          source={pendingIcon}
+        />
+      );
+    } else if (document.status === 'APPROVED') {
+      return (
+        <Image
+          resizeMode="contain"
+          style={styles.moduleStatusIcon}
+          source={successIcon}
+        />
+      );
+    } else if (document.status === 'REJECTED') {
+      return (
+        <Image
+          resizeMode="contain"
+          style={styles.moduleStatusIcon}
+          source={failedIcon}
+        />
       );
     }
 
     return (
-      <Image
-        resizeMode="contain"
-        style={styles.moduleStatusIcon}
-        source={document.passed ? successIcon : failedIcon}
-      />
+      <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
     );
   };
 
@@ -338,22 +348,34 @@ export const MainScreen = props => {
     permissions.location !== 'granted'
   ) {
     return (
-      <View
-        style={[
-          styles.container,
-          { alignItems: 'center', paddingHorizontal: width * 0.07 },
-        ]}
-      >
-        <StatusBar translucent backgroundColor="transparent" />
-        <Text style={{ color: 'white', fontSize: 18 }}>
-          Camera and Location permissions are not authorized
-        </Text>
-      </View>
+      <MessageScreen
+        type="error"
+        header="Gerekli İzinler Eksik!"
+        title="Doğrulamaların çalışabilmesi için gereken izinler eksik"
+        message="Kamera ve Konum izinlerini verdikten sonra uygulamayı tekrar başlatın"
+        buttonText="GERİ DÖN"
+        onClick={goBack}
+      />
     );
   }
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (
+    documents.every(document =>
+      ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+    )
+  ) {
+    return (
+      <AppliedScreen
+        goBack={goBack}
+        allApproved={documents.every(
+          document => document.status === 'APPROVED',
+        )}
+      />
+    );
   }
 
   if (showSuccessScreen) {
@@ -399,7 +421,6 @@ export const MainScreen = props => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
       <TopBar onLeftButtonPressed={goBack} leftButtonIcon={backArrow} />
       <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
       <View style={styles.modulesContainer}>
@@ -417,10 +438,19 @@ export const MainScreen = props => {
               >
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>
-                    <Text style={styles.moduleTitle}>{document.title}</Text>
+                    <Text
+                      style={[
+                        styles.moduleTitle,
+                        ['APPROVED'].includes(document.status)
+                          ? styles.moduleTitleApproved
+                          : {},
+                      ]}
+                    >
+                      {document.messages[document.status]}
+                    </Text>
                   </View>
                   <View style={styles.moduleStatusContainer}>
-                    {handleCurrentModalStatus(document, index)}
+                    {modalStatusIcon(document, index)}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -488,7 +518,14 @@ const styles = StyleSheet.create({
   moduleTitle: {
     color: '#eee',
     fontSize: width * 0.04,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
     width: '100%',
+  },
+  moduleTitleApproved: {
+    color: '#CAE0F5',
+    fontSize: width * 0.035,
+    fontWeight: 'normal',
   },
   moduleStatusContainer: {
     width: '10%',

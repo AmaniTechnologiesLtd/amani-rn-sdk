@@ -72,7 +72,6 @@ const CaptureDocument = props => {
   const camera = useRef(null);
 
   const goBack = () => {
-    console.log(showVersionSelection);
     if (checkForVersions() && !showVersionSelection) {
       setShowVersionSelection(true);
     } else {

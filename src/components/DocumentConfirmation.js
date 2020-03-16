@@ -13,7 +13,7 @@ import {
 import api from '../services/api';
 import Loading from './Loading';
 import TopBar from './TopBar';
-import OrangeButton from './OrangeButton';
+import Button from 'amani-rn-sdk/src/components/Button';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 
@@ -113,7 +113,7 @@ const DocumentConfirmation = props => {
           <Text style={styles.bottomButtonText}>Tekrar Dene</Text>
         </TouchableOpacity>
         {!errorMessage && (
-          <OrangeButton
+          <Button
             onPress={continueProcess}
             text="ONAYLA"
             style={{ marginLeft: width * 0.05, flex: 1 }}

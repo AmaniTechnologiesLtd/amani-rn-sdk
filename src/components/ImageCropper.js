@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get('window');
 // Local files
 import CustomCrop from './CustomCrop';
 import TopBar from './TopBar';
-import OrangeButton from './OrangeButton';
+import Button from 'amani-rn-sdk/src/components/Button';
 import PoweredBy from './PoweredBy';
 import backArrow from '../../assets/back-arrow.png';
 
@@ -59,7 +59,7 @@ const ImageCropper = props => {
         handlerColor="#00FFD1"
       />
       <View style={styles.bottomBar}>
-        <OrangeButton onPress={getCropData} text="FOTOĞRAFI KIRP" />
+        <Button onPress={getCropData} text="FOTOĞRAFI KIRP" />
         <PoweredBy />
       </View>
     </View>

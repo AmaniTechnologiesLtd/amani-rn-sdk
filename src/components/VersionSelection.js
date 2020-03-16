@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import {
   View,
   ScrollView,
-  TouchableOpacity,
   Image,
   Text,
   BackHandler,
@@ -10,6 +9,7 @@ import {
   StyleSheet,
   ImageBackground,
 } from 'react-native';
+import Button from './Button';
 import blueBackground from '../../assets/btn-blue.png';
 import darkBlueBackground from '../../assets/btn-dark-blue.png';
 import mainBackground from '../../assets/main-bg.png';
@@ -70,37 +70,34 @@ const VersionSelection = props => {
               >
                 {document.versions[group].map((version, versionKey) => {
                   return (
-                    <TouchableOpacity
+                    <Button
                       key={versionKey}
                       onPress={() => handleVersionChoice(group, versionKey)}
+                      backgroundImage={
+                        menuMode === 'horizontal'
+                          ? darkBlueBackground
+                          : blueBackground
+                      }
                       style={
                         menuMode === 'horizontal'
                           ? styles.versionButtonHorizontal
                           : styles.versionButtonVertical
                       }
+                      backgroundStyle={
+                        menuMode === 'horizontal'
+                          ? styles.horizontalButtonBackground
+                          : styles.verticalButtonBackground
+                      }
                     >
-                      <ImageBackground
-                        source={
-                          menuMode === 'horizontal'
-                            ? darkBlueBackground
-                            : blueBackground
-                        }
-                        style={
-                          menuMode === 'horizontal'
-                            ? styles.horizontalButtonBackground
-                            : styles.verticalButtonBackground
-                        }
-                      >
-                        <Text style={styles.versionTitle}>{version.title}</Text>
-                        {menuMode !== 'horizontal' && (
-                          <Image
-                            resizeMode="contain"
-                            style={styles.buttonIcon}
-                            source={forwardArrow}
-                          />
-                        )}
-                      </ImageBackground>
-                    </TouchableOpacity>
+                      <Text style={styles.versionTitle}>{version.title}</Text>
+                      {menuMode !== 'horizontal' && (
+                        <Image
+                          resizeMode="contain"
+                          style={styles.buttonIcon}
+                          source={forwardArrow}
+                        />
+                      )}
+                    </Button>
                   );
                 })}
               </View>

@@ -3,7 +3,7 @@ export const initialDocuments = [
     id: 'ID',
     secondary_id: 'DL',
     title: 'Kimliğini Doğrula',
-    passed: null,
+    status: 'NOT_UPLOADED',
     steps: [
       {
         title: 'Belgenin ön yüzünü fotoğrafını çek',
@@ -46,6 +46,13 @@ export const initialDocuments = [
         },
       ],
     },
+    messages: {
+      NOT_UPLOADED: 'Kimliğini Doğrula',
+      PENDING_REVIEW: 'Kimliğin doğrulanıyor',
+      PROCESSING: 'Kimliğin doğrulanıyor',
+      APPROVED: 'Kimliğin doğrulandı',
+      REJECTED: 'Kimliğin doğrulanamadı. Tekrar yükle.',
+    },
     successTitle: 'Kimliğini başarıyla yükledin',
     successDescription:
       'Biz kimliğini kontrol ederken selfie çekimi ile devam et',
@@ -53,7 +60,7 @@ export const initialDocuments = [
   {
     id: 'SE',
     title: 'Selfie',
-    passed: null,
+    status: 'NOT_UPLOADED',
     steps: [
       {
         title: '',
@@ -76,6 +83,13 @@ export const initialDocuments = [
         },
       ],
     },
+    messages: {
+      NOT_UPLOADED: 'Selfie Doğrula',
+      PENDING_REVIEW: 'Selfie doğrulanıyor',
+      PROCESSING: 'Selfie doğrulanıyor',
+      APPROVED: 'Selfie doğrulandı',
+      REJECTED: 'Selfie doğrulanamadı. Tekrar yükle.',
+    },
     successTitle: "Selfie'ni başarıyla yükledin",
     successDescription:
       "Biz selfie'ni kontrol ederken lütfen adresini doğrulama adımına geç",
@@ -85,7 +99,7 @@ export const initialDocuments = [
   {
     id: 'PA',
     title: 'Pasaport',
-    passed: null,
+    status: 'NOT_UPLOADED',
     steps: [
       {
         title: '',
@@ -109,11 +123,18 @@ export const initialDocuments = [
         },
       ],
     },
+    messages: {
+      NOT_UPLOADED: 'Pasaportunu Doğrula',
+      PENDING_REVIEW: 'Pasaportun doğrulanıyor',
+      PROCESSING: 'Pasaportub doğrulanıyor',
+      APPROVED: 'Pasaportun doğrulandı',
+      REJECTED: 'Pasaportun doğrulanamadı. Tekrar yükle.',
+    },
   },
   {
     id: 'VA',
     title: 'Vize',
-    passed: null,
+    status: 'NOT_UPLOADED',
     steps: [
       {
         title: '',
@@ -138,11 +159,18 @@ export const initialDocuments = [
         },
       ],
     },
+    messages: {
+      NOT_UPLOADED: 'Vize Doğrula',
+      PENDING_REVIEW: 'Vizen doğrulanıyor',
+      PROCESSING: 'Vizen doğrulanıyor',
+      APPROVED: 'Vizen doğrulandı',
+      REJECTED: 'Vizen doğrulanamadı. Tekrar yükle.',
+    },
   },
   {
     id: 'UB',
     title: 'Adress Doğrulama',
-    passed: null,
+    status: 'NOT_UPLOADED',
     steps: [
       {
         title: '',
@@ -211,13 +239,20 @@ export const initialDocuments = [
         },
       ],
     },
+    messages: {
+      NOT_UPLOADED: 'Adresini Doğrula',
+      PENDING_REVIEW: 'Adresin doğrulanıyor',
+      PROCESSING: 'Adresin doğrulanıyor',
+      APPROVED: 'Adresin doğrulandı',
+      REJECTED: 'Adresin doğrulanamadı. Tekrar yükle.',
+    },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: 'Sözleşmeyi imzalamak için devam et',
   },
   {
     id: 'SG',
     title: 'Dijital Sözleşme',
-    passed: null,
+    status: 'NOT_UPLOADED',
     steps: [
       {
         title: 'İmzanızı Atın',
@@ -243,6 +278,13 @@ export const initialDocuments = [
         },
       ],
     },
+    messages: {
+      NOT_UPLOADED: 'Dijital Sözleşmeni İmzala',
+      PENDING_REVIEW: 'İmzan doğrulanıyor',
+      PROCESSING: 'İmzan doğrulanıyor',
+      APPROVED: 'Dijital sözleşme İmzalandı',
+      REJECTED: 'İmzan doğrulanamadı. Tekrar imzala.',
+    },
   },
 ];
 
@@ -259,7 +301,7 @@ export const documentsReducer = (state, action) => {
           (document.secondary_id &&
             document.secondary_id.includes(action.document_id))
         ) {
-          const updateDoc = { ...document, passed: action.passed };
+          const updateDoc = { ...document, status: action.status };
           return updateDoc;
         }
         return document;

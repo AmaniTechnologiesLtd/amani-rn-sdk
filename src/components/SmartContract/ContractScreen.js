@@ -23,7 +23,7 @@ import TopBar from '../TopBar';
 import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
-import OrangeButton from '../OrangeButton';
+import Button from 'amani-rn-sdk/src/components/Button';
 import { content } from './View/html';
 import SignatureDraw from '../SignatureDraw/SignatureDraw';
 import cities from '../../store/cities.json';
@@ -252,7 +252,7 @@ const ContractScreen = props => {
               </Text>
             </ImageBackground>
 
-            <OrangeButton
+            <Button
               onPress={handleFormSubmit}
               text="DEVAM"
               style={{ marginHorizontal: 20 }}
@@ -289,7 +289,7 @@ const ContractScreen = props => {
             </Text>
           </TouchableOpacity>
         </View>
-        <OrangeButton
+        <Button
           onPress={() => setShowSignatureScreen(true)}
           disabled={!isContractApproved}
           text="İMZALA"

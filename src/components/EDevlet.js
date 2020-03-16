@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import TopBar from './TopBar';
-import OrangeButton from 'amani-rn-sdk/src/components/OrangeButton';
+import Button from 'amani-rn-sdk/src/components/Button';
 import backArrow from '../../assets/back-arrow.png';
 import mainBackground from '../../assets/main-bg.png';
 import Number1 from '../../assets/number-1-icon.png';
@@ -81,7 +81,7 @@ const EDevlet = props => {
           </Text>
         </Text>
       </View>
-      <OrangeButton
+      <Button
         text="E-DEVLET'TEN AL"
         onPress={() => Linking.openURL(eDevletURL)}
         style={{ marginTop: 20 }}

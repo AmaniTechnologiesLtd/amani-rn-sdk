@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Text,
+  View,
   StyleSheet,
   ImageBackground,
   Dimensions,
@@ -9,17 +10,19 @@ import {
 
 import orangeBackground from '../../assets/btn-orange.png';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const OrangeButton = props => {
+const Button = props => {
   const {
     onPress,
     disabled,
+    noBackground,
     style,
     backgroundStyle,
     backgroundImage,
     text,
     textStyle,
+    children,
   } = props;
   return (
     <TouchableOpacity
@@ -27,21 +30,36 @@ const OrangeButton = props => {
       onPress={onPress}
       style={[styles.button, style, { opacity: disabled ? 0.7 : 1 }]}
     >
-      <ImageBackground
-        source={backgroundImage}
-        style={[styles.buttonBackground, backgroundStyle]}
-      >
-        <Text style={[styles.buttonText, textStyle]}>{text}</Text>
-      </ImageBackground>
+      {noBackground ? (
+        <View style={[styles.noBackground, backgroundStyle]}>
+          {children ? (
+            children
+          ) : (
+            <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+          )}
+        </View>
+      ) : (
+        <ImageBackground
+          source={backgroundImage}
+          style={[styles.buttonBackground, backgroundStyle]}
+        >
+          {children ? (
+            children
+          ) : (
+            <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+          )}
+        </ImageBackground>
+      )}
     </TouchableOpacity>
   );
 };
 
-export default OrangeButton;
+export default Button;
 
-OrangeButton.defaultProps = {
+Button.defaultProps = {
   onPress: null,
   disabled: false,
+  noBackground: false,
   buttonStyle: {},
   backgroundStyle: {},
   backgroundImage: orangeBackground,
@@ -58,6 +76,13 @@ const styles = StyleSheet.create({
   buttonBackground: {
     resizeMode: 'cover',
     padding: 20,
+  },
+  noBackground: {
+    borderWidth: 2,
+    borderColor: '#D5D5D5',
+    padding: 15,
+    borderRadius: 10,
+    opacity: 0.7,
   },
   buttonText: {
     textAlign: 'center',
