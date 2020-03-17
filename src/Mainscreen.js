@@ -41,7 +41,6 @@ export const MainScreen = props => {
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null);
   const [showContract, setShowContract] = useState(false);
@@ -59,6 +58,17 @@ export const MainScreen = props => {
     location: null,
   });
   const [location, setLocation] = useState(null);
+
+  const initialMessage = {
+    show: false,
+    type: 'error',
+    header: 'Bir hata oluştu!',
+    title: null,
+    message: null,
+    buttonText: 'TAMAM',
+    buttonClick: () => setMessage(initialMessage),
+  };
+  const [message, setMessage] = useState(initialMessage);
 
   const checkPermissions = async () => {
     setPermission({
@@ -85,18 +95,42 @@ export const MainScreen = props => {
           .status,
       });
     });
-    onExit(callbackData);
+    onExit({ status: 'OK', documents: callbackData });
   };
 
+  // Check needed permissions (camera, location)
   useEffect(() => {
-    const getLocation = async () => {
+    (async function() {
       if (permissions.location === 'granted' || Platform.OS === 'ios') {
         await Geolocation.getCurrentPosition(position =>
           setLocation(position.coords),
         );
       }
-    };
-    getLocation();
+    })();
+
+    // If necessary permissions not granted show error screen
+    if (
+      Platform.OS === 'android' &&
+      permissions.camera !== 'granted' &&
+      permissions.location !== 'granted'
+    ) {
+      setMessage({
+        show: true,
+        type: 'error',
+        header: 'Gerekli İzinler Eksik!',
+        title: 'Doğrulamaların çalışabilmesi için gereken izinler eksik',
+        message:
+          'Kamera ve Konum izinlerini verdikten sonra uygulamayı tekrar başlatın',
+        buttonText: 'GERİ DÖN',
+        buttonClick: () =>
+          onError({
+            status: 'ERROR',
+            message: 'Kamera ve konum izni kullanılamıyor...',
+          }),
+      });
+    } else {
+      setMessage(initialMessage);
+    }
   }, [permissions]);
 
   useEffect(() => {
@@ -111,17 +145,13 @@ export const MainScreen = props => {
             password: authData.appPassword,
           });
 
-          const formData = {
-            customerData: customerInformations,
-            token: loginReponse.data.token,
-          };
+          api.setToken(loginReponse.data.token);
 
           try {
-            const customerReponse = await api.createCustomer(formData);
-            setCustomer({
-              token: loginReponse.data.token,
-              ...customerReponse.data,
-            });
+            const customerReponse = await api.createCustomer(
+              customerInformations,
+            );
+            setCustomer(customerReponse.data);
 
             // Prepare available documents from company rules
             const available_documents = customerReponse.data.rules.reduce(
@@ -152,10 +182,10 @@ export const MainScreen = props => {
               }
             });
           } catch (error) {
-            setIsError(error);
+            handleError(error);
           }
         } catch (error) {
-          setIsError(error);
+          handleError(error);
         }
         setIsLoading(false);
       })();
@@ -212,7 +242,7 @@ export const MainScreen = props => {
     files.forEach(file => requestData.append('files[]', file));
 
     await api
-      .sendDocument(customer.token, requestData)
+      .sendDocument(requestData)
       .then(res => {
         if (res.data.status === 'OK') {
           dispatch({
@@ -235,6 +265,25 @@ export const MainScreen = props => {
           status: 'PENDING_REVIEW',
         });
       });
+  };
+
+  const handleError = error => {
+    setMessage({
+      ...initialMessage,
+      show: true,
+      header: 'Bir şeyler yanlış gitti!',
+      title: error.response.data.errors
+        ? error.response.data.errors[0].ERROR_MESSAGE
+        : 'Lütfen daha sonra tekrar deneyin...',
+      buttonText: 'GERİ DÖN',
+      buttonClick: () =>
+        onError({
+          status: 'ERROR',
+          message: error.response.data.errors
+            ? error.response.data.errors[0]
+            : 'Bilinmeyen hata',
+        }),
+    });
   };
 
   const clearSelectedDocument = () => {
@@ -331,45 +380,51 @@ export const MainScreen = props => {
     );
   };
 
-  if (
-    Platform.OS === 'android' &&
-    permissions.camera !== 'granted' &&
-    permissions.location !== 'granted'
-  ) {
-    return (
-      <MessageScreen
-        type="error"
-        header="Gerekli İzinler Eksik!"
-        title="Doğrulamaların çalışabilmesi için gereken izinler eksik"
-        message="Kamera ve Konum izinlerini verdikten sonra uygulamayı tekrar başlatın"
-        buttonText="GERİ DÖN"
-        onClick={goBack}
-      />
+  const handleDocumentClick = document => {
+    // First check if have any rejection message from studio
+    const rule = customer.rules.find(step =>
+      step.document_classes.includes(document.id),
     );
-  }
+
+    if (rule && rule.status_message) {
+      setMessage({
+        ...initialMessage,
+        show: true,
+        type: 'warning',
+        header: rule.status_message,
+        buttonText: 'DEVAM',
+        buttonClick: () => goToDocument(document),
+      });
+      return;
+    }
+
+    // If no message directly go to document
+    goToDocument(document);
+  };
+
+  const goToDocument = document => {
+    setMessage(initialMessage);
+    // Redirect to document capture page
+    if (document.id === 'SG') {
+      setShowContract(true);
+    } else {
+      setSelectedDocument(document);
+    }
+  };
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (isError) {
+  if (message.show) {
     return (
       <MessageScreen
-        type="error"
-        header="Bir şeyler yanlış gitti!"
-        title={
-          isError.response.data.errors
-            ? isError.response.data.errors[0].ERROR_MESSAGE
-            : 'Lütfen daha sonra tekrar deneyin...'
-        }
-        buttonText="GERİ DÖN"
-        onClick={() =>
-          onError(
-            isError.response.data.errors
-              ? isError.response.data.errors[0]
-              : 'Bilinmeyen hata',
-          )
-        }
+        type={message.type}
+        header={message.header}
+        title={message.title}
+        message={message.message}
+        buttonText={message.buttonText}
+        onClick={message.buttonClick}
       />
     );
   }
@@ -441,11 +496,7 @@ export const MainScreen = props => {
               <TouchableOpacity
                 disabled={checkIsNextStepDisabled(document, index)}
                 style={styles.moduleButton}
-                onPress={() =>
-                  document.id === 'SG'
-                    ? setShowContract(true)
-                    : setSelectedDocument(document)
-                }
+                onPress={() => handleDocumentClick(document)}
               >
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>
@@ -531,7 +582,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     fontWeight: 'bold',
     letterSpacing: 0.5,
-    width: '100%',
   },
   moduleTitleApproved: {
     color: '#CAE0F5',

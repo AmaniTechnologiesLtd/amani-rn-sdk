@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
   header: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
     marginVertical: 10,
     fontSize: height * 0.04,
   },
@@ -105,6 +106,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   nextStep: {
+    textAlign: 'center',
     borderTopColor: '#13283D',
     borderTopWidth: 1,
     marginTop: 20,

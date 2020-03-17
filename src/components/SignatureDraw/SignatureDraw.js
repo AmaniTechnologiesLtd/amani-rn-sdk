@@ -84,7 +84,7 @@ const SignatureDraw = props => {
     signature.forEach(sign => requestData.append('files[]', sign));
 
     await api
-      .sendDocument(customer.token, requestData)
+      .sendDocument(requestData)
       .then(async res => {
         await dispatch({
           type: 'CHANGE_STATUS',
@@ -116,10 +116,8 @@ const SignatureDraw = props => {
   };
 
   const sendContractForm = async () => {
-    let customerData = customer.data;
-
-    customerData = {
-      ...customerData,
+    const customerData = {
+      id: customer.id,
       occupation: formData.job,
       address: {
         city: formData.city,
@@ -128,12 +126,7 @@ const SignatureDraw = props => {
       },
     };
 
-    const requestData = {
-      customerData,
-      token: customer.token,
-    };
-
-    await api.createCustomer(requestData);
+    await api.createCustomer(customerData);
   };
 
   const handleSignature = async drawnSignature => {

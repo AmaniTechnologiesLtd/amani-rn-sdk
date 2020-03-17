@@ -60,10 +60,7 @@ const ContractScreen = props => {
 
   const getCustomerData = async () => {
     try {
-      const response = await api.getCustomer({
-        id: customer.id,
-        token: customer.token,
-      });
+      const response = await api.getCustomer(customer.id);
 
       setFormData({
         ...formData,

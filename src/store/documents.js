@@ -51,7 +51,7 @@ export const initialDocuments = [
       PENDING_REVIEW: 'Kimliğin doğrulanıyor',
       PROCESSING: 'Kimliğin doğrulanıyor',
       APPROVED: 'Kimliğin doğrulandı',
-      REJECTED: 'Kimliğin doğrulanamadı. Tekrar yükle.',
+      REJECTED: `Kimliğin doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Kimliğini başarıyla yükledin',
     successDescription:
@@ -88,7 +88,7 @@ export const initialDocuments = [
       PENDING_REVIEW: 'Selfie doğrulanıyor',
       PROCESSING: 'Selfie doğrulanıyor',
       APPROVED: 'Selfie doğrulandı',
-      REJECTED: 'Selfie doğrulanamadı. Tekrar yükle.',
+      REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: "Selfie'ni başarıyla yükledin",
     successDescription:
@@ -128,7 +128,7 @@ export const initialDocuments = [
       PENDING_REVIEW: 'Pasaportun doğrulanıyor',
       PROCESSING: 'Pasaportub doğrulanıyor',
       APPROVED: 'Pasaportun doğrulandı',
-      REJECTED: 'Pasaportun doğrulanamadı. Tekrar yükle.',
+      REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
     },
   },
   {
@@ -164,7 +164,7 @@ export const initialDocuments = [
       PENDING_REVIEW: 'Vizen doğrulanıyor',
       PROCESSING: 'Vizen doğrulanıyor',
       APPROVED: 'Vizen doğrulandı',
-      REJECTED: 'Vizen doğrulanamadı. Tekrar yükle.',
+      REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
     },
   },
   {
@@ -244,7 +244,7 @@ export const initialDocuments = [
       PENDING_REVIEW: 'Adresin doğrulanıyor',
       PROCESSING: 'Adresin doğrulanıyor',
       APPROVED: 'Adresin doğrulandı',
-      REJECTED: 'Adresin doğrulanamadı. Tekrar yükle.',
+      REJECTED: `Adresin doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: 'Sözleşmeyi imzalamak için devam et',
@@ -283,7 +283,7 @@ export const initialDocuments = [
       PENDING_REVIEW: 'İmzan doğrulanıyor',
       PROCESSING: 'İmzan doğrulanıyor',
       APPROVED: 'Dijital sözleşme İmzalandı',
-      REJECTED: 'İmzan doğrulanamadı. Tekrar imzala.',
+      REJECTED: `İmzan doğrulanamadı\nLütfen tekrar dene`,
     },
   },
 ];

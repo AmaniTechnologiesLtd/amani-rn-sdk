@@ -8,29 +8,12 @@ const servers = {
 
 export default {
   setBaseUrl: param => (axios.defaults.baseURL = servers[param]),
+  setToken: token =>
+    (axios.defaults.headers.common.Authorization = `TOKEN ${token}`),
   login: param => axios.post('user/login/', param),
-  createCustomer: param =>
-    axios.post('customer', param.customerData, {
-      headers: {
-        Authorization: `Token ${param.token}`,
-      },
-    }),
-  getCustomer: param =>
-    axios.get(`customer/detail/${param.id}`, {
-      headers: {
-        Authorization: `Token ${param.token}`,
-      },
-    }),
-  cropImage: (token, documentData) =>
-    axios.post('engine/autocapture', documentData, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }),
-  sendDocument: (token, documentData) =>
-    axios.post('recognition/web/upload', documentData, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }),
+  createCustomer: param => axios.post('customer', param),
+  getCustomer: id => axios.get(`customer/detail/${id}`),
+  cropImage: documentData => axios.post('engine/autocapture', documentData),
+  sendDocument: documentData =>
+    axios.post('recognition/web/upload', documentData),
 };

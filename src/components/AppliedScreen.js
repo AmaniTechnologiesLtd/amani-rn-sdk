@@ -44,12 +44,15 @@ const AppliedScreen = props => {
               </Text>
             </>
           ) : (
-            <Text style={styles.header}>Tebrikler! Başvurun Alındı</Text>
+            <>
+              <Text style={styles.header}>Tebrikler! Başvurun Alındı</Text>
+              <Text style={styles.message}>
+                Belgelerini kontrol edip limitini en geç 48 saat içinde
+                artıracağız.
+              </Text>
+            </>
           )}
 
-          <Text style={styles.message}>
-            Belgelerini kontrol edip limitini en geç 48 saat içinde artıracağız.
-          </Text>
           <Text style={styles.message}>
             Limit artışının kalıcı olması için ininal kullanıcı sözleşmesini
             yazdırıp, imzalayın ve
