@@ -62,7 +62,7 @@ const ContractScreen = props => {
     try {
       const response = await api.getCustomer({
         id: customer.id,
-        token: customer.access,
+        token: customer.token,
       });
 
       setFormData({
@@ -76,9 +76,7 @@ const ContractScreen = props => {
           : null,
         job: response.data.occupation ? response.data.occupation : null,
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const handleFormSubmit = async () => {

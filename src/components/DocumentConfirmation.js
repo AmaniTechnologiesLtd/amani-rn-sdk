@@ -50,7 +50,7 @@ const DocumentConfirmation = props => {
       requestData.append('files[]', imageUrl);
 
       api
-        .cropImage(customer.access, requestData)
+        .cropImage(customer.token, requestData)
         .then(res => {
           setImgSrc(res.data.image);
           if (!res.data.cropped) {

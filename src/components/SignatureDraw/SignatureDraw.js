@@ -84,7 +84,7 @@ const SignatureDraw = props => {
     signature.forEach(sign => requestData.append('files[]', sign));
 
     await api
-      .sendDocument(customer.access, requestData)
+      .sendDocument(customer.token, requestData)
       .then(async res => {
         await dispatch({
           type: 'CHANGE_STATUS',
@@ -130,7 +130,7 @@ const SignatureDraw = props => {
 
     const requestData = {
       customerData,
-      token: customer.access,
+      token: customer.token,
     };
 
     await api.createCustomer(requestData);

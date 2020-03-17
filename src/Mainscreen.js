@@ -10,7 +10,6 @@ import {
   BackHandler,
   PermissionsAndroid,
   Platform,
-  Alert,
   ImageBackground,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
@@ -42,6 +41,7 @@ export const MainScreen = props => {
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null);
   const [showContract, setShowContract] = useState(false);
@@ -88,20 +88,6 @@ export const MainScreen = props => {
     onExit(callbackData);
   };
 
-  const errorHandler = e => {
-    Alert.alert(
-      'Bir şeyler yanlış gitti',
-      e.response.data.errors[0].ERROR_MESSAGE,
-      [
-        {
-          text: 'Tamam',
-          onPress: () => onError(e.response.data.errors[0]),
-        },
-      ],
-      { cancelable: false },
-    );
-  };
-
   useEffect(() => {
     const getLocation = async () => {
       if (permissions.location === 'granted' || Platform.OS === 'ios') {
@@ -114,67 +100,70 @@ export const MainScreen = props => {
   }, [permissions]);
 
   useEffect(() => {
-    // Check if every document finished
-    // if (Object.values(documents).every(item => item.passed === true)) {
-    //   setControllerButton({
-    //     text: 'Doğrulamayı Bitir',
-    //     backgroundColor: '#00e676',
-    //     color: '#212121',
-    //   });
-    // }
-
     if (isLoading) {
       api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr');
       const authData = props.authData;
       const customerInformations = props.customerInformations;
-      api
-        .login({ email: authData.appKey, password: authData.appPassword })
-        .then(fRes => {
+      (async function() {
+        try {
+          const loginReponse = await api.login({
+            email: authData.appKey,
+            password: authData.appPassword,
+          });
+
           const formData = {
             customerData: customerInformations,
-            token: fRes.data.token,
+            token: loginReponse.data.token,
           };
 
-          api
-            .createCustomer(formData)
-            .then(async sRes => {
-              setCustomer({
-                access: fRes.data.token,
-                id: sRes.data.id,
-                data: customerInformations,
-              });
-              await dispatch({
-                type: 'FILTER_DOCUMENTS',
-                document_types: fRes.data.available_documents,
-              });
+          try {
+            const customerReponse = await api.createCustomer(formData);
+            setCustomer({
+              token: loginReponse.data.token,
+              ...customerReponse.data,
+            });
 
-              // Check for missing documents
-              documents.map(doc => {
-                const rule = sRes.data.rules.find(element =>
-                  element.document_classes.includes(doc.id),
-                );
+            // Prepare available documents from company rules
+            const available_documents = customerReponse.data.rules.reduce(
+              (currentValue, rule) => [
+                ...currentValue,
+                ...rule.document_classes,
+              ],
+              [],
+            );
 
-                if (rule) {
-                  dispatch({
-                    type: 'CHANGE_STATUS',
-                    document_id: doc.id,
-                    status: rule.status,
-                  });
-                }
-              });
+            dispatch({
+              type: 'FILTER_DOCUMENTS',
+              document_types: available_documents,
+            });
 
-              setIsLoading(false);
-            })
-            .catch(error => errorHandler(error));
-        })
-        .catch(error => errorHandler(error));
+            // Check for missing documents
+            documents.map(doc => {
+              const rule = customerReponse.data.rules.find(element =>
+                element.document_classes.includes(doc.id),
+              );
+
+              if (rule) {
+                dispatch({
+                  type: 'CHANGE_STATUS',
+                  document_id: doc.id,
+                  status: rule.status,
+                });
+              }
+            });
+          } catch (error) {
+            setIsError(error);
+          }
+        } catch (error) {
+          setIsError(error);
+        }
+        setIsLoading(false);
+      })();
     }
 
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      () => {
-        goBack();
-      },
+      goBack,
     );
 
     return () => backHandler.remove();
@@ -223,7 +212,7 @@ export const MainScreen = props => {
     files.forEach(file => requestData.append('files[]', file));
 
     await api
-      .sendDocument(customer.access, requestData)
+      .sendDocument(customer.token, requestData)
       .then(res => {
         if (res.data.status === 'OK') {
           dispatch({
@@ -361,6 +350,28 @@ export const MainScreen = props => {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError) {
+    return (
+      <MessageScreen
+        type="error"
+        header="Bir şeyler yanlış gitti!"
+        title={
+          isError.response.data.errors
+            ? isError.response.data.errors[0].ERROR_MESSAGE
+            : 'Lütfen daha sonra tekrar deneyin...'
+        }
+        buttonText="GERİ DÖN"
+        onClick={() =>
+          onError(
+            isError.response.data.errors
+              ? isError.response.data.errors[0]
+              : 'Bilinmeyen hata',
+          )
+        }
+      />
+    );
   }
 
   if (
