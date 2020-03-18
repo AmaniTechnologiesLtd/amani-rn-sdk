@@ -36,8 +36,8 @@ import seperatorIcon from '../assets/seperator-icon.png';
 
 const { width, height } = Dimensions.get('window');
 
-export const MainScreen = props => {
-  const { onError, onExit } = props;
+const MainScreen = props => {
+  const { onError, onExit, server, authData, customerInformations } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -47,11 +47,7 @@ export const MainScreen = props => {
   const [corners, setCorners] = useState([]);
   const [files, setFiles] = useState([]);
   const [isStepsFinished, setIsStepsFinished] = useState(false);
-  const [customer, setCustomer] = useState({
-    access: null,
-    id: null,
-    data: null,
-  });
+  const [customer, setCustomer] = useState({});
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
   const [permissions, setPermission] = useState({
     camera: null,
@@ -135,9 +131,7 @@ export const MainScreen = props => {
 
   useEffect(() => {
     if (isLoading) {
-      api.setBaseUrl(props.server ? props.server.toLowerCase() : 'tr');
-      const authData = props.authData;
-      const customerInformations = props.customerInformations;
+      api.setBaseUrl(server ? server.toLowerCase() : 'tr');
       (async function() {
         try {
           const loginReponse = await api.login({
@@ -436,6 +430,7 @@ export const MainScreen = props => {
   ) {
     return (
       <AppliedScreen
+        customer={customer}
         goBack={goBack}
         allApproved={documents.every(
           document => document.status === 'APPROVED',
@@ -534,6 +529,8 @@ export const MainScreen = props => {
   );
 };
 
+export default MainScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -597,5 +594,3 @@ const styles = StyleSheet.create({
     height: height * 0.025,
   },
 });
-
-export default MainScreen;

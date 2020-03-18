@@ -211,7 +211,10 @@ const ContractScreen = props => {
                 onBackButtonPressed={() => {}}
                 items={
                   cities.find(city => city.Name === (formData.city || 'Adana'))
-                    .District
+                    ? cities.find(
+                        city => city.Name === (formData.city || 'Adana'),
+                      ).District
+                    : []
                 }
                 sortingLanguage={'tr'}
                 showToTopButton={true}

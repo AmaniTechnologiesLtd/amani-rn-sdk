@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   ScrollView,
   Image,
   Text,
+  TextInput,
   Dimensions,
   StyleSheet,
   ImageBackground,
+  Linking,
 } from 'react-native';
 
 import TopBar from './TopBar';
+import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
 import Button from 'amani-rn-sdk/src/components/Button';
 import mainBackground from '../../assets/main-bg.png';
@@ -18,8 +21,157 @@ import successIcon from '../../assets/success-icon.png';
 
 const { height } = Dimensions.get('window');
 
+const handleSendButton = formData => {
+  console.log(formData);
+};
+
+const SendEmailContent = () => {
+  const [formData, setFormData] = useState({ type: 'email', email: null });
+  const [message, setMessage] = useState(false);
+
+  if (message) {
+    return (
+      <View>
+        <Text
+          style={[
+            styles.popupHeaderWhite,
+            { textAlign: 'center', marginVertical: 20 },
+          ]}
+        >
+          Sözleşmenin bir kopyası e-posta adresinize gönderildi
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <View>
+      <Text style={styles.popupHeaderWhite}>
+        Sözleşmeyi göndermek istediğin e-posta adresini gir
+      </Text>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={val => setFormData({ ...formData, email: val })}
+        placeholder="E-posta adresi"
+        placeholderTextColor="#CAE0F5"
+        autoCompleteType="email"
+        keyboardType="email-address"
+        returnKeyType="send"
+        onSubmitEditing={() => {
+          if (formData.email) {
+            handleSendButton(formData);
+            setMessage(true);
+          }
+        }}
+        value={formData.email}
+      />
+      <Button
+        disabled={!formData.email}
+        text="GÖNDER"
+        style={{ marginVertical: 10 }}
+        onPress={() => {
+          handleSendButton(formData);
+          setMessage(true);
+        }}
+      />
+    </View>
+  );
+};
+
+const SendSMSContent = () => {
+  const [formData, setFormData] = useState({ type: 'sms', phone: null });
+  const [message, setMessage] = useState(false);
+
+  if (message) {
+    return (
+      <View>
+        <Text
+          style={[
+            styles.popupHeaderWhite,
+            { textAlign: 'center', marginVertical: 20 },
+          ]}
+        >
+          Sözleşmenin bir kopyası telefonunuza gönderildi
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <View>
+      <Text style={styles.popupHeaderWhite}>
+        Sözleşmeyi göndermek istediğin telefon numarasını gir
+      </Text>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={val => setFormData({ ...formData, phone: val })}
+        placeholder="0 (5  )"
+        placeholderTextColor="#CAE0F5"
+        autoCompleteType="tel"
+        keyboardType="phone-pad"
+        returnKeyType="send"
+        onSubmitEditing={() => {
+          if (formData.phone) {
+            handleSendButton(formData);
+            setMessage(true);
+          }
+        }}
+        value={formData.phone}
+      />
+      <Button
+        disabled={!formData.phone}
+        text="GÖNDER"
+        style={{ marginVertical: 10 }}
+        onPress={() => {
+          handleSendButton(formData);
+          setMessage(true);
+        }}
+      />
+    </View>
+  );
+};
+
+const CargoContent = ({ customer }) => {
+  console.log(customer);
+  return (
+    <View>
+      <Text style={styles.popupHeader}>Göndereceğin Adres</Text>
+      <Text style={styles.popupText}>Lorem Ipsum dolor sit amet</Text>
+      <View style={styles.seperator} />
+      <Text style={styles.popupHeader}>Anlaşmalı Kargo Firması</Text>
+      <Text style={styles.popupText}>MNG Kargo</Text>
+      <View style={styles.seperator} />
+      <Text style={styles.popupHeader}>Kullanman Gereken Kargo Kodu</Text>
+      <Text style={styles.popupText}>XXX91237123</Text>
+      <View style={styles.seperator} />
+      <Text style={[styles.popupText, { marginBottom: 10 }]}>
+        Unutma, limit artışını kalıcı olabilmesi için en geç 14 gün içinde
+        yollamalısın.
+      </Text>
+      <Button
+        text={`Son teslim tarihi: 19.12.2020`}
+        style={{ marginVertical: 10 }}
+        backgroundImage={blueBackground}
+      />
+      <Button
+        text="MNG KARGO ŞUBELERİ"
+        style={{ marginVertical: 10 }}
+        onPress={() =>
+          Linking.openURL('https://www.mngkargo.com.tr/icerik/en-yakin-sube')
+        }
+      />
+    </View>
+  );
+};
+
 const AppliedScreen = props => {
-  const { goBack, allApproved } = props;
+  const { customer, goBack, allApproved } = props;
+  const [showPopup, setShowPopup] = useState(false);
+
+  if (showPopup) {
+    return <Popup onClose={() => setShowPopup(false)}>{showPopup}</Popup>;
+  }
+
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <ScrollView>
@@ -70,9 +222,9 @@ const AppliedScreen = props => {
           </Text>
         </View>
 
-        <View style={styles.bottomBar}>
+        <View>
           <Button
-            onPress={null}
+            onPress={() => setShowPopup(<CargoContent customer={customer} />)}
             text="Anlaşmalı kargo firması için tıkla"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
@@ -85,14 +237,14 @@ const AppliedScreen = props => {
             backgroundImage={blueBackground}
           />
           <Button
-            onPress={null}
+            onPress={() => setShowPopup(<SendEmailContent />)}
             noBackground={true}
             text="E-posta ile gönder"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
           />
           <Button
-            onPress={null}
+            onPress={() => setShowPopup(<SendSMSContent />)}
             noBackground={true}
             text="SMS ile gönder"
             style={styles.buttonStyle}
@@ -133,9 +285,37 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     opacity: 0.8,
   },
-  bottomBar: {},
   buttonStyle: {
     marginBottom: 10,
     marginHorizontal: 20,
+  },
+  popupHeader: {
+    color: '#CAE0F5',
+    fontWeight: 'bold',
+    fontSize: height * 0.025,
+    letterSpacing: 0.666667,
+    marginBottom: 5,
+  },
+  popupText: {
+    color: 'white',
+    letterSpacing: 0.583333,
+  },
+  seperator: {
+    borderTopWidth: 1,
+    borderColor: '#13283D',
+    marginVertical: 15,
+    opacity: 0.8,
+  },
+  popupHeaderWhite: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: height * 0.03,
+  },
+  textInput: {
+    paddingVertical: 10,
+    marginVertical: 10,
+    borderBottomWidth: 2,
+    borderColor: 'rgba(255, 255, 255, .3)',
+    color: '#FFFFFF',
   },
 });
