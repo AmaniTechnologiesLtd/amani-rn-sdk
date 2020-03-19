@@ -37,7 +37,7 @@ import seperatorIcon from '../assets/seperator-icon.png';
 const { width, height } = Dimensions.get('window');
 
 const MainScreen = props => {
-  const { onError, onExit, server, authData, customerInformations } = props;
+  const { onError, onExit, server, authData, customerData } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -49,11 +49,15 @@ const MainScreen = props => {
   const [isStepsFinished, setIsStepsFinished] = useState(false);
   const [customer, setCustomer] = useState({});
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
+  const [location, setLocation] = useState(null);
   const [permissions, setPermission] = useState({
     camera: null,
     location: null,
   });
-  const [location, setLocation] = useState(null);
+  const [permissionMessage, setPermissionMessage] = useState({ show: false });
+  const [message, setMessage] = useState({
+    ...initialMessage,
+  });
 
   const initialMessage = {
     show: false,
@@ -62,17 +66,10 @@ const MainScreen = props => {
     title: null,
     message: null,
     buttonText: 'TAMAM',
-    buttonClick: () => setMessage(initialMessage),
-  };
-  const [message, setMessage] = useState(initialMessage);
-
-  const checkPermissions = async () => {
-    setPermission({
-      camera: await PermissionsAndroid.request('android.permission.CAMERA'),
-      location: await PermissionsAndroid.request(
-        'android.permission.ACCESS_FINE_LOCATION',
-      ),
-    });
+    buttonClick: () =>
+      setMessage({
+        ...initialMessage,
+      }),
   };
 
   if (
@@ -80,7 +77,14 @@ const MainScreen = props => {
     !permissions.camera &&
     !permissions.location
   ) {
-    checkPermissions();
+    (async function() {
+      setPermission({
+        camera: await PermissionsAndroid.request('android.permission.CAMERA'),
+        location: await PermissionsAndroid.request(
+          'android.permission.ACCESS_FINE_LOCATION',
+        ),
+      });
+    })();
   }
 
   const goBack = async () => {
@@ -94,23 +98,14 @@ const MainScreen = props => {
     onExit({ status: 'OK', documents: callbackData });
   };
 
-  // Check needed permissions (camera, location)
+  // If camera and location permissions not granted show error screen
   useEffect(() => {
-    (async function() {
-      if (permissions.location === 'granted' || Platform.OS === 'ios') {
-        await Geolocation.getCurrentPosition(position =>
-          setLocation(position.coords),
-        );
-      }
-    })();
-
-    // If necessary permissions not granted show error screen
     if (
       Platform.OS === 'android' &&
       permissions.camera !== 'granted' &&
       permissions.location !== 'granted'
     ) {
-      setMessage({
+      setPermissionMessage({
         show: true,
         type: 'error',
         header: 'Gerekli İzinler Eksik!',
@@ -125,7 +120,12 @@ const MainScreen = props => {
           }),
       });
     } else {
-      setMessage(initialMessage);
+      setPermissionMessage({ show: false });
+    }
+
+    // Set location for later use
+    if (permissions.location === 'granted' || Platform.OS === 'ios') {
+      Geolocation.getCurrentPosition(position => setLocation(position.coords));
     }
   }, [permissions]);
 
@@ -142,13 +142,11 @@ const MainScreen = props => {
           api.setToken(loginReponse.data.token);
 
           try {
-            const customerReponse = await api.createCustomer(
-              customerInformations,
-            );
-            setCustomer(customerReponse.data);
+            const customerResponse = await api.createCustomer(customerData);
+            setCustomer(customerResponse.data);
 
             // Prepare available documents from company rules
-            const available_documents = customerReponse.data.rules.reduce(
+            const available_documents = customerResponse.data.rules.reduce(
               (currentValue, rule) => [
                 ...currentValue,
                 ...rule.document_classes,
@@ -156,14 +154,15 @@ const MainScreen = props => {
               [],
             );
 
+            // Filter documents that company needs
             dispatch({
               type: 'FILTER_DOCUMENTS',
               document_types: available_documents,
             });
 
-            // Check for missing documents
+            // Check for missing documents and set statuses for documents
             documents.map(doc => {
-              const rule = customerReponse.data.rules.find(element =>
+              const rule = customerResponse.data.rules.find(element =>
                 element.document_classes.includes(doc.id),
               );
 
@@ -299,11 +298,6 @@ const MainScreen = props => {
     setCorners([...corners, cropData]);
   };
 
-  const clearDocument = () => {
-    setFiles([]);
-    setSelectedDocument(null);
-  };
-
   const checkPreviousSteps = (index, statuses) => {
     return documents.some((document, docIndex) => {
       if (docIndex < index) {
@@ -314,8 +308,6 @@ const MainScreen = props => {
   };
 
   const checkIsNextStepDisabled = (document, index) => {
-    // return false;
-
     return Boolean(
       (index !== 0 &&
         checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])) ||
@@ -397,7 +389,9 @@ const MainScreen = props => {
   };
 
   const goToDocument = document => {
-    setMessage(initialMessage);
+    setMessage({
+      ...initialMessage,
+    });
     // Redirect to document capture page
     if (document.id === 'SG') {
       setShowContract(true);
@@ -410,15 +404,16 @@ const MainScreen = props => {
     return <Loading />;
   }
 
-  if (message.show) {
+  if (message.show || permissionMessage.show) {
+    const newMessage = message.show ? message : permissionMessage;
     return (
       <MessageScreen
-        type={message.type}
-        header={message.header}
-        title={message.title}
-        message={message.message}
-        buttonText={message.buttonText}
-        onClick={message.buttonClick}
+        type={newMessage.type}
+        header={newMessage.header}
+        title={newMessage.title}
+        message={newMessage.message}
+        buttonText={newMessage.buttonText}
+        onClick={newMessage.buttonClick}
       />
     );
   }
@@ -463,7 +458,7 @@ const MainScreen = props => {
         onDecline={onDocumentDeclined}
         onManualCropCorners={onDocumentCrop}
         onStepsFinished={setIsStepsFinished}
-        onClearDocument={clearDocument}
+        onClearDocument={clearSelectedDocument}
       />
     );
   }

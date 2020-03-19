@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -9,8 +9,10 @@ import {
   StyleSheet,
   ImageBackground,
   Linking,
+  BackHandler,
 } from 'react-native';
 
+import api from '../services/api';
 import TopBar from './TopBar';
 import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
@@ -25,8 +27,11 @@ const handleSendButton = formData => {
   console.log(formData);
 };
 
-const SendEmailContent = () => {
-  const [formData, setFormData] = useState({ type: 'email', email: null });
+const SendEmailContent = ({ customer }) => {
+  const [formData, setFormData] = useState({
+    type: 'email',
+    email: customer.email,
+  });
   const [message, setMessage] = useState(false);
 
   if (message) {
@@ -78,8 +83,11 @@ const SendEmailContent = () => {
   );
 };
 
-const SendSMSContent = () => {
-  const [formData, setFormData] = useState({ type: 'sms', phone: null });
+const SendSMSContent = ({ customer }) => {
+  const [formData, setFormData] = useState({
+    type: 'sms',
+    phone: customer.phone,
+  });
   const [message, setMessage] = useState(false);
 
   if (message) {
@@ -131,8 +139,12 @@ const SendSMSContent = () => {
   );
 };
 
+const dateParse = date => {
+  const expiration_date = new Date(date);
+  return expiration_date.toLocaleDateString('tr-TR');
+};
+
 const CargoContent = ({ customer }) => {
-  console.log(customer);
   return (
     <View>
       <Text style={styles.popupHeader}>Göndereceğin Adres</Text>
@@ -148,11 +160,13 @@ const CargoContent = ({ customer }) => {
         Unutma, limit artışını kalıcı olabilmesi için en geç 14 gün içinde
         yollamalısın.
       </Text>
-      <Button
-        text={`Son teslim tarihi: 19.12.2020`}
-        style={{ marginVertical: 10 }}
-        backgroundImage={blueBackground}
-      />
+      {customer.approval_expiration && (
+        <Button
+          text={`Son teslim tarihi: ${dateParse(customer.approval_expiration)}`}
+          style={{ marginVertical: 10 }}
+          backgroundImage={blueBackground}
+        />
+      )}
       <Button
         text="MNG KARGO ŞUBELERİ"
         style={{ marginVertical: 10 }}
@@ -167,6 +181,25 @@ const CargoContent = ({ customer }) => {
 const AppliedScreen = props => {
   const { customer, goBack, allApproved } = props;
   const [showPopup, setShowPopup] = useState(false);
+  const [customerData, setCustomerData] = useState({});
+
+  useEffect(() => {
+    getCustomerData();
+    BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
+      goBack();
+      return true;
+    });
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPressContractScreen');
+  }, []);
+
+  const getCustomerData = async () => {
+    try {
+      const response = await api.getCustomer(customer.id);
+
+      setCustomerData(response.data);
+    } catch (error) {}
+  };
 
   if (showPopup) {
     return <Popup onClose={() => setShowPopup(false)}>{showPopup}</Popup>;
@@ -224,7 +257,9 @@ const AppliedScreen = props => {
 
         <View>
           <Button
-            onPress={() => setShowPopup(<CargoContent customer={customer} />)}
+            onPress={() =>
+              setShowPopup(<CargoContent customer={customerData} />)
+            }
             text="Anlaşmalı kargo firması için tıkla"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
@@ -237,14 +272,18 @@ const AppliedScreen = props => {
             backgroundImage={blueBackground}
           />
           <Button
-            onPress={() => setShowPopup(<SendEmailContent />)}
+            onPress={() =>
+              setShowPopup(<SendEmailContent customer={customerData} />)
+            }
             noBackground={true}
             text="E-posta ile gönder"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
           />
           <Button
-            onPress={() => setShowPopup(<SendSMSContent />)}
+            onPress={() =>
+              setShowPopup(<SendSMSContent customer={customerData} />)
+            }
             noBackground={true}
             text="SMS ile gönder"
             style={styles.buttonStyle}

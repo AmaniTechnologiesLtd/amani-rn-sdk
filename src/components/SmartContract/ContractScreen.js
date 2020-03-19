@@ -51,11 +51,12 @@ const ContractScreen = props => {
 
   useEffect(() => {
     getCustomerData();
-    BackHandler.addEventListener('hardwareBackPress', () => {
+    BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
       onContractDecline();
       return true;
     });
-    return () => BackHandler.removeEventListener('hardwareBackPress');
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPressContractScreen');
   }, []);
 
   const getCustomerData = async () => {

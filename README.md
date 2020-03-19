@@ -106,7 +106,7 @@ cd ios && pod install
 | Available props | Required | Type | Default |
 | ------ | ------ | ------ | ------|
 | authData | true | object | - |
-| customerInformations | true | object | - |
+| customerData | true | object | - |
 | server | false | string | tr |
 | onError | false | callback function | - |
 | onExit | false | callback function | - |
@@ -137,7 +137,7 @@ return (
     <AmaniAi
         server="tr"
         authData={authValues}
-        customerInformations={customer}
+        customerData={customer}
         onError={error => console.log(error)}
         onExit={values => console.log(values)}
     />
