@@ -24,6 +24,7 @@ import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
 import Button from 'amani-rn-sdk/src/components/Button';
+import Loading from '../Loading';
 import { content } from './View/html';
 import SignatureDraw from '../SignatureDraw/SignatureDraw';
 import cities from '../../store/cities.json';
@@ -38,6 +39,7 @@ const ContractScreen = props => {
     location,
     dispatch,
   } = props;
+  const [isLoading, setIsLoading] = useState(true);
   const [showContract, setShowContract] = useState(false);
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
@@ -74,6 +76,7 @@ const ContractScreen = props => {
           : null,
         job: response.data.occupation ? response.data.occupation : null,
       });
+      setIsLoading(false);
     } catch (error) {}
   };
 
@@ -149,6 +152,10 @@ const ContractScreen = props => {
   );
   */
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   if (showSignatureScreen) {
     return (
       <SignatureDraw
@@ -196,10 +203,10 @@ const ContractScreen = props => {
                 items={cities}
                 sortingLanguage={'tr'}
                 showToTopButton={true}
-                showAlphabeticalIndex={true}
+                showAlphabeticalIndex={false}
                 autoGenerateAlphabeticalIndex={true}
                 searchPlaceholderText={'Ara...'}
-                autoSort={false}
+                autoSort={true}
               />
             </View>
             <View style={styles.contactFormView}>
@@ -219,10 +226,10 @@ const ContractScreen = props => {
                 }
                 sortingLanguage={'tr'}
                 showToTopButton={true}
-                showAlphabeticalIndex={true}
+                showAlphabeticalIndex={false}
                 autoGenerateAlphabeticalIndex={true}
                 searchPlaceholderText={'Ara...'}
-                autoSort={false}
+                autoSort={true}
                 style={{ backgroundColor: '#263B5B' }}
               />
             </View>
