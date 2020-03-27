@@ -174,6 +174,8 @@ const MainScreen = props => {
                 });
               }
             });
+
+            findIncompleteDocument(customerResponse.data.rules);
           } catch (error) {
             handleError(error);
           }
@@ -205,6 +207,8 @@ const MainScreen = props => {
       document_id: selectedDocument.id,
       status: 'PROCESSING',
     });
+
+    updateCustomerRules();
 
     setShowSuccessScreen(true);
 
@@ -279,6 +283,27 @@ const MainScreen = props => {
     });
   };
 
+  const updateCustomerRules = () => {
+    const rules = customer.rules.map(rule => {
+      if (rule.document_classes.includes(selectedDocument.id)) {
+        rule.status = 'PROCESSING';
+      }
+      return rule;
+    });
+    setCustomer({ ...customer, rules });
+  };
+
+  const skipDocument = () => {
+    const rules = customer.rules.map(rule => {
+      if (rule.document_classes.includes(selectedDocument.id)) {
+        rule.status = 'SKIPPED';
+      }
+      return rule;
+    });
+    setCustomer({ ...customer, rules });
+    findIncompleteDocument(rules);
+  };
+
   const clearSelectedDocument = () => {
     setSelectedDocument(null);
     setFiles([]);
@@ -318,7 +343,8 @@ const MainScreen = props => {
   const modalStatusIcon = (document, index) => {
     if (
       !['APPROVED', 'PENDING_REVIEW'].includes(document.status) &&
-      (index !== 0 && checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED']))
+      index !== 0 &&
+      checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])
     ) {
       return (
         <Image
@@ -400,6 +426,28 @@ const MainScreen = props => {
     }
   };
 
+  const findIncompleteDocument = rules => {
+    const incompleteRules = rules.filter(doc =>
+      ['NOT_UPLOADED'].includes(doc.status),
+    );
+
+    clearSelectedDocument();
+
+    if (incompleteRules.length) {
+      const startDoc = documents.find(doc =>
+        incompleteRules[0].document_classes.includes(doc.id),
+      );
+
+      if (startDoc) {
+        if (startDoc.id === 'SG') {
+          setShowContract(true);
+        } else {
+          setSelectedDocument(startDoc);
+        }
+      }
+    }
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -443,7 +491,7 @@ const MainScreen = props => {
         message={selectedDocument.successDescription}
         nextStepMessage={selectedDocument.nextStepDescription}
         buttonText="DEVAM"
-        onClick={clearSelectedDocument}
+        onClick={() => findIncompleteDocument(customer.rules)}
       />
     );
   }
@@ -459,6 +507,7 @@ const MainScreen = props => {
         onManualCropCorners={onDocumentCrop}
         onStepsFinished={setIsStepsFinished}
         onClearDocument={clearSelectedDocument}
+        onSkipDocument={skipDocument}
       />
     );
   }

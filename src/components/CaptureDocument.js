@@ -37,6 +37,7 @@ const CaptureDocument = props => {
     onManualCropCorners,
     onStepsFinished,
     onClearDocument,
+    onSkipDocument,
     setSelectedDocumentVersion,
     customer,
     onDecline,
@@ -229,6 +230,7 @@ const CaptureDocument = props => {
         versionGroup={setVersionGroup}
         groupIndex={setGroupIndex}
         closeVersionSelected={() => setShowVersionSelection(false)}
+        onSkipDocument={onSkipDocument}
       />
     );
   }

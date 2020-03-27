@@ -177,7 +177,7 @@ export const initialDocuments = [
         description: '',
       },
     ],
-    options: ['takePicture', 'fileUpload'],
+    options: ['takePicture', 'fileUpload', 'skipDocument'],
     type: 'image',
     captureVideo: false,
     cameraFacing: 'environment',

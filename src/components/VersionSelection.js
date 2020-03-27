@@ -27,6 +27,7 @@ const VersionSelection = props => {
     closeVersionSelected,
     menuMode,
     goBack,
+    onSkipDocument,
   } = props;
 
   useEffect(() => {
@@ -104,6 +105,14 @@ const VersionSelection = props => {
             </View>
           );
         })}
+        {document.options.includes('skipDocument') && (
+          <Button
+            text="Şimdilik Atla"
+            noBackground
+            onPress={onSkipDocument}
+            style={{ marginBottom: 20 }}
+          />
+        )}
       </ScrollView>
     </ImageBackground>
   );
