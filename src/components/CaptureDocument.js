@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
   BackHandler,
   Dimensions,
   TouchableOpacity,
@@ -21,11 +20,11 @@ import TopBar from './TopBar';
 import EDevlet from './EDevlet';
 import PoweredBy from './PoweredBy';
 import Loading from './Loading';
+import Button from './Button';
 import VersionSelection from './VersionSelection';
 import DocumentConfirmation from './DocumentConfirmation';
 import backArrow from '../../assets/back-arrow.png';
-import pdfIcon from '../../assets/pdf-icon.png';
-import eDevletIcon from '../../assets/edevlet-icon.png';
+import darkBlueBackground from '../../assets/btn-dark-blue.png';
 import { backdropColor } from '../constants';
 
 const { width, height } = Dimensions.get('window');
@@ -369,17 +368,16 @@ const CaptureDocument = props => {
               ]}
             >
               {document.versions[versionGroup][groupIndex].edevlet && (
-                <TouchableOpacity
-                  style={styles.eDevlet}
+                <Button
+                  text="E-Devletten al"
                   onPress={() => setShowEDevlet(true)}
-                  hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-                >
-                  <Image
-                    style={styles.fileUploadIcon}
-                    resizeMode="cover"
-                    source={eDevletIcon}
-                  />
-                </TouchableOpacity>
+                  style={styles.eDevlet}
+                  backgroundStyle={{
+                    paddingVertical: 5,
+                    paddingHorizontal: 15,
+                  }}
+                  backgroundImage={darkBlueBackground}
+                />
               )}
 
               <TouchableOpacity
@@ -398,17 +396,16 @@ const CaptureDocument = props => {
               </TouchableOpacity>
 
               {document.options.includes('fileUpload') && (
-                <TouchableOpacity
-                  style={styles.fileUpload}
+                <Button
+                  text="PDF Yükle"
                   onPress={pickAndTransformPdf}
-                  hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-                >
-                  <Image
-                    style={styles.fileUploadIcon}
-                    resizeMode="cover"
-                    source={pdfIcon}
-                  />
-                </TouchableOpacity>
+                  style={styles.fileUpload}
+                  backgroundStyle={{
+                    paddingVertical: 5,
+                    paddingHorizontal: 25,
+                  }}
+                  backgroundImage={darkBlueBackground}
+                />
               )}
             </View>
             <PoweredBy />
@@ -513,16 +510,14 @@ const styles = StyleSheet.create({
   },
   fileUpload: {
     position: 'absolute',
-    bottom: width * 0.06,
+    bottom: width * 0.13,
     right: 10,
-  },
-  fileUploadIcon: {
-    width: 80,
-    height: 80,
+    borderRadius: 20,
   },
   eDevlet: {
     position: 'absolute',
-    bottom: width * 0.06,
+    bottom: width * 0.13,
+    borderRadius: 20,
     left: 10,
   },
   previewMiddle: {

@@ -48,7 +48,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Kimliğini Doğrula',
-      PENDING_REVIEW: 'Kimliğin doğrulanıyor',
+      PENDING_REVIEW: 'Kimliğin yüklendi',
       PROCESSING: 'Kimliğin doğrulanıyor',
       APPROVED: 'Kimliğin doğrulandı',
       REJECTED: `Kimliğin doğrulanamadı\nLütfen tekrar dene`,
@@ -85,7 +85,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Selfie Doğrula',
-      PENDING_REVIEW: 'Selfie doğrulanıyor',
+      PENDING_REVIEW: 'Selfie yüklendi',
       PROCESSING: 'Selfie doğrulanıyor',
       APPROVED: 'Selfie doğrulandı',
       REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
@@ -125,7 +125,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Pasaportunu Doğrula',
-      PENDING_REVIEW: 'Pasaportun doğrulanıyor',
+      PENDING_REVIEW: 'Pasaportun yüklendi',
       PROCESSING: 'Pasaportub doğrulanıyor',
       APPROVED: 'Pasaportun doğrulandı',
       REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
@@ -161,7 +161,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Vize Doğrula',
-      PENDING_REVIEW: 'Vizen doğrulanıyor',
+      PENDING_REVIEW: 'Vizen yüklendi',
       PROCESSING: 'Vizen doğrulanıyor',
       APPROVED: 'Vizen doğrulandı',
       REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
@@ -241,7 +241,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Adresini Doğrula',
-      PENDING_REVIEW: 'Adresin doğrulanıyor',
+      PENDING_REVIEW: 'Adresin yüklendi',
       PROCESSING: 'Adresin doğrulanıyor',
       APPROVED: 'Adresin doğrulandı',
       REJECTED: `Adresin doğrulanamadı\nLütfen tekrar dene`,
@@ -280,7 +280,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Dijital Sözleşmeni İmzala',
-      PENDING_REVIEW: 'İmzan doğrulanıyor',
+      PENDING_REVIEW: 'İmzan yüklendi',
       PROCESSING: 'İmzan doğrulanıyor',
       APPROVED: 'Dijital sözleşme İmzalandı',
       REJECTED: `İmzan doğrulanamadı\nLütfen tekrar dene`,

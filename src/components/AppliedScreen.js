@@ -83,62 +83,6 @@ const SendEmailContent = ({ customer }) => {
   );
 };
 
-const SendSMSContent = ({ customer }) => {
-  const [formData, setFormData] = useState({
-    type: 'sms',
-    phone: customer.phone,
-  });
-  const [message, setMessage] = useState(false);
-
-  if (message) {
-    return (
-      <View>
-        <Text
-          style={[
-            styles.popupHeaderWhite,
-            { textAlign: 'center', marginVertical: 20 },
-          ]}
-        >
-          Sözleşmenin bir kopyası telefonunuza gönderildi
-        </Text>
-      </View>
-    );
-  }
-
-  return (
-    <View>
-      <Text style={styles.popupHeaderWhite}>
-        Sözleşmeyi göndermek istediğin telefon numarasını gir
-      </Text>
-      <TextInput
-        style={styles.textInput}
-        onChangeText={val => setFormData({ ...formData, phone: val })}
-        placeholder="0 (5  )"
-        placeholderTextColor="#CAE0F5"
-        autoCompleteType="tel"
-        keyboardType="phone-pad"
-        returnKeyType="send"
-        onSubmitEditing={() => {
-          if (formData.phone) {
-            handleSendButton(formData);
-            setMessage(true);
-          }
-        }}
-        value={formData.phone}
-      />
-      <Button
-        disabled={!formData.phone}
-        text="GÖNDER"
-        style={{ marginVertical: 10 }}
-        onPress={() => {
-          handleSendButton(formData);
-          setMessage(true);
-        }}
-      />
-    </View>
-  );
-};
-
 const dateParse = date => {
   const expiration_date = new Date(date);
   return expiration_date.toLocaleDateString('tr-TR');
@@ -198,6 +142,15 @@ const AppliedScreen = props => {
       const response = await api.getCustomer(customer.id);
 
       setCustomerData(response.data);
+    } catch (error) {}
+  };
+
+  const getContractURL = async () => {
+    try {
+      const response = await api.getContractURL(customer.id);
+      if (response.data.document_url) {
+        Linking.openURL(response.data.document_url);
+      }
     } catch (error) {}
   };
 
@@ -265,7 +218,7 @@ const AppliedScreen = props => {
             backgroundImage={blueBackground}
           />
           <Button
-            onPress={null}
+            onPress={getContractURL}
             noBackground={true}
             text="Sözleşmeyi İndir"
             style={styles.buttonStyle}
@@ -277,15 +230,6 @@ const AppliedScreen = props => {
             }
             noBackground={true}
             text="E-posta ile gönder"
-            style={styles.buttonStyle}
-            backgroundImage={blueBackground}
-          />
-          <Button
-            onPress={() =>
-              setShowPopup(<SendSMSContent customer={customerData} />)
-            }
-            noBackground={true}
-            text="SMS ile gönder"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
           />

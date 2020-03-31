@@ -30,7 +30,7 @@ import backArrow from '../assets/back-arrow.png';
 import forwardArrow from '../assets/forward-arrow.png';
 import lockIcon from '../assets/locked-icon.png';
 import successIcon from '../assets/success-icon.png';
-import pendingIcon from '../assets/step-pending-icon.png';
+import approvedIcon from '../assets/approved-icon.png';
 import failedIcon from '../assets/failed-icon.png';
 import seperatorIcon from '../assets/seperator-icon.png';
 
@@ -366,7 +366,7 @@ const MainScreen = props => {
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={pendingIcon}
+          source={successIcon}
         />
       );
     } else if (document.status === 'APPROVED') {
@@ -374,7 +374,7 @@ const MainScreen = props => {
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={successIcon}
+          source={approvedIcon}
         />
       );
     } else if (document.status === 'REJECTED') {

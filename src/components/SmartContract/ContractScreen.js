@@ -10,7 +10,6 @@ import {
   SafeAreaView,
   StyleSheet,
   BackHandler,
-  Platform,
   Dimensions,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
@@ -43,6 +42,7 @@ const ContractScreen = props => {
   const [showContract, setShowContract] = useState(false);
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
+  const [addressHeight, setAddressHeight] = useState(50);
 
   const [formData, setFormData] = useState({
     job: null,
@@ -152,6 +152,10 @@ const ContractScreen = props => {
   );
   */
 
+  const updateSize = newHeight => {
+    setAddressHeight(newHeight);
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -235,14 +239,15 @@ const ContractScreen = props => {
             </View>
             <View style={styles.contactFormView}>
               <TextInput
-                style={styles.multilineFormInput}
+                style={[styles.multilineFormInput, { height: addressHeight }]}
                 onChangeText={val => setFormData({ ...formData, address: val })}
+                onContentSizeChange={e =>
+                  updateSize(e.nativeEvent.contentSize.height)
+                }
                 placeholder="Açık Adres"
                 placeholderTextColor="#CAE0F5"
                 multiline
                 maxLength={100}
-                numberOfLines={Platform.OS === 'ios' ? null : 4}
-                minHeight={Platform.OS === 'ios' && 3 ? 3 * 3 : null}
                 value={formData.address}
               />
               <Text style={styles.charCount}>{charsLeft(100)} / 100</Text>
