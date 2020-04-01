@@ -51,6 +51,13 @@ const ContractScreen = props => {
     address: null,
   });
 
+  const capitalizeFirstLetters = string => {
+    return string
+      .split(' ')
+      .map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   useEffect(() => {
     getCustomerData();
     BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
@@ -65,17 +72,22 @@ const ContractScreen = props => {
     try {
       const response = await api.getCustomer(customer.id);
 
-      setFormData({
-        ...formData,
-        city: response.data.address.city ? response.data.address.city : null,
-        district: response.data.address.province
-          ? response.data.address.province
-          : null,
-        address: response.data.address.address
-          ? response.data.address.address
-          : null,
-        job: response.data.occupation ? response.data.occupation : null,
-      });
+      if (response.data.address) {
+        setFormData({
+          ...formData,
+          city: response.data.address.city
+            ? capitalizeFirstLetters(response.data.address.city)
+            : null,
+          district: response.data.address.province
+            ? capitalizeFirstLetters(response.data.address.province)
+            : null,
+          address: response.data.address.address
+            ? response.data.address.address
+            : null,
+          job: response.data.occupation ? response.data.occupation : null,
+        });
+      }
+
       setIsLoading(false);
     } catch (error) {}
   };
@@ -247,10 +259,10 @@ const ContractScreen = props => {
                 placeholder="Açık Adres"
                 placeholderTextColor="#CAE0F5"
                 multiline
-                maxLength={100}
+                maxLength={150}
                 value={formData.address}
               />
-              <Text style={styles.charCount}>{charsLeft(100)} / 100</Text>
+              <Text style={styles.charCount}>{charsLeft(150)} / 150</Text>
             </View>
 
             <ImageBackground
