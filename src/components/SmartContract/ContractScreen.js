@@ -34,6 +34,7 @@ const ContractScreen = props => {
   const {
     onContractDecline,
     currentDocument,
+    addressDocument,
     customer,
     location,
     dispatch,
@@ -59,7 +60,6 @@ const ContractScreen = props => {
   };
 
   useEffect(() => {
-    getCustomerData();
     BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
       onContractDecline();
       return true;
@@ -67,6 +67,13 @@ const ContractScreen = props => {
     return () =>
       BackHandler.removeEventListener('hardwareBackPressContractScreen');
   }, []);
+
+  // Wait for address document to be processed on the server
+  useEffect(() => {
+    if (addressDocument.status !== 'PROCESSING') {
+      getCustomerData();
+    }
+  }, [addressDocument]);
 
   const getCustomerData = async () => {
     try {

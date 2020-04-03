@@ -175,7 +175,7 @@ const MainScreen = props => {
               }
             });
 
-            findIncompleteDocument(customerResponse.data.rules);
+            findIncompleteDocument(customerResponse.data);
           } catch (error) {
             handleError(error);
           }
@@ -301,7 +301,7 @@ const MainScreen = props => {
       return rule;
     });
     setCustomer({ ...customer, rules });
-    findIncompleteDocument(rules);
+    findIncompleteDocument(customer);
   };
 
   const clearSelectedDocument = () => {
@@ -426,8 +426,14 @@ const MainScreen = props => {
     }
   };
 
-  const findIncompleteDocument = rules => {
-    const incompleteRules = rules.filter(doc =>
+  const findIncompleteDocument = currentCustomer => {
+    // If not first time customer do not go to document automatically
+    if (currentCustomer.status !== 'Created') {
+      clearSelectedDocument();
+      return;
+    }
+
+    const incompleteRules = currentCustomer.rules.filter(doc =>
       ['NOT_UPLOADED'].includes(doc.status),
     );
 
@@ -471,15 +477,7 @@ const MainScreen = props => {
       ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
     )
   ) {
-    return (
-      <AppliedScreen
-        customer={customer}
-        goBack={goBack}
-        allApproved={documents.every(
-          document => document.status === 'APPROVED',
-        )}
-      />
-    );
+    return <AppliedScreen customer={customer} goBack={goBack} />;
   }
 
   if (showSuccessScreen) {
@@ -491,7 +489,7 @@ const MainScreen = props => {
         message={selectedDocument.successDescription}
         nextStepMessage={selectedDocument.nextStepDescription}
         buttonText="DEVAM"
-        onClick={() => findIncompleteDocument(customer.rules)}
+        onClick={() => findIncompleteDocument(customer)}
       />
     );
   }
@@ -518,6 +516,7 @@ const MainScreen = props => {
         onContractDecline={() => setShowContract(false)}
         location={location}
         currentDocument={documents.find(document => document.id === 'SG')}
+        addressDocument={documents.find(document => document.id === 'UB')}
         dispatch={dispatch}
         customer={customer}
       />

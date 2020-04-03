@@ -27,10 +27,10 @@ const handleSendButton = formData => {
   console.log(formData);
 };
 
-const SendEmailContent = ({ customer }) => {
+const SendEmailContent = () => {
   const [formData, setFormData] = useState({
     type: 'email',
-    email: customer.email,
+    email: '',
   });
   const [message, setMessage] = useState(false);
 
@@ -123,7 +123,7 @@ const CargoContent = ({ customer }) => {
 };
 
 const AppliedScreen = props => {
-  const { customer, goBack, allApproved } = props;
+  const { customer, goBack } = props;
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
 
@@ -172,7 +172,7 @@ const AppliedScreen = props => {
             style={styles.successIcon}
             source={successIcon}
           />
-          {allApproved ? (
+          {customer.status === 'Temporarily Approved' ? (
             <>
               <Text style={[styles.header, { marginBottom: 0 }]}>
                 Tebrikler! Başvurun Onaylandı
@@ -193,11 +193,13 @@ const AppliedScreen = props => {
 
           <Text style={styles.message}>
             Limit artışının kalıcı olması için ininal kullanıcı sözleşmesini
-            yazdırıp, imzalayın ve
+            yazdırıp, imzalaman ve en geç
             <Text style={{ fontWeight: 'bold' }}>
-              {` en geç iki hafta içerisinde `}
+              {customer.status === 'Temporarily Approved'
+                ? ` ${dateParse(customer.approval_expiration)} tarihine kadar `
+                : ` iki hafta içerisinde `}
             </Text>
-            bize kargolaman gerekiyor. Aksi durumda limitn tekrar 750 TL'ye
+            bize kargolaman gerekiyor. Aksi durumda limitin tekrar 750 TL'ye
             düşecek.
           </Text>
 
@@ -250,6 +252,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
   },
   successIcon: {
     marginVertical: 10,
