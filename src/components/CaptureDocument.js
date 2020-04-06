@@ -153,7 +153,10 @@ const CaptureDocument = props => {
         y: previewArea.previewAreaY,
       },
       size: {
-        height: 1200,
+        height:
+          document.versions[versionGroup][groupIndex].aspectRatio < 1
+            ? 1200
+            : 1200 * document.versions[versionGroup][groupIndex].aspectRatio,
         width: 1200,
       },
     };
