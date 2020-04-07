@@ -39,7 +39,6 @@ const CaptureDocument = props => {
     onSkipDocument,
     setSelectedDocumentVersion,
     customer,
-    onDecline,
   } = props;
 
   const [cameraType] = useState(
@@ -55,6 +54,7 @@ const CaptureDocument = props => {
     previewAreaHeight: null,
   });
 
+  const [trialCount, setTrialCount] = useState(1);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessStarted, setIsProcessStarted] = useState(false);
@@ -91,7 +91,7 @@ const CaptureDocument = props => {
     setButtonDisabled(true);
     let image = await camera.current
       .takePictureAsync({
-        quality: 0.7,
+        quality: 0.8,
         orientation: 'portrait',
         base64: true,
         width: 1200,
@@ -105,9 +105,15 @@ const CaptureDocument = props => {
           if (document.versions[versionGroup][groupIndex].autoCrop) {
             image = await handleAutoCrop(data);
           }
-          onCapture(image);
+
           setCapturedImageUrl(image);
-          setShowDocumentConfirmation(true);
+
+          if (trialCount < 3) {
+            setShowDocumentConfirmation(true);
+          } else {
+            onCapture(image);
+            calculateNextStep();
+          }
           setIsProcessStarted(false);
         }
         setButtonDisabled(false);
@@ -131,6 +137,7 @@ const CaptureDocument = props => {
 
   const calculateNextStep = () => {
     setShowDocumentConfirmation(false);
+    setTrialCount(1);
     if (currentStep < document.steps.length - 1) {
       setCurrentStep(currentStep + 1);
       setImageCrop(null);
@@ -140,8 +147,10 @@ const CaptureDocument = props => {
     onStepsFinished(true);
   };
 
-  const handleDocumentRetake = () => {
-    onDecline();
+  const handleDocumentRetake = forced => {
+    if (forced) {
+      setTrialCount(trialCount + 1);
+    }
     setShowDocumentConfirmation(false);
   };
 
@@ -213,7 +222,10 @@ const CaptureDocument = props => {
         corners={corners}
         imageUrl={capturedImageUrl}
         step={currentStep}
-        continueProcess={calculateNextStep}
+        continueProcess={image => {
+          onCapture(image);
+          calculateNextStep();
+        }}
         onTryAgain={handleDocumentRetake}
       />
     );

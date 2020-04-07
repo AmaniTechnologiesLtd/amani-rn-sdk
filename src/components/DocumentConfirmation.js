@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  ScrollView,
   Image,
   Text,
-  TouchableOpacity,
   Dimensions,
   StyleSheet,
   ImageBackground,
@@ -21,12 +21,13 @@ const { width, height } = Dimensions.get('window');
 
 const DocumentConfirmation = props => {
   const {
+    customer,
     imageUrl,
     document,
     onTryAgain,
     continueProcess,
-    customer,
     corners,
+    trialCount,
     step,
   } = props;
   const [errorMessage, setErrorMessage] = useState(null);
@@ -46,6 +47,7 @@ const DocumentConfirmation = props => {
           requestData.append('corners[]', JSON.stringify(corner)),
         );
       }
+      requestData.append('customer_id', customer.id);
       requestData.append('type', document.id);
       requestData.append('files[]', imageUrl);
 
@@ -53,21 +55,21 @@ const DocumentConfirmation = props => {
         .cropImage(requestData)
         .then(res => {
           setImgSrc(res.data.image);
-          if (!res.data.cropped) {
+          if (res.data.glare) {
             setErrorMessage(
-              'Belgenizi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar çekin.',
+              'Fotoğrafta parlama tespit edildi.\n\nLütfen belgenizin üstüne doğrudan ışık gelmemesine dikkat edin.',
             );
             return;
           }
           if (res.data.blur) {
             setErrorMessage(
-              'Fotoğrafta bulanıklık tespit edildi.\n\nLütfen tekrar deneyin.',
+              'Fotoğrafta bulanıklık tespit edildi.\n\nLütfen daha iyi aydınlatılmış bir ortamda tekrar deneyin.',
             );
             return;
           }
-          if (res.data.glare) {
+          if (!res.data.cropped) {
             setErrorMessage(
-              'Fotoğrafta parlama tespit edildi.\n\nLütfen tekrar deneyin.',
+              'Belgenizi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar çekin.',
             );
             return;
           }
@@ -85,41 +87,45 @@ const DocumentConfirmation = props => {
   // Ask user for confirmation or show error messages
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <TopBar
-        onLeftButtonPressed={onTryAgain}
-        leftButtonIcon={backArrow}
-        title={document.title}
-      />
+      <ScrollView contentContainerStyle={styles.childContainer}>
+        <TopBar
+          onLeftButtonPressed={onTryAgain}
+          leftButtonIcon={backArrow}
+          title={document.title}
+        />
 
-      <Text style={styles.confirmationTitle}>
-        {document.steps.length > 0 && document.steps[step].confirmationTitle}
-      </Text>
-      <Image
-        resizeMode="contain"
-        style={[
-          styles.confirmationImagePreview,
-          { transform: [{ scaleX: document.id !== 'SE' ? 1 : -1 }] },
-        ]}
-        source={{ uri: imgSrc }}
-      />
+        <Text style={styles.confirmationTitle}>
+          {document.steps.length > 0 && document.steps[step].confirmationTitle}
+        </Text>
+        <Image
+          resizeMode="contain"
+          style={[
+            styles.confirmationImagePreview,
+            { transform: [{ scaleX: document.id !== 'SE' ? 1 : -1 }] },
+          ]}
+          source={{ uri: imgSrc }}
+        />
 
-      <Text style={styles.errorMessageText}>{errorMessage}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.errorMessageText}>{errorMessage}</Text>
+        </View>
 
-      <View style={styles.bottomBar}>
-        <TouchableOpacity
-          onPress={onTryAgain}
-          style={[styles.bottomButtons, styles.tryAgainButton]}
-        >
-          <Text style={styles.bottomButtonText}>Tekrar Dene</Text>
-        </TouchableOpacity>
-        {!errorMessage && (
+        <View style={styles.bottomBar}>
           <Button
-            onPress={continueProcess}
-            text="ONAYLA"
-            style={{ marginLeft: width * 0.05, flex: 1 }}
+            text="Tekrar Dene"
+            noBackground
+            onPress={() => onTryAgain(!!errorMessage, trialCount)}
+            style={[styles.bottomButtons, styles.tryAgainButton]}
           />
-        )}
-      </View>
+          {!errorMessage && (
+            <Button
+              onPress={() => continueProcess(imgSrc)}
+              text="ONAYLA"
+              style={{ marginLeft: width * 0.05, flex: 1 }}
+            />
+          )}
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -129,10 +135,12 @@ export default DocumentConfirmation;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  childContainer: {
     alignItems: 'center',
-    backgroundColor: 'white',
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingTop: 30,
+    minHeight: '100%',
   },
   confirmationTitle: {
     color: 'white',
@@ -142,13 +150,14 @@ const styles = StyleSheet.create({
   },
   confirmationImagePreview: {
     width: width * 0.9,
-    height: height * 0.6,
+    height: height * 0.5,
   },
   errorMessageText: {
     color: 'white',
-    fontSize: width * 0.035,
+    fontSize: width * 0.04,
     textAlign: 'center',
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 20,
   },
   successMessage: {
     flex: 1,
@@ -172,8 +181,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bottomBar: {
-    position: 'absolute',
-    bottom: height * 0,
     height: height * 0.07,
     width: width * 0.85,
     flexDirection: 'row',
@@ -184,12 +191,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     overflow: 'hidden',
-  },
-  bottomButtonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: width * 0.04,
-    color: 'white',
   },
   tryAgainButton: {
     borderColor: 'white',

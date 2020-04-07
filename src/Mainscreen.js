@@ -236,6 +236,10 @@ const MainScreen = props => {
       );
     }
 
+    if (selectedDocumentVersion.autoCrop) {
+      requestData.append('cropped', true);
+    }
+
     files.forEach(file => requestData.append('files[]', file));
 
     await api
@@ -309,18 +313,6 @@ const MainScreen = props => {
     setFiles([]);
     setCorners([]);
     setShowSuccessScreen(false);
-  };
-
-  const onDocumentCaptured = capture => {
-    setFiles([...files, capture]);
-  };
-
-  const onDocumentDeclined = () => {
-    setFiles(files.slice(0, -1));
-  };
-
-  const onDocumentCrop = cropData => {
-    setCorners([...corners, cropData]);
   };
 
   const checkPreviousSteps = (index, statuses) => {
@@ -500,9 +492,8 @@ const MainScreen = props => {
         customer={customer}
         document={selectedDocument}
         setSelectedDocumentVersion={setSelectedDocumentVersion}
-        onCapture={onDocumentCaptured}
-        onDecline={onDocumentDeclined}
-        onManualCropCorners={onDocumentCrop}
+        onCapture={capture => setFiles([...files, capture])}
+        onManualCropCorners={cropData => setCorners([...corners, cropData])}
         onStepsFinished={setIsStepsFinished}
         onClearDocument={clearSelectedDocument}
         onSkipDocument={skipDocument}
