@@ -60,9 +60,7 @@ class CustomCrop extends Component {
       overlayPositions: `${this.state.topLeft.x._value},
             ${this.state.topLeft.y._value} ${this.state.topRight.x._value},
             ${this.state.topRight.y._value} ${this.state.bottomRight.x._value},
-            ${this.state.bottomRight.y._value} ${
-        this.state.bottomLeft.x._value
-      },
+            ${this.state.bottomRight.y._value} ${this.state.bottomLeft.x._value},
             ${this.state.bottomLeft.y._value}`,
     };
 
@@ -156,11 +154,7 @@ class CustomCrop extends Component {
     };
 
     this.setState({
-      overlayPositions: `${movedTopLeft.x},${movedTopLeft.y} ${
-        movedTopRight.x
-      },${movedTopRight.y} ${movedBottomRight.x},${movedBottomRight.y} ${
-        movedBottomLeft.x
-      },${movedBottomLeft.y}`,
+      overlayPositions: `${movedTopLeft.x},${movedTopLeft.y} ${movedTopRight.x},${movedTopRight.y} ${movedBottomRight.x},${movedBottomRight.y} ${movedBottomLeft.x},${movedBottomLeft.y}`,
     });
   }
 
@@ -186,14 +180,12 @@ class CustomCrop extends Component {
           alignItems: 'center',
           justifyContent: 'flex-end',
           backgroundColor: 'black',
-        }}
-      >
+        }}>
         <View
           style={[
             s(this.props).cropContainer,
             { height: this.state.viewHeight },
-          ]}
-        >
+          ]}>
           <Image
             style={[
               s(this.props).image,
@@ -209,10 +201,9 @@ class CustomCrop extends Component {
           <Svg
             height={this.state.viewHeight}
             width={Dimensions.get('window').width}
-            style={{ position: 'absolute', left: 0, top: 0 }}
-          >
+            style={{ position: 'absolute', left: 0, top: 0 }}>
             <AnimatedPolygon
-              ref={ref => (this.polygon = ref)}
+              ref={(ref) => (this.polygon = ref)}
               fill={this.props.overlayColor || 'white'}
               fillOpacity={this.props.overlayOpacity || 0.3}
               stroke={this.props.overlayStrokeColor || 'white'}
@@ -222,8 +213,7 @@ class CustomCrop extends Component {
           </Svg>
           <Animated.View
             {...this.panResponderTopLeft.panHandlers}
-            style={[this.state.topLeft.getLayout(), s(this.props).handler]}
-          >
+            style={[this.state.topLeft.getLayout(), s(this.props).handler]}>
             <View
               hitSlop={{
                 top: 40,
@@ -236,8 +226,7 @@ class CustomCrop extends Component {
           </Animated.View>
           <Animated.View
             {...this.panResponderTopRight.panHandlers}
-            style={[this.state.topRight.getLayout(), s(this.props).handler]}
-          >
+            style={[this.state.topRight.getLayout(), s(this.props).handler]}>
             <View
               hitSlop={{
                 top: 40,
@@ -250,8 +239,7 @@ class CustomCrop extends Component {
           </Animated.View>
           <Animated.View
             {...this.panResponderBottomLeft.panHandlers}
-            style={[this.state.bottomLeft.getLayout(), s(this.props).handler]}
-          >
+            style={[this.state.bottomLeft.getLayout(), s(this.props).handler]}>
             <View
               hitSlop={{
                 top: 40,
@@ -264,8 +252,7 @@ class CustomCrop extends Component {
           </Animated.View>
           <Animated.View
             {...this.panResponderBottomRight.panHandlers}
-            style={[this.state.bottomRight.getLayout(), s(this.props).handler]}
-          >
+            style={[this.state.bottomRight.getLayout(), s(this.props).handler]}>
             <View
               hitSlop={{
                 top: 40,
@@ -282,7 +269,7 @@ class CustomCrop extends Component {
   }
 }
 
-const s = props => ({
+const s = (props) => ({
   handlerI: {
     height: 20,
     width: 20,

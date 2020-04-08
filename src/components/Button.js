@@ -12,7 +12,7 @@ import orangeBackground from '../../assets/btn-orange.png';
 
 const { width } = Dimensions.get('window');
 
-const Button = props => {
+const Button = (props) => {
   const {
     onPress,
     disabled,
@@ -28,8 +28,7 @@ const Button = props => {
     <TouchableOpacity
       disabled={disabled}
       onPress={onPress}
-      style={[styles.button, style, { opacity: disabled ? 0.7 : 1 }]}
-    >
+      style={[styles.button, style, { opacity: disabled ? 0.7 : 1 }]}>
       {noBackground ? (
         <View style={[styles.noBackground, backgroundStyle]}>
           {children ? (
@@ -41,8 +40,7 @@ const Button = props => {
       ) : (
         <ImageBackground
           source={backgroundImage}
-          style={[styles.buttonBackground, backgroundStyle]}
-        >
+          style={[styles.buttonBackground, backgroundStyle]}>
           {children ? (
             children
           ) : (

@@ -17,7 +17,7 @@ import warningIcon from '../../assets/warning-icon.png';
 
 const { width, height } = Dimensions.get('window');
 
-const MessageScreen = props => {
+const MessageScreen = (props) => {
   const {
     header,
     title,

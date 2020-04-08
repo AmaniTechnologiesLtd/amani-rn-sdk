@@ -24,7 +24,7 @@ const { width, height } = Dimensions.get('window');
 const eDevletURL =
   'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama';
 
-const EDevlet = props => {
+const EDevlet = (props) => {
   const { onGoBack } = props;
   return (
     <ImageBackground source={mainBackground} style={styles.container}>

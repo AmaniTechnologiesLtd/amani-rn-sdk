@@ -36,7 +36,7 @@ import seperatorIcon from '../assets/seperator-icon.png';
 
 const { width, height } = Dimensions.get('window');
 
-const MainScreen = props => {
+const MainScreen = (props) => {
   const { onError, onExit, server, authData, customerData } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
@@ -77,7 +77,7 @@ const MainScreen = props => {
     !permissions.camera &&
     !permissions.location
   ) {
-    (async function() {
+    (async function () {
       setPermission({
         camera: await PermissionsAndroid.request('android.permission.CAMERA'),
         location: await PermissionsAndroid.request(
@@ -89,9 +89,9 @@ const MainScreen = props => {
 
   const goBack = async () => {
     const callbackData = [];
-    documents.forEach(element => {
+    documents.forEach((element) => {
       callbackData.push({
-        [element.id]: documents.find(document => document.id === element.id)
+        [element.id]: documents.find((document) => document.id === element.id)
           .status,
       });
     });
@@ -125,14 +125,16 @@ const MainScreen = props => {
 
     // Set location for later use
     if (permissions.location === 'granted' || Platform.OS === 'ios') {
-      Geolocation.getCurrentPosition(position => setLocation(position.coords));
+      Geolocation.getCurrentPosition((position) =>
+        setLocation(position.coords),
+      );
     }
   }, [permissions]);
 
   useEffect(() => {
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
-      (async function() {
+      (async function () {
         try {
           const loginReponse = await api.login({
             email: authData.appKey,
@@ -161,8 +163,8 @@ const MainScreen = props => {
             });
 
             // Check for missing documents and set statuses for documents
-            documents.map(doc => {
-              const rule = customerResponse.data.rules.find(element =>
+            documents.map((doc) => {
+              const rule = customerResponse.data.rules.find((element) =>
                 element.document_classes.includes(doc.id),
               );
 
@@ -231,7 +233,7 @@ const MainScreen = props => {
       requestData.append('location', JSON.stringify(location));
     }
     if (corners) {
-      corners.forEach(corner =>
+      corners.forEach((corner) =>
         requestData.append('corners[]', JSON.stringify(corner)),
       );
     }
@@ -240,11 +242,11 @@ const MainScreen = props => {
       requestData.append('cropped', true);
     }
 
-    files.forEach(file => requestData.append('files[]', file));
+    files.forEach((file) => requestData.append('files[]', file));
 
     await api
       .sendDocument(requestData)
-      .then(res => {
+      .then((res) => {
         if (res.data.status === 'OK') {
           dispatch({
             type: 'CHANGE_STATUS',
@@ -259,7 +261,7 @@ const MainScreen = props => {
           status: 'PENDING_REVIEW',
         });
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
@@ -268,7 +270,7 @@ const MainScreen = props => {
       });
   };
 
-  const handleError = error => {
+  const handleError = (error) => {
     setMessage({
       ...initialMessage,
       show: true,
@@ -288,7 +290,7 @@ const MainScreen = props => {
   };
 
   const updateCustomerRules = () => {
-    const rules = customer.rules.map(rule => {
+    const rules = customer.rules.map((rule) => {
       if (rule.document_classes.includes(selectedDocument.id)) {
         rule.status = 'PROCESSING';
       }
@@ -298,7 +300,7 @@ const MainScreen = props => {
   };
 
   const skipDocument = () => {
-    const rules = customer.rules.map(rule => {
+    const rules = customer.rules.map((rule) => {
       if (rule.document_classes.includes(selectedDocument.id)) {
         rule.status = 'SKIPPED';
       }
@@ -384,9 +386,9 @@ const MainScreen = props => {
     );
   };
 
-  const handleDocumentClick = document => {
+  const handleDocumentClick = (document) => {
     // First check if have any rejection message from studio
-    const rule = customer.rules.find(step =>
+    const rule = customer.rules.find((step) =>
       step.document_classes.includes(document.id),
     );
 
@@ -406,7 +408,7 @@ const MainScreen = props => {
     goToDocument(document);
   };
 
-  const goToDocument = document => {
+  const goToDocument = (document) => {
     setMessage({
       ...initialMessage,
     });
@@ -418,21 +420,21 @@ const MainScreen = props => {
     }
   };
 
-  const findIncompleteDocument = currentCustomer => {
+  const findIncompleteDocument = (currentCustomer) => {
     // If not first time customer do not go to document automatically
     if (currentCustomer.status !== 'Created') {
       clearSelectedDocument();
       return;
     }
 
-    const incompleteRules = currentCustomer.rules.filter(doc =>
+    const incompleteRules = currentCustomer.rules.filter((doc) =>
       ['NOT_UPLOADED'].includes(doc.status),
     );
 
     clearSelectedDocument();
 
     if (incompleteRules.length) {
-      const startDoc = documents.find(doc =>
+      const startDoc = documents.find((doc) =>
         incompleteRules[0].document_classes.includes(doc.id),
       );
 
@@ -465,7 +467,7 @@ const MainScreen = props => {
   }
 
   if (
-    documents.every(document =>
+    documents.every((document) =>
       ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
     )
   ) {
@@ -492,8 +494,8 @@ const MainScreen = props => {
         customer={customer}
         document={selectedDocument}
         setSelectedDocumentVersion={setSelectedDocumentVersion}
-        onCapture={capture => setFiles([...files, capture])}
-        onManualCropCorners={cropData => setCorners([...corners, cropData])}
+        onCapture={(capture) => setFiles([...files, capture])}
+        onManualCropCorners={(cropData) => setCorners([...corners, cropData])}
         onStepsFinished={setIsStepsFinished}
         onClearDocument={clearSelectedDocument}
         onSkipDocument={skipDocument}
@@ -506,8 +508,8 @@ const MainScreen = props => {
       <ContractScreen
         onContractDecline={() => setShowContract(false)}
         location={location}
-        currentDocument={documents.find(document => document.id === 'SG')}
-        addressDocument={documents.find(document => document.id === 'UB')}
+        currentDocument={documents.find((document) => document.id === 'SG')}
+        addressDocument={documents.find((document) => document.id === 'UB')}
         dispatch={dispatch}
         customer={customer}
       />
@@ -525,8 +527,7 @@ const MainScreen = props => {
               <TouchableOpacity
                 disabled={checkIsNextStepDisabled(document, index)}
                 style={styles.moduleButton}
-                onPress={() => handleDocumentClick(document)}
-              >
+                onPress={() => handleDocumentClick(document)}>
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>
                     <Text
@@ -535,8 +536,7 @@ const MainScreen = props => {
                         ['APPROVED'].includes(document.status)
                           ? styles.moduleTitleApproved
                           : {},
-                      ]}
-                    >
+                      ]}>
                       {document.messages[document.status]}
                     </Text>
                   </View>

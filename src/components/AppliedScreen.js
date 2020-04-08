@@ -23,7 +23,7 @@ import successIcon from '../../assets/success-icon.png';
 
 const { height } = Dimensions.get('window');
 
-const handleSendButton = formData => {
+const handleSendButton = (formData) => {
   console.log(formData);
 };
 
@@ -41,8 +41,7 @@ const SendEmailContent = () => {
           style={[
             styles.popupHeaderWhite,
             { textAlign: 'center', marginVertical: 20 },
-          ]}
-        >
+          ]}>
           Sözleşmenin bir kopyası e-posta adresinize gönderildi
         </Text>
       </View>
@@ -56,7 +55,7 @@ const SendEmailContent = () => {
       </Text>
       <TextInput
         style={styles.textInput}
-        onChangeText={val => setFormData({ ...formData, email: val })}
+        onChangeText={(val) => setFormData({ ...formData, email: val })}
         placeholder="E-posta adresi"
         placeholderTextColor="#CAE0F5"
         autoCompleteType="email"
@@ -83,7 +82,7 @@ const SendEmailContent = () => {
   );
 };
 
-const dateParse = date => {
+const dateParse = (date) => {
   const expiration_date = new Date(date);
   return expiration_date.toLocaleDateString('tr-TR');
 };
@@ -122,7 +121,7 @@ const CargoContent = ({ customer }) => {
   );
 };
 
-const AppliedScreen = props => {
+const AppliedScreen = (props) => {
   const { customer, goBack } = props;
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});

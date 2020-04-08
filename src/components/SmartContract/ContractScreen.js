@@ -30,7 +30,7 @@ import cities from '../../store/cities.json';
 
 const { height } = Dimensions.get('window');
 
-const ContractScreen = props => {
+const ContractScreen = (props) => {
   const {
     onContractDecline,
     currentDocument,
@@ -52,10 +52,10 @@ const ContractScreen = props => {
     address: null,
   });
 
-  const capitalizeFirstLetters = string => {
+  const capitalizeFirstLetters = (string) => {
     return string
       .split(' ')
-      .map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
       .join(' ');
   };
 
@@ -118,7 +118,7 @@ const ContractScreen = props => {
     setShowContract(true);
   };
 
-  const charsLeft = max => {
+  const charsLeft = (max) => {
     return formData.address ? max - formData.address.length : max;
   };
 
@@ -126,8 +126,7 @@ const ContractScreen = props => {
     <TouchableOpacity
       disabled={disabled}
       onPress={showModal}
-      style={{ width: '100%' }}
-    >
+      style={{ width: '100%' }}>
       <View style={styles.contactFormInput}>
         <Text style={{ color: formData.city ? 'white' : '#CAE0F5' }}>
           {formData.city || 'İl'}
@@ -140,14 +139,12 @@ const ContractScreen = props => {
     <TouchableOpacity
       style={{ width: '100%' }}
       disabled={disabled}
-      onPress={showModal}
-    >
+      onPress={showModal}>
       <View style={styles.contactFormInput}>
         <Text
           style={{
             color: formData.district ? 'white' : '#CAE0F5',
-          }}
-        >
+          }}>
           {formData.district || 'İlçe'}
         </Text>
       </View>
@@ -171,7 +168,7 @@ const ContractScreen = props => {
   );
   */
 
-  const updateSize = newHeight => {
+  const updateSize = (newHeight) => {
     setAddressHeight(newHeight);
   };
 
@@ -210,7 +207,7 @@ const ContractScreen = props => {
             <View style={styles.contactFormView}>
               <TextInput
                 style={styles.contactFormInput}
-                onChangeText={val => setFormData({ ...formData, job: val })}
+                onChangeText={(val) => setFormData({ ...formData, job: val })}
                 placeholder="Meslek"
                 placeholderTextColor="#CAE0F5"
                 value={formData.job}
@@ -219,7 +216,7 @@ const ContractScreen = props => {
             <View style={styles.contactFormView}>
               <PickerModal
                 renderSelectView={selectCityView}
-                onSelected={val =>
+                onSelected={(val) =>
                   setFormData({ ...formData, city: val.Name, district: null })
                 }
                 onBackButtonPressed={() => {}}
@@ -236,14 +233,16 @@ const ContractScreen = props => {
               <PickerModal
                 disabled={!formData.city}
                 renderSelectView={selectProvinceView}
-                onSelected={val =>
+                onSelected={(val) =>
                   setFormData({ ...formData, district: val.Name })
                 }
                 onBackButtonPressed={() => {}}
                 items={
-                  cities.find(city => city.Name === (formData.city || 'Adana'))
+                  cities.find(
+                    (city) => city.Name === (formData.city || 'Adana'),
+                  )
                     ? cities.find(
-                        city => city.Name === (formData.city || 'Adana'),
+                        (city) => city.Name === (formData.city || 'Adana'),
                       ).District
                     : []
                 }
@@ -259,8 +258,10 @@ const ContractScreen = props => {
             <View style={styles.contactFormView}>
               <TextInput
                 style={[styles.multilineFormInput, { height: addressHeight }]}
-                onChangeText={val => setFormData({ ...formData, address: val })}
-                onContentSizeChange={e =>
+                onChangeText={(val) =>
+                  setFormData({ ...formData, address: val })
+                }
+                onContentSizeChange={(e) =>
                   updateSize(e.nativeEvent.contentSize.height)
                 }
                 placeholder="Açık Adres"
@@ -274,8 +275,7 @@ const ContractScreen = props => {
 
             <ImageBackground
               source={blueBackground}
-              style={styles.addresNoteBackground}
-            >
+              style={styles.addresNoteBackground}>
               <Text style={styles.addressNote}>
                 Adres bilgisini yüklediğin belgeden aldık. Eksik veya yanlış
                 kısımlar varsa tıklayıp düzenleyebilirsin.
@@ -312,8 +312,7 @@ const ContractScreen = props => {
             tintColors={{ true: 'white', false: 'white' }}
           />
           <TouchableOpacity
-            onPress={() => setIsContractApproved(!isContractApproved)}
-          >
+            onPress={() => setIsContractApproved(!isContractApproved)}>
             <Text style={styles.approveButtonText}>
               Sözleşmeyi okudum, anladım ve doğruluğunu teyit ediyorum
             </Text>

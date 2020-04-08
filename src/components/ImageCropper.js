@@ -10,7 +10,7 @@ import Button from 'amani-rn-sdk/src/components/Button';
 import PoweredBy from './PoweredBy';
 import backArrow from '../../assets/back-arrow.png';
 
-const ImageCropper = props => {
+const ImageCropper = (props) => {
   const { image, title, onCancel } = props;
   const ratioX = image.width / width;
   const ratioY = image.height / height;
@@ -47,7 +47,7 @@ const ImageCropper = props => {
       />
 
       <CustomCrop
-        ref={ref => (customCrop = ref)}
+        ref={(ref) => (customCrop = ref)}
         style={styles.customCrop}
         rectangleCoordinates={rectangleCoordinates}
         initialImage={image.uri}

@@ -19,7 +19,7 @@ import backArrow from '../../assets/back-arrow.png';
 
 const { width, height } = Dimensions.get('window');
 
-const DocumentConfirmation = props => {
+const DocumentConfirmation = (props) => {
   const {
     customer,
     imageUrl,
@@ -43,7 +43,7 @@ const DocumentConfirmation = props => {
 
       const requestData = new FormData();
       if (corners) {
-        corners.forEach(corner =>
+        corners.forEach((corner) =>
           requestData.append('corners[]', JSON.stringify(corner)),
         );
       }
@@ -53,7 +53,7 @@ const DocumentConfirmation = props => {
 
       api
         .cropImage(requestData)
-        .then(res => {
+        .then((res) => {
           setImgSrc(res.data.image);
           if (res.data.glare) {
             setErrorMessage(
@@ -69,7 +69,7 @@ const DocumentConfirmation = props => {
           }
           if (!res.data.cropped) {
             setErrorMessage(
-              'Belgenizi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar çekin.',
+              'Belgeyi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar deneyin.',
             );
             return;
           }

@@ -15,7 +15,7 @@ import closeIcon from '../../assets/close-icon.png';
 
 const { width } = Dimensions.get('window');
 
-const Popup = props => {
+const Popup = (props) => {
   const { onClose, children } = props;
 
   useEffect(() => {

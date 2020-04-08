@@ -29,7 +29,7 @@ import { backdropColor } from '../constants';
 
 const { width, height } = Dimensions.get('window');
 
-const CaptureDocument = props => {
+const CaptureDocument = (props) => {
   const {
     document,
     onCapture,
@@ -97,7 +97,7 @@ const CaptureDocument = props => {
         width: 1200,
         fixOrientation: true,
       })
-      .then(async data => {
+      .then(async (data) => {
         if (document.versions[versionGroup][groupIndex].crop) {
           setImageCrop(data);
         } else {
@@ -125,14 +125,14 @@ const CaptureDocument = props => {
     DocumentPicker.pick({
       type: [DocumentPicker.types.pdf],
     })
-      .then(file => {
-        RNFS.readFile(file.uri, 'base64').then(source => {
+      .then((file) => {
+        RNFS.readFile(file.uri, 'base64').then((source) => {
           onCapture(`data:application/pdf;base64,${source}`);
           calculateNextStep();
           setIsProcessStarted(false);
         });
       })
-      .catch(error => setIsProcessStarted(false));
+      .catch((error) => setIsProcessStarted(false));
   };
 
   const calculateNextStep = () => {
@@ -147,14 +147,14 @@ const CaptureDocument = props => {
     onStepsFinished(true);
   };
 
-  const handleDocumentRetake = forced => {
+  const handleDocumentRetake = (forced) => {
     if (forced) {
       setTrialCount(trialCount + 1);
     }
     setShowDocumentConfirmation(false);
   };
 
-  const handleAutoCrop = async data => {
+  const handleAutoCrop = async (data) => {
     const ratio = width / data.width;
     const cropData = {
       offset: {
@@ -171,12 +171,12 @@ const CaptureDocument = props => {
     };
 
     const src = await ImageEditor.cropImage(data.uri, cropData).then(
-      async path => await RNFS.readFile(path, 'base64'),
+      async (path) => await RNFS.readFile(path, 'base64'),
     );
     return `data:image/jpeg;base64,${src}`;
   };
 
-  const handleManualCrop = async data => {
+  const handleManualCrop = async (data) => {
     setIsProcessStarted(true);
     setCapturedImageUrl(data.image);
     onCapture(
@@ -222,7 +222,7 @@ const CaptureDocument = props => {
         corners={corners}
         imageUrl={capturedImageUrl}
         step={currentStep}
-        continueProcess={image => {
+        continueProcess={(image) => {
           onCapture(image);
           calculateNextStep();
         }}
@@ -258,7 +258,7 @@ const CaptureDocument = props => {
           setImageCrop(false);
           return true; // Added for react navigation not to intervene
         }}
-        onCropped={data => handleManualCrop(data)}
+        onCropped={(data) => handleManualCrop(data)}
       />
     );
   }
@@ -270,8 +270,7 @@ const CaptureDocument = props => {
         style={styles.preview}
         type={cameraType}
         captureAudio={false}
-        ratio="16:9"
-      >
+        ratio="16:9">
         {buttonDisabled ? (
           <Loading />
         ) : (
@@ -284,8 +283,7 @@ const CaptureDocument = props => {
                   document.id === 'SE'
                     ? backdropColor
                     : '#263B5B',
-              }}
-            >
+              }}>
               <TopBar
                 style={{ paddingHorizontal: 20 }}
                 onLeftButtonPressed={goBack}
@@ -305,8 +303,7 @@ const CaptureDocument = props => {
                       : 'transparent',
                   maxHeight: document.id === 'SE' ? height * 0.005 : 'auto',
                 },
-              ]}
-            >
+              ]}>
               {document.steps.length > 1 && (
                 <Text style={styles.topText}>
                   {document.steps[currentStep].title}
@@ -318,7 +315,7 @@ const CaptureDocument = props => {
               <View style={{ flexDirection: 'row' }}>
                 <View style={styles.backDrop} />
                 <View
-                  onLayout={event => {
+                  onLayout={(event) => {
                     setPreviewArea({
                       previewAreaWidth: width * 0.85,
                       previewAreaHeight:
@@ -359,8 +356,7 @@ const CaptureDocument = props => {
                   document.id === 'SE'
                     ? backdropColor
                     : 'transparent',
-              }}
-            >
+              }}>
               <Text style={styles.bottomText}>
                 {document.steps[currentStep].description}
               </Text>
@@ -380,8 +376,7 @@ const CaptureDocument = props => {
                       ? 1
                       : 0,
                 },
-              ]}
-            >
+              ]}>
               {document.versions[versionGroup][groupIndex].edevlet && (
                 <Button
                   text="E-Devletten al"
@@ -398,8 +393,7 @@ const CaptureDocument = props => {
               <TouchableOpacity
                 style={styles.takePhotoButtonCircle}
                 disabled={buttonDisabled}
-                onPress={takePicture}
-              >
+                onPress={takePicture}>
                 <View
                   style={[
                     styles.takePhotoButton,

@@ -10,7 +10,7 @@ import MessageScreen from '../MessageScreen';
 import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
 
-const SignatureDraw = props => {
+const SignatureDraw = (props) => {
   const {
     document,
     goBackToMainScreen,
@@ -51,7 +51,7 @@ const SignatureDraw = props => {
     }
   };
 
-  const handleIsSignatureCorrect = res => {
+  const handleIsSignatureCorrect = (res) => {
     if (res.data.status !== 'OK') {
       setNotMatched(true);
       setCurrentStep(0);
@@ -81,11 +81,11 @@ const SignatureDraw = props => {
     requestData.append('type', document.id);
     requestData.append('customer_id', customer.id);
     requestData.append('device_data', JSON.stringify(deviceData));
-    signature.forEach(sign => requestData.append('files[]', sign));
+    signature.forEach((sign) => requestData.append('files[]', sign));
 
     await api
       .sendDocument(requestData)
-      .then(async res => {
+      .then(async (res) => {
         await dispatch({
           type: 'CHANGE_STATUS',
           document_id: document.id,
@@ -93,7 +93,7 @@ const SignatureDraw = props => {
         });
         handleIsSignatureCorrect(res);
       })
-      .catch(async error => {
+      .catch(async (error) => {
         await dispatch({
           type: 'CHANGE_STATUS',
           document_id: document.id,
@@ -129,7 +129,7 @@ const SignatureDraw = props => {
     await api.createCustomer(customerData);
   };
 
-  const handleSignature = async drawnSignature => {
+  const handleSignature = async (drawnSignature) => {
     setIsProcessStarted(true);
     setSignature([...signature, drawnSignature]);
     calculateNextStep();

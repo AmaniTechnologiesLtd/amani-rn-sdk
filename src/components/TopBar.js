@@ -11,7 +11,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const Loading = props => {
+const Loading = (props) => {
   const {
     title,
     style,
@@ -27,8 +27,7 @@ const Loading = props => {
         <TouchableOpacity
           style={[styles.topBarLeft, styles.topBarIcon]}
           onPress={onLeftButtonPressed}
-          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-        >
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
           <Image
             style={{ width: '100%', height: '100%' }}
             resizeMode="contain"
@@ -43,8 +42,7 @@ const Loading = props => {
         <TouchableOpacity
           style={[styles.topBarRight, styles.topBarIcon]}
           onPress={onLeftButtonPressed}
-          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}
-        >
+          hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
           <Image
             style={{ width: '100%', height: '100%' }}
             resizeMode="contain"

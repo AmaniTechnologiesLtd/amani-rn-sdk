@@ -33,7 +33,7 @@ class SignatureView extends Component {
     this.source = { html };
   }
 
-  getSignature = e => {
+  getSignature = (e) => {
     const { onOK, onEmpty } = this.props;
     if (e.nativeEvent.data === 'EMPTY') {
       onEmpty();
@@ -42,7 +42,7 @@ class SignatureView extends Component {
     }
   };
 
-  renderError = e => {
+  renderError = (e) => {
     const { nativeEvent } = e;
     console.warn('WebView error: ', nativeEvent);
   };

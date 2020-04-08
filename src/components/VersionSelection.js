@@ -19,7 +19,7 @@ import TopBar from './TopBar';
 
 const { width, height } = Dimensions.get('window');
 
-const VersionSelection = props => {
+const VersionSelection = (props) => {
   const {
     document,
     versionGroup,
@@ -67,8 +67,7 @@ const VersionSelection = props => {
                   menuMode === 'horizontal'
                     ? styles.horizontalGroupViewContainer
                     : styles.verticalGroupViewContainer
-                }
-              >
+                }>
                 {document.versions[group].map((version, versionKey) => {
                   return (
                     <Button
@@ -88,8 +87,7 @@ const VersionSelection = props => {
                         menuMode === 'horizontal'
                           ? styles.horizontalButtonBackground
                           : styles.verticalButtonBackground
-                      }
-                    >
+                      }>
                       <Text style={styles.versionTitle}>{version.title}</Text>
                       {menuMode !== 'horizontal' && (
                         <Image

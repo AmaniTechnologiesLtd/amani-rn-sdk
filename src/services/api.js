@@ -7,14 +7,14 @@ const servers = {
 };
 
 export default {
-  setBaseUrl: param => (axios.defaults.baseURL = servers[param]),
-  setToken: token =>
+  setBaseUrl: (param) => (axios.defaults.baseURL = servers[param]),
+  setToken: (token) =>
     (axios.defaults.headers.common.Authorization = `TOKEN ${token}`),
-  login: param => axios.post('user/login/', param),
-  createCustomer: param => axios.post('customer', param),
-  getCustomer: id => axios.get(`customer/detail/${id}`),
-  getContractURL: id => axios.get(`company_forms/2/customer/${id}/file`),
-  cropImage: documentData => axios.post('engine/autocapture', documentData),
-  sendDocument: documentData =>
+  login: (param) => axios.post('user/login/', param),
+  createCustomer: (param) => axios.post('customer', param),
+  getCustomer: (id) => axios.get(`customer/detail/${id}`),
+  getContractURL: (id) => axios.get(`company_forms/2/customer/${id}/file`),
+  cropImage: (documentData) => axios.post('engine/autocapture', documentData),
+  sendDocument: (documentData) =>
     axios.post('recognition/web/upload', documentData),
 };
