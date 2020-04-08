@@ -25,19 +25,19 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 | @react-native-community/image-editor | 2.2.0 |
 | react-native-document-picker | 3.2.4 |
 | react-native-device-info | 5.4.1 |
-| react-native-geolocation-service | 3.1.0 |
+| @react-native-community/geolocation | 2.0.2 |
 | react-native-picker-modal-view | 1.3.1 |
 
 To get all of these by single command run the following command:
 
 ```bash
-yarn add react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info react-native-geolocation-service react-native-picker-modal-view
+yarn add react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation react-native-picker-modal-view
 ```
 
 or
 
 ```bash
-npm install react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info react-native-geolocation-service react-native-picker-modal-view
+npm install react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation react-native-picker-modal-view
 ```
 
 If your React Native version is below the 0.60,  to link all these dependencies to your project, please run command below.
