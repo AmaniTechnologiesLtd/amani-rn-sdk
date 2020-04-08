@@ -12,7 +12,8 @@ import {
   Platform,
   ImageBackground,
 } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+
+import Geolocation from '@react-native-community/geolocation'
 import DeviceInfo from 'react-native-device-info';
 
 // Local files
