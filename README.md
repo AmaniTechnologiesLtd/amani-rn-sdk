@@ -18,11 +18,11 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 
 | Name | Recommended Version |
 | ------ | ------ |
-| react-native-camera | 3.15.1 |
+| react-native-camera | 3.15.0 |
 | react-native-fs | 2.16.2 |
-| react-native-webview | 8.0.3 |
+| react-native-webview | 9.1.1 |
 | react-native-svg | 12.0.3 |
-| @react-native-community/image-editor | 2.2.0 |
+| @react-native-community/image-editor | 2.3.0 |
 | react-native-document-picker | 3.2.4 |
 | react-native-device-info | 5.4.1 |
 | @react-native-community/geolocation | 2.0.2 |

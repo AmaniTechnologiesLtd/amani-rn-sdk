@@ -6,16 +6,18 @@ export const initialDocuments = [
     status: 'NOT_UPLOADED',
     steps: [
       {
-        title: 'Belgenin ön yüzünü fotoğrafını çek',
+        title: 'Kimliğinin ön yüzünü fotoğrafını çek',
         description:
-          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol',
-        confirmationTitle: 'Belgenin Ön Yüzü',
+          'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
+        confirmationTitle: 'Kimliğinin Ön Yüzü',
+        confirmationDescription: 'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
       {
-        title: 'Belgenin arka yüzünü fotoğrafını çek',
+        title: 'Kimliğinin arka yüzünü fotoğrafını çek',
         description:
-          'Kimliğinin tam oturduğundan ve okunaklı olduğundan emin ol',
-        confirmationTitle: 'Belgenin Ön Yüzü',
+          'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
+        confirmationTitle: 'Kimliğinin Ön Yüzü',
+        confirmationDescription: 'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
     ],
     options: ['takePicture'],
@@ -65,6 +67,7 @@ export const initialDocuments = [
       {
         title: '',
         description: 'Lütfen yüzünü işaretli alana yerleştir',
+        confirmationDescription: 'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
       },
     ],
     options: ['takePicture'],
@@ -91,10 +94,7 @@ export const initialDocuments = [
       REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: "Selfie'ni başarıyla yükledin",
-    successDescription:
-      "Biz selfie'ni kontrol ederken lütfen adresini doğrulama adımına geç",
-    nextStepDescription:
-      'Adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
+    nextStepDescription: 'Şimdi adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
   },
   {
     id: 'PA',
@@ -183,7 +183,7 @@ export const initialDocuments = [
     cameraFacing: 'environment',
     versionTitle: 'Belge Tipini Seçin',
     versionDescription:
-      'Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir fatura ya da ikametgah belgeni yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf) olarak yükleyebilirsin.\n\nEğer yanında hiçbir belge yoksabu adımı şimdilik atlayabilir ya da hemen e-devletten ikametgah belgeni pdf olarak indirip yükleyebilirsin.',
+      'Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir fatura ya da ikametgah belgeni yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf) olarak yükleyebilirsin.\n\nEğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da hemen e-devletten ikametgah belgeni pdf olarak indirip yükleyebilirsin.',
     versions: {
       Devlet: [
         {

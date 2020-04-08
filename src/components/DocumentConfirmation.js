@@ -107,7 +107,7 @@ const DocumentConfirmation = (props) => {
         />
 
         <View style={{ flex: 1 }}>
-          <Text style={styles.errorMessageText}>{errorMessage}</Text>
+          <Text style={styles.errorMessageText}>{errorMessage ? errorMessage : document.steps[step].confirmationDescription}</Text>
         </View>
 
         <View style={styles.bottomBar}>
@@ -172,13 +172,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
     fontSize: height * 0.04,
-  },
-  successDescription: {
-    color: 'white',
-    marginVertical: 10,
-    marginHorizontal: 30,
-    fontSize: height * 0.02,
-    textAlign: 'center',
   },
   bottomBar: {
     height: height * 0.07,
