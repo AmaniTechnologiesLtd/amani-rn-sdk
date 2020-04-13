@@ -43,7 +43,7 @@ const Loading = (props) => {
         <Text style={styles.topBarCenter}>{title}</Text>
       )}
 
-      {onRightButtonPressed && rightButtonIcon && (
+      {onRightButtonPressed && rightButtonIcon ? (
         <TouchableOpacity
           style={[styles.topBarRight, styles.topBarIcon]}
           onPress={onRightButtonPressed}
@@ -54,6 +54,8 @@ const Loading = (props) => {
             source={rightButtonIcon}
           />
         </TouchableOpacity>
+      ) : (
+        <View style={styles.topBarIcon} />
       )}
     </View>
   );
