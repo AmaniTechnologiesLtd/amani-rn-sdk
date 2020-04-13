@@ -15,6 +15,7 @@ const Loading = (props) => {
   const {
     title,
     style,
+    middleComponent,
     onLeftButtonPressed,
     leftButtonIcon,
     onRightButtonPressed,
@@ -36,12 +37,16 @@ const Loading = (props) => {
         </TouchableOpacity>
       )}
 
-      <Text style={styles.topBarCenter}>{title}</Text>
+      {middleComponent ? (
+        middleComponent
+      ) : (
+        <Text style={styles.topBarCenter}>{title}</Text>
+      )}
 
-      {onRightButtonPressed && rightButtonIcon ? (
+      {onRightButtonPressed && rightButtonIcon && (
         <TouchableOpacity
           style={[styles.topBarRight, styles.topBarIcon]}
-          onPress={onLeftButtonPressed}
+          onPress={onRightButtonPressed}
           hitSlop={{ top: 25, left: 25, bottom: 25, right: 25 }}>
           <Image
             style={{ width: '100%', height: '100%' }}
@@ -49,8 +54,6 @@ const Loading = (props) => {
             source={rightButtonIcon}
           />
         </TouchableOpacity>
-      ) : (
-        <View style={styles.topBarIcon} />
       )}
     </View>
   );

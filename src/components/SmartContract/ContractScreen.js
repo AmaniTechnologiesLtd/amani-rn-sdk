@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { WebView } from 'react-native-webview';
-import PickerModal from 'react-native-picker-modal-view';
 
 // Local files
 import api from '../../services/api';
@@ -24,10 +23,11 @@ import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
 import Button from 'amani-rn-sdk/src/components/Button';
 import Loading from '../Loading';
+import ModalPicker from '../ModalPicker';
 import { content } from './View/html';
 import SignatureDraw from '../SignatureDraw/SignatureDraw';
 import cities from '../../store/cities.json';
-
+import { trCompare, capitalizeFirstLetters } from '../../helpers';
 const { height } = Dimensions.get('window');
 
 const ContractScreen = (props) => {
@@ -44,7 +44,8 @@ const ContractScreen = (props) => {
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
   const [addressHeight, setAddressHeight] = useState(50);
-
+  const [otherJob, setOtherJob] = useState(null);
+  const [showMessage, setShowMessage] = useState(false);
   const [formData, setFormData] = useState({
     job: null,
     city: null,
@@ -52,11 +53,29 @@ const ContractScreen = (props) => {
     address: null,
   });
 
-  const capitalizeFirstLetters = (string) => {
-    return string
-      .split(' ')
-      .map((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
-      .join(' ');
+  const jobList = [
+    { name: 'Öğrenci' },
+    { name: 'Ev Hanımı' },
+    { name: 'Memur' },
+    { name: 'Serbest Çalışan' },
+    { name: 'İşsiz' },
+    { name: 'Diğer' },
+  ];
+
+  const sortCities = () => {
+    return cities.sort((a, b) => {
+      const topCities = ['İstanbul', 'Ankara', 'İzmir'];
+
+      if (topCities.includes(a.name) && topCities.includes(b.name)) {
+        return topCities.indexOf(a.name) - topCities.indexOf(b.name);
+      } else if (topCities.includes(a.name)) {
+        return -1;
+      } else if (topCities.includes(b.name)) {
+        return 1;
+      } else {
+        return trCompare(a.name, b.name);
+      }
+    });
   };
 
   useEffect(() => {
@@ -80,6 +99,13 @@ const ContractScreen = (props) => {
       const response = await api.getCustomer(customer.id);
 
       if (response.data.address) {
+        if (
+          response.data.address.address &&
+          response.data.address.address.length > 0
+        ) {
+          setShowMessage(true);
+        }
+
         setFormData({
           ...formData,
           city: response.data.address.city
@@ -100,8 +126,13 @@ const ContractScreen = (props) => {
   };
 
   const handleFormSubmit = async () => {
-    for (const key in formData) {
-      if (formData[key] === null) {
+    let data = { ...formData };
+    if (data.job === 'Diğer') {
+      data.job = otherJob;
+    }
+
+    for (const key in data) {
+      if (data[key] === null) {
         Alert.alert(
           '',
           'Devam etmeden önce formu doldurmalısınız.',
@@ -115,12 +146,26 @@ const ContractScreen = (props) => {
         return;
       }
     }
+    setFormData(data);
     setShowContract(true);
   };
 
   const charsLeft = (max) => {
     return formData.address ? max - formData.address.length : max;
   };
+
+  const selectJobView = (disabled, selected, showModal) => (
+    <TouchableOpacity
+      disabled={disabled}
+      onPress={showModal}
+      style={{ width: '100%' }}>
+      <View style={styles.contactFormInput}>
+        <Text style={{ color: formData.job ? 'white' : '#CAE0F5' }}>
+          {formData.job || 'Meslek'}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   const selectCityView = (disabled, selected, showModal) => (
     <TouchableOpacity
@@ -150,23 +195,6 @@ const ContractScreen = (props) => {
       </View>
     </TouchableOpacity>
   );
-
-  /* For changing list item style. Not working properly for now
-  const listItem = (selected, item) => (
-    <View style={{ backgroundColor: '#263B5B' }}>
-      <View
-        style={{
-          marginHorizontal: 10,
-          paddingVertical: 10,
-          borderBottomWidth: 0.5,
-          borderColor: '#ffffff',
-        }}
-      >
-        <Text style={{ color: 'white' }}>{item.Name}</Text>
-      </View>
-    </View>
-  );
-  */
 
   const updateSize = (newHeight) => {
     setAddressHeight(newHeight);
@@ -203,58 +231,70 @@ const ContractScreen = (props) => {
           <Text style={styles.contactFormTitle}>
             Sözleşmeni hazırlayabilmemiz için lütfen gerekli alanları doldur
           </Text>
+
           <View>
             <View style={styles.contactFormView}>
-              <TextInput
-                style={styles.contactFormInput}
-                onChangeText={(val) => setFormData({ ...formData, job: val })}
-                placeholder="Meslek"
-                placeholderTextColor="#CAE0F5"
-                value={formData.job}
+              <ModalPicker
+                selectView={selectJobView}
+                items={jobList}
+                onSelected={(val) => {
+                  setFormData({
+                    ...formData,
+                    job: (val && val.name) || null,
+                  });
+                  setOtherJob(null);
+                }}
+              />
+
+              {formData.job === 'Diğer' && (
+                <TextInput
+                  style={[
+                    styles.contactFormInput,
+                    { color: otherJob ? 'white' : '#CAE0F5', marginTop: 10 },
+                  ]}
+                  onChangeText={setOtherJob}
+                  placeholder="Mesleğinizi yazın"
+                  placeholderTextColor="#CAE0F5"
+                />
+              )}
+            </View>
+
+            <View style={styles.contactFormView}>
+              <ModalPicker
+                selectView={selectCityView}
+                items={sortCities(cities)}
+                onSelected={(val) => {
+                  setFormData({
+                    ...formData,
+                    city: (val && val.name) || null,
+                    district: null,
+                  });
+                }}
               />
             </View>
+
             <View style={styles.contactFormView}>
-              <PickerModal
-                renderSelectView={selectCityView}
-                onSelected={(val) =>
-                  setFormData({ ...formData, city: val.Name, district: null })
-                }
-                onBackButtonPressed={() => {}}
-                items={cities}
-                sortingLanguage={'tr'}
-                showToTopButton={true}
-                showAlphabeticalIndex={false}
-                autoGenerateAlphabeticalIndex={true}
-                searchPlaceholderText={'Ara...'}
-                autoSort={true}
-              />
-            </View>
-            <View style={styles.contactFormView}>
-              <PickerModal
+              <ModalPicker
                 disabled={!formData.city}
-                renderSelectView={selectProvinceView}
-                onSelected={(val) =>
-                  setFormData({ ...formData, district: val.Name })
-                }
-                onBackButtonPressed={() => {}}
+                selectView={selectProvinceView}
                 items={
                   cities.find(
-                    (city) => city.Name === (formData.city || 'Adana'),
+                    (city) => city.name === (formData.city || 'Adana'),
                   )
                     ? cities.find(
-                        (city) => city.Name === (formData.city || 'Adana'),
-                      ).District
+                        (city) => city.name === (formData.city || 'Adana'),
+                      ).district
                     : []
                 }
-                sortingLanguage={'tr'}
-                showToTopButton={true}
-                showAlphabeticalIndex={false}
-                autoGenerateAlphabeticalIndex={true}
-                searchPlaceholderText={'Ara...'}
-                autoSort={true}
-                style={{ backgroundColor: '#263B5B' }}
+                onSelected={(val) =>
+                  setFormData({
+                    ...formData,
+                    district: (val && val.name) || null,
+                  })
+                }
               />
             </View>
+
             <View style={styles.contactFormView}>
               <TextInput
                 style={[styles.multilineFormInput, { height: addressHeight }]}
@@ -273,14 +313,16 @@ const ContractScreen = (props) => {
               <Text style={styles.charCount}>{charsLeft(150)} / 150</Text>
             </View>
 
-            <ImageBackground
-              source={blueBackground}
-              style={styles.addresNoteBackground}>
-              <Text style={styles.addressNote}>
-                Adres bilgisini yüklediğin belgeden aldık. Eksik veya yanlış
-                kısımlar varsa tıklayıp düzenleyebilirsin.
-              </Text>
-            </ImageBackground>
+            {showMessage && (
+              <ImageBackground
+                source={blueBackground}
+                style={styles.addresNoteBackground}>
+                <Text style={styles.addressNote}>
+                  Adres bilgisini yüklediğin belgeden aldık. Eksik veya yanlış
+                  kısımlar varsa tıklayıp düzenleyebilirsin.
+                </Text>
+              </ImageBackground>
+            )}
 
             <Button
               onPress={handleFormSubmit}
