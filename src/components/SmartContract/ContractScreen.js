@@ -222,7 +222,6 @@ const ContractScreen = (props) => {
     return (
       <ImageBackground source={mainBackground} style={styles.container}>
         <TopBar
-          style={{ paddingHorizontal: 20, paddingTop: 40, paddingBottom: 30 }}
           onLeftButtonPressed={onContractDecline}
           leftButtonIcon={backArrow}
           title={currentDocument.title}
@@ -237,6 +236,8 @@ const ContractScreen = (props) => {
               <ModalPicker
                 selectView={selectJobView}
                 items={jobList}
+                title="Meslek Seç"
+                searchable={false}
                 onSelected={(val) => {
                   setFormData({
                     ...formData,
@@ -263,13 +264,14 @@ const ContractScreen = (props) => {
               <ModalPicker
                 selectView={selectCityView}
                 items={sortCities(cities)}
-                onSelected={(val) => {
+                title="İl Seç"
+                onSelected={(val) =>
                   setFormData({
                     ...formData,
                     city: (val && val.name) || null,
                     district: null,
-                  });
-                }}
+                  })
+                }
               />
             </View>
 
@@ -277,6 +279,7 @@ const ContractScreen = (props) => {
               <ModalPicker
                 disabled={!formData.city}
                 selectView={selectProvinceView}
+                title="İlçe Seç"
                 items={
                   cities.find(
                     (city) => city.name === (formData.city || 'Adana'),

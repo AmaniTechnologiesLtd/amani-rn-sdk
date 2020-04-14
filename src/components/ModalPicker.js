@@ -4,6 +4,7 @@ import {
   ScrollView,
   Text,
   StyleSheet,
+  Image,
   ImageBackground,
   TouchableOpacity,
   BackHandler,
@@ -15,6 +16,9 @@ import { strNormalize } from '../helpers';
 import TopBar from 'amani-rn-sdk/src/components/TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
+import searchIcon from '../../assets/search-icon.png';
+import itemBackground from '../../assets/select-bg.png';
+import forwardArrrow from '../../assets/forward-arrow.png';
 
 const ModalPicker = (props) => {
   const {
@@ -25,6 +29,8 @@ const ModalPicker = (props) => {
     disabled,
     selected,
     animation,
+    title,
+    searchable,
   } = props;
 
   const [show, setShow] = useState(selected);
@@ -57,15 +63,6 @@ const ModalPicker = (props) => {
     }
   };
 
-  const topbarMiddle = (
-    <TextInput
-      style={styles.searchInput}
-      onChangeText={(value) => setFilter(strNormalize(value.toLowerCase('tr')))}
-      placeholder="Ara"
-      placeholderTextColor="#CAE0F5"
-    />
-  );
-
   return (
     <Fragment>
       <Modal
@@ -80,8 +77,27 @@ const ModalPicker = (props) => {
             onLeftButtonPressed={closeModal}
             leftButtonIcon={backArrow}
             style={styles.topbar}
-            middleComponent={topbarMiddle}
+            title={title}
           />
+
+          {searchable && (
+            <View style={styles.searchArea}>
+              <TextInput
+                style={styles.searchInput}
+                onChangeText={(value) =>
+                  setFilter(strNormalize(value.toLowerCase('tr')))
+                }
+                placeholder="Ara"
+                placeholderTextColor="#CAE0F5"
+              />
+              <Image
+                resizeMode="contain"
+                style={styles.searchIcon}
+                source={searchIcon}
+              />
+            </View>
+          )}
+
           <ScrollView>
             {items
               .filter((item) => {
@@ -89,13 +105,16 @@ const ModalPicker = (props) => {
               })
               .map((item) => {
                 return (
-                  <View style={styles.item} key={item.name}>
-                    <TouchableOpacity
-                      style={styles.itemTouch}
-                      onPress={() => selectItem(item)}>
+                  <TouchableOpacity
+                    key={item.name}
+                    onPress={() => selectItem(item)}>
+                    <ImageBackground
+                      style={styles.item}
+                      source={itemBackground}>
                       <Text style={styles.itemText}>{item.name}</Text>
-                    </TouchableOpacity>
-                  </View>
+                      <Image source={forwardArrrow} style={styles.itemArrow} />
+                    </ImageBackground>
+                  </TouchableOpacity>
                 );
               })}
           </ScrollView>
@@ -113,6 +132,7 @@ ModalPicker.defaultProps = {
   animation: 'slide',
   items: [],
   selected: false,
+  searchable: true,
   onClose: () => {
     return null;
   },
@@ -124,32 +144,48 @@ ModalPicker.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
   },
   topbar: {
-    paddingVertical: 40,
+    paddingVertical: 20,
     paddingHorizontal: 20,
+    backgroundColor: 'red',
+    marginBottom: 10,
   },
   item: {
     marginHorizontal: 20,
-    borderColor: 'rgba(255, 255, 255, .3)',
-    borderBottomWidth: 2,
-  },
-  itemTouch: {
-    paddingVertical: 15,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    overflow: 'hidden',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    flexDirection: 'row',
   },
   itemText: {
     color: '#ffffff',
+    paddingVertical: 15,
+  },
+  itemArrow: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+  },
+  searchArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginBottom: 10,
+    borderBottomWidth: 2,
+    borderColor: 'rgba(255, 255, 255, .3)',
+    paddingBottom: 5,
   },
   searchInput: {
     color: '#ffffff',
-    marginLeft: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, .3)',
     flex: 1,
-    borderRadius: 10,
-    padding: 10,
-    paddingVertical: 5,
+    paddingVertical: 0,
+  },
+  searchIcon: {
+    width: 30,
+    height: 30,
   },
 });

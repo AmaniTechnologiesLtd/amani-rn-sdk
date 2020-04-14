@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   withBackground: {
     paddingHorizontal: 20,
     paddingTop: 40,
-    paddingBottom: 30,
+    paddingBottom: 10,
   },
   topBarIcon: {
     width: width * 0.055,

@@ -63,7 +63,7 @@ export const initialDocuments = [
   },
   {
     id: 'SE',
-    title: 'Selfie',
+    title: 'Selfie Çek',
     status: 'NOT_UPLOADED',
     steps: [
       {
