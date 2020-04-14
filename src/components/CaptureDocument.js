@@ -73,6 +73,8 @@ const CaptureDocument = (props) => {
 
   const goBack = () => {
     if (checkForVersions() && !showVersionSelection) {
+      setTrialCount(1);
+      setCurrentStep(0);
       setShowVersionSelection(true);
     } else {
       onClearDocument();
@@ -277,15 +279,13 @@ const CaptureDocument = (props) => {
           <>
             <SafeAreaView
               style={{
-                paddingTop: 30,
                 backgroundColor:
                   document.versions[versionGroup][groupIndex].aspectRatio ||
                   document.id === 'SE'
                     ? backdropColor
-                    : '#263B5B',
+                    : 'transparent',
               }}>
               <TopBar
-                style={{ paddingHorizontal: 20 }}
                 onLeftButtonPressed={goBack}
                 leftButtonIcon={backArrow}
                 title={document.versions[versionGroup][groupIndex].title}
@@ -476,7 +476,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 10,
+    paddingHorizontal: 20,
+    textAlign: 'center',
   },
   bottomArea: {
     flex: 1,

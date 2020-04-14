@@ -26,11 +26,6 @@ const SignatureDraw = (props) => {
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', async () => {
-      await dispatch({
-        type: 'CHANGE_STATUS',
-        document_id: document.id,
-        status: 'PENDING_REVIEW',
-      });
       goBack();
       return true;
     });
@@ -51,14 +46,28 @@ const SignatureDraw = (props) => {
     }
   };
 
-  const handleIsSignatureCorrect = (res) => {
+  const handleIsSignatureCorrect = async (res) => {
     if (res.data.status !== 'OK') {
       setNotMatched(true);
       setCurrentStep(0);
       setSignature([]);
       setIsProcessStarted(false);
+
+      await dispatch({
+        type: 'CHANGE_STATUS',
+        document_id: document.id,
+        status: 'REJECTED',
+      });
+
       return;
     }
+
+    await dispatch({
+      type: 'CHANGE_STATUS',
+      document_id: document.id,
+      status: 'PENDING_REVIEW',
+    });
+
     goBackToMainScreen();
   };
 
@@ -86,19 +95,9 @@ const SignatureDraw = (props) => {
     await api
       .sendDocument(requestData)
       .then(async (res) => {
-        await dispatch({
-          type: 'CHANGE_STATUS',
-          document_id: document.id,
-          status: 'PENDING_REVIEW',
-        });
         handleIsSignatureCorrect(res);
       })
       .catch(async (error) => {
-        await dispatch({
-          type: 'CHANGE_STATUS',
-          document_id: document.id,
-          status: 'PENDING_REVIEW',
-        });
         setCurrentStep(0);
         setSignature([]);
         Alert.alert(
@@ -160,7 +159,6 @@ const SignatureDraw = (props) => {
   return (
     <View style={styles.container}>
       <TopBar
-        style={{ paddingHorizontal: 20, paddingTop: 40 }}
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
         title={document.steps[currentStep].title}
@@ -181,7 +179,6 @@ export default SignatureDraw;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#263B5B',
   },
   topBar: {
     flexDirection: 'row',

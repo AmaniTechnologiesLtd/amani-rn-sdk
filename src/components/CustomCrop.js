@@ -110,13 +110,16 @@ class CustomCrop extends Component {
     return PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (e, gestureState) => {
-        Animated.event([
-          null,
-          {
-            dx: corner.x,
-            dy: corner.y,
-          },
-        ])(e, gestureState);
+        Animated.event(
+          [
+            null,
+            {
+              dx: corner.x,
+              dy: corner.y,
+            },
+          ],
+          { useNativeDriver: false },
+        )(e, gestureState);
 
         this.updateOverlayOnMove();
       },

@@ -49,6 +49,7 @@ const VersionSelection = (props) => {
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
         style={{ paddingHorizontal: 20 }}
+        noBackground
       />
 
       <ScrollView style={styles.childContainer}>

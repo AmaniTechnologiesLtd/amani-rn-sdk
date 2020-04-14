@@ -86,10 +86,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
-    paddingTop: 40,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#263B5B',
   },
   bottomBar: {
     position: 'absolute',

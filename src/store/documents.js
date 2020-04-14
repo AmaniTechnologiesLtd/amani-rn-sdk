@@ -10,14 +10,16 @@ export const initialDocuments = [
         description:
           'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Kimliğinin Ön Yüzü',
-        confirmationDescription: 'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
+        confirmationDescription:
+          'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
       {
         title: 'Kimliğinin arka yüzünü fotoğrafını çek',
         description:
           'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Kimliğinin Ön Yüzü',
-        confirmationDescription: 'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
+        confirmationDescription:
+          'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
     ],
     options: ['takePicture'],
@@ -67,7 +69,8 @@ export const initialDocuments = [
       {
         title: '',
         description: 'Lütfen yüzünü işaretli alana yerleştir',
-        confirmationDescription: 'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
+        confirmationDescription:
+          'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
       },
     ],
     options: ['takePicture'],
@@ -94,7 +97,8 @@ export const initialDocuments = [
       REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: "Selfie'ni başarıyla yükledin",
-    nextStepDescription: 'Şimdi adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
+    nextStepDescription:
+      'Şimdi adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
   },
   {
     id: 'PA',
@@ -291,11 +295,11 @@ export const initialDocuments = [
 export const documentsReducer = (state, action) => {
   switch (action.type) {
     case 'FILTER_DOCUMENTS':
-      return state.filter(document =>
+      return state.filter((document) =>
         action.document_types.includes(document.id),
       );
     case 'CHANGE_STATUS':
-      return state.map(document => {
+      return state.map((document) => {
         if (
           action.document_id === document.id ||
           (document.secondary_id &&

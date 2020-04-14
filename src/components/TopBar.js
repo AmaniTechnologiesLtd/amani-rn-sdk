@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Image,
+  ImageBackground,
   StatusBar,
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
 
+import topbarBackground from '../../assets/topbar-bg.png';
+
 const { width, height } = Dimensions.get('window');
 
-const Loading = (props) => {
+const TopBar = (props) => {
   const {
     title,
     style,
@@ -20,9 +23,11 @@ const Loading = (props) => {
     leftButtonIcon,
     onRightButtonPressed,
     rightButtonIcon,
+    noBackground,
   } = props;
-  return (
-    <View style={[styles.container, style]}>
+
+  const topbarContent = (
+    <Fragment>
       <StatusBar translucent backgroundColor="transparent" />
       {onLeftButtonPressed && leftButtonIcon && (
         <TouchableOpacity
@@ -57,11 +62,27 @@ const Loading = (props) => {
       ) : (
         <View style={styles.topBarIcon} />
       )}
-    </View>
+    </Fragment>
+  );
+
+  if (noBackground) {
+    return <View style={[styles.container, style]}>{topbarContent}</View>;
+  }
+
+  return (
+    <ImageBackground
+      source={topbarBackground}
+      style={[styles.container, styles.withBackground, style]}>
+      {topbarContent}
+    </ImageBackground>
   );
 };
 
-export default Loading;
+export default TopBar;
+
+TopBar.defaultProps = {
+  noBackground: false,
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +91,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     width: '100%',
+  },
+  withBackground: {
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 30,
   },
   topBarIcon: {
     width: width * 0.055,

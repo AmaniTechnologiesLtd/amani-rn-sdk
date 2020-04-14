@@ -164,6 +164,7 @@ const AppliedScreen = (props) => {
           onLeftButtonPressed={goBack}
           leftButtonIcon={backArrow}
           style={{ paddingHorizontal: 20 }}
+          noBackground
         />
         <View style={styles.messageContainer}>
           <Image

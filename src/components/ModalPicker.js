@@ -11,6 +11,7 @@ import {
   TextInput,
 } from 'react-native';
 
+import { strNormalize } from '../helpers';
 import TopBar from 'amani-rn-sdk/src/components/TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
@@ -59,7 +60,7 @@ const ModalPicker = (props) => {
   const topbarMiddle = (
     <TextInput
       style={styles.searchInput}
-      onChangeText={setFilter}
+      onChangeText={(value) => setFilter(strNormalize(value.toLowerCase('tr')))}
       placeholder="Ara"
       placeholderTextColor="#CAE0F5"
     />
@@ -83,9 +84,9 @@ const ModalPicker = (props) => {
           />
           <ScrollView>
             {items
-              .filter((item) =>
-                item.name.toLowerCase().includes(filter.toLowerCase()),
-              )
+              .filter((item) => {
+                return strNormalize(item.name).toLowerCase().includes(filter);
+              })
               .map((item) => {
                 return (
                   <View style={styles.item} key={item.name}>
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   topbar: {
-    paddingTop: 40,
+    paddingVertical: 40,
     paddingHorizontal: 20,
   },
   item: {

@@ -222,7 +222,7 @@ const ContractScreen = (props) => {
     return (
       <ImageBackground source={mainBackground} style={styles.container}>
         <TopBar
-          style={{ paddingHorizontal: 20, paddingTop: 40 }}
+          style={{ paddingHorizontal: 20, paddingTop: 40, paddingBottom: 30 }}
           onLeftButtonPressed={onContractDecline}
           leftButtonIcon={backArrow}
           title={currentDocument.title}
@@ -338,7 +338,6 @@ const ContractScreen = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <TopBar
-        style={{ paddingHorizontal: 20, paddingTop: 40 }}
         onLeftButtonPressed={() => setShowContract(false)}
         leftButtonIcon={backArrow}
         title={currentDocument.title}
@@ -375,7 +374,6 @@ export default ContractScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#263B5B',
   },
   contactForm: {
     flex: 1,

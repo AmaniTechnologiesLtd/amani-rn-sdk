@@ -87,13 +87,12 @@ const DocumentConfirmation = (props) => {
   // Ask user for confirmation or show error messages
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
+      <TopBar
+        onLeftButtonPressed={onTryAgain}
+        leftButtonIcon={backArrow}
+        title={document.title}
+      />
       <ScrollView contentContainerStyle={styles.childContainer}>
-        <TopBar
-          onLeftButtonPressed={onTryAgain}
-          leftButtonIcon={backArrow}
-          title={document.title}
-        />
-
         <Text style={styles.confirmationTitle}>
           {document.steps.length > 0 && document.steps[step].confirmationTitle}
         </Text>
@@ -107,7 +106,11 @@ const DocumentConfirmation = (props) => {
         />
 
         <View style={{ flex: 1 }}>
-          <Text style={styles.errorMessageText}>{errorMessage ? errorMessage : document.steps[step].confirmationDescription}</Text>
+          <Text style={styles.errorMessageText}>
+            {errorMessage
+              ? errorMessage
+              : document.steps[step].confirmationDescription}
+          </Text>
         </View>
 
         <View style={styles.bottomBar}>
@@ -140,7 +143,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 30,
-    minHeight: '100%',
   },
   confirmationTitle: {
     color: 'white',

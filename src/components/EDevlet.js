@@ -28,7 +28,11 @@ const EDevlet = (props) => {
   const { onGoBack } = props;
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <TopBar onLeftButtonPressed={onGoBack} leftButtonIcon={backArrow} />
+      <TopBar
+        onLeftButtonPressed={onGoBack}
+        leftButtonIcon={backArrow}
+        noBackground
+      />
       <Text style={styles.header}>
         İkametgah Belgesini E-devlet’ten Almak İçin;
       </Text>

@@ -13,7 +13,7 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import Geolocation from '@react-native-community/geolocation'
+import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from 'react-native-device-info';
 
 // Local files
@@ -137,12 +137,14 @@ const MainScreen = (props) => {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
       (async function () {
         try {
-          const loginReponse = await api.login({
+          const loginResponse = await api.login({
             email: authData.appKey,
             password: authData.appPassword,
           });
 
-          api.setToken(loginReponse.data.token);
+          if (loginResponse.data) {
+            api.setToken(loginResponse.data.token);
+          }
 
           try {
             const customerResponse = await api.createCustomer(customerData);
@@ -272,20 +274,26 @@ const MainScreen = (props) => {
   };
 
   const handleError = (error) => {
+    let errorMessage;
+
+    if (error.message) {
+      errorMessage = error.message;
+    } else if (error.response && error.response.data.errors) {
+      errorMessage = error.response.data.errors[0].ERROR_MESSAGE;
+    } else {
+      errorMessage = 'Lütfen daha sonra tekrar deneyin...';
+    }
+
     setMessage({
       ...initialMessage,
       show: true,
       header: 'Bir şeyler yanlış gitti!',
-      title: error.response.data.errors
-        ? error.response.data.errors[0].ERROR_MESSAGE
-        : 'Lütfen daha sonra tekrar deneyin...',
+      title: errorMessage,
       buttonText: 'GERİ DÖN',
       buttonClick: () =>
         onError({
           status: 'ERROR',
-          message: error.response.data.errors
-            ? error.response.data.errors[0]
-            : 'Bilinmeyen hata',
+          message: errorMessage,
         }),
     });
   };
@@ -519,7 +527,11 @@ const MainScreen = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <TopBar onLeftButtonPressed={goBack} leftButtonIcon={backArrow} />
+      <TopBar
+        onLeftButtonPressed={goBack}
+        leftButtonIcon={backArrow}
+        noBackground
+      />
       <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
       <View style={styles.modulesContainer}>
         {documents.map((document, index) => {

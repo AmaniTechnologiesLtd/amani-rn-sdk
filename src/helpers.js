@@ -24,4 +24,8 @@ const capitalizeFirstLetters = (string) => {
     .join(' ');
 };
 
-export { trCompare, capitalizeFirstLetters };
+const strNormalize = (str) => {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
+export { trCompare, capitalizeFirstLetters, strNormalize };
