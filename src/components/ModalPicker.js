@@ -67,11 +67,11 @@ const ModalPicker = (props) => {
     <Fragment>
       <Modal
         transparent
+        statusBarTranslucent
         animationType={animation}
         visible={show}
         onRequestClose={closeModal}
-        onDismiss={closeModal}
-        statusBarTranslucent={true}>
+        onDismiss={closeModal}>
         <ImageBackground source={mainBackground} style={styles.container}>
           <TopBar
             onLeftButtonPressed={closeModal}

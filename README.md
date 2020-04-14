@@ -22,7 +22,7 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 | ------------------------------------ | ------------------- |
 | react-native-camera                  | 3.15.0              |
 | react-native-fs                      | 2.16.2              |
-| react-native-webview                 | 9.1.1               |
+| react-native-webview                 | 8.2.1               |
 | react-native-svg                     | 10.1.0              |
 | @react-native-community/image-editor | 2.3.0               |
 | react-native-document-picker         | 3.2.4               |
@@ -32,13 +32,13 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 To get all of these by single command run the following command:
 
 ```bash
-yarn add react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
+yarn add react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
 ```
 
 or
 
 ```bash
-npm install react-native-camera react-native-webview react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
+npm install react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
 ```
 
 If your React Native version is below the 0.60, to link all these dependencies to your project, please run command below.
