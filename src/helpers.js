@@ -25,7 +25,10 @@ const capitalizeFirstLetters = (string) => {
 };
 
 const strNormalize = (str) => {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accented characters
+    .replace(/ı/g, 'i'); // Change ı to i
 };
 
 export { trCompare, capitalizeFirstLetters, strNormalize };
