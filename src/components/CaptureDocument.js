@@ -6,7 +6,6 @@ import {
   BackHandler,
   Dimensions,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import RNFS from 'react-native-fs';
@@ -277,7 +276,7 @@ const CaptureDocument = (props) => {
           <Loading type={document.id} />
         ) : (
           <>
-            <SafeAreaView
+            <View
               style={{
                 backgroundColor:
                   document.versions[versionGroup][groupIndex].aspectRatio ||
@@ -290,7 +289,7 @@ const CaptureDocument = (props) => {
                 leftButtonIcon={backArrow}
                 title={document.versions[versionGroup][groupIndex].title}
               />
-            </SafeAreaView>
+            </View>
 
             <View
               style={[

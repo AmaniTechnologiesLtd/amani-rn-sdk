@@ -1,4 +1,4 @@
-export const content = script =>
+export const content = (script) =>
   `<!doctype html>
 <html lang="en">
 <head>
@@ -82,7 +82,7 @@ export const content = script =>
       position: absolute;
       bottom: 0px;
       background-color: #263B5B;
-      height: 18vh;
+      height: 20vh;
       display:flex;
       width:100%;
       flex-direction:row;
@@ -112,7 +112,7 @@ export const content = script =>
         box-sizing: border-box;
         box-shadow: 0px 2px 16px rgba(38, 33, 48, 0.4);
         border-radius: 10px;
-        margin: 15px 10px;
+        margin: 10px;
         padding: 10px;
       }
 
@@ -121,7 +121,7 @@ export const content = script =>
         right: 0;
         background: linear-gradient(176.14deg, #FFD439 -197.62%, #DB6400 283.46%);
         box-shadow: 0px 2px 16px rgba(38, 33, 48, 0.4);
-        margin: 15px 10px;
+        margin: 10px;
         padding: 10px;
         border-radius: 10px;
         font-weight: bold;

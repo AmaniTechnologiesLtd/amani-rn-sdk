@@ -7,7 +7,6 @@ import {
   ImageBackground,
   TextInput,
   Alert,
-  SafeAreaView,
   StyleSheet,
   BackHandler,
   Dimensions,
@@ -330,7 +329,7 @@ const ContractScreen = (props) => {
             <Button
               onPress={handleFormSubmit}
               text="DEVAM"
-              style={{ marginHorizontal: 20 }}
+              style={{ marginHorizontal: 20, marginBottom: 10 }}
             />
           </View>
         </ScrollView>
@@ -339,7 +338,7 @@ const ContractScreen = (props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <TopBar
         onLeftButtonPressed={() => setShowContract(false)}
         leftButtonIcon={backArrow}
@@ -368,7 +367,7 @@ const ContractScreen = (props) => {
           text="İMZALA"
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

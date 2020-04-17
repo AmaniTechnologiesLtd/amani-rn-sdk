@@ -101,9 +101,7 @@ const ModalPicker = (props) => {
           <ScrollView>
             {items
               .filter((item) => {
-                return strNormalize(item.name)
-                  .toLowerCase()
-                  .includes(filter);
+                return strNormalize(item.name).toLowerCase().includes(filter);
               })
               .map((item) => {
                 return (
