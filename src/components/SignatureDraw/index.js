@@ -42,11 +42,6 @@ class SignatureView extends Component {
     }
   };
 
-  renderError = (e) => {
-    const { nativeEvent } = e;
-    console.warn('WebView error: ', nativeEvent);
-  };
-
   render() {
     return (
       <View style={styles.webBg}>
@@ -55,7 +50,6 @@ class SignatureView extends Component {
           source={this.source}
           onMessage={this.getSignature}
           javaScriptEnabled={true}
-          onError={this.renderError}
           onLoadEnd={() => this.setState({ isLoading: false })}
         />
       </View>

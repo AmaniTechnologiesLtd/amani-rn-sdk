@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert, StyleSheet, BackHandler, Platform } from 'react-native';
+import {
+  View,
+  Alert,
+  StyleSheet,
+  BackHandler,
+  Platform,
+  Modal,
+} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import LottieView from 'lottie-react-native';
 
 // Local files
 import TopBar from '../TopBar';
@@ -9,6 +17,7 @@ import Loading from '../Loading';
 import MessageScreen from '../MessageScreen';
 import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
+import animationSignature from '../../../assets/animation_signature.json';
 
 const SignatureDraw = (props) => {
   const {
@@ -22,6 +31,7 @@ const SignatureDraw = (props) => {
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [notMatched, setNotMatched] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(true);
   const [isProcessStarted, setIsProcessStarted] = useState(null);
 
   useEffect(() => {
@@ -164,12 +174,20 @@ const SignatureDraw = (props) => {
         title={document.steps[currentStep].title}
       />
 
-      <View style={{ flex: 1 }}>
-        <SignatureScreen
-          onOK={handleSignature}
-          onEmpty={handleEmptySignature}
+      <Modal
+        transparent
+        statusBarTranslucent
+        animationType="none"
+        visible={showAnimation}>
+        <LottieView
+          source={animationSignature}
+          autoPlay
+          loop={false}
+          onAnimationFinish={() => setShowAnimation(false)}
         />
-      </View>
+      </Modal>
+
+      <SignatureScreen onOK={handleSignature} onEmpty={handleEmptySignature} />
     </View>
   );
 };
