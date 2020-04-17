@@ -81,7 +81,7 @@ const DocumentConfirmation = (props) => {
   }, []);
 
   if (!imgSrc && document.id !== 'UB') {
-    return <Loading />;
+    return <Loading type={document.id} />;
   }
 
   // Ask user for confirmation or show error messages

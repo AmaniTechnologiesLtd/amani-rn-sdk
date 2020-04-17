@@ -78,7 +78,7 @@ const MainScreen = (props) => {
     !permissions.camera &&
     !permissions.location
   ) {
-    (async function () {
+    (async function() {
       setPermission({
         camera: await PermissionsAndroid.request('android.permission.CAMERA'),
         location: await PermissionsAndroid.request(
@@ -135,7 +135,7 @@ const MainScreen = (props) => {
   useEffect(() => {
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
-      (async function () {
+      (async function() {
         try {
           const loginResponse = await api.login({
             email: authData.appKey,

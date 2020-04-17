@@ -209,7 +209,7 @@ const CaptureDocument = (props) => {
   };
 
   if (isProcessStarted) {
-    return <Loading />;
+    return <Loading type={document.id} />;
   }
 
   if (showEDevlet) {
@@ -274,7 +274,7 @@ const CaptureDocument = (props) => {
         captureAudio={false}
         ratio="16:9">
         {buttonDisabled ? (
-          <Loading />
+          <Loading type={document.id} />
         ) : (
           <>
             <SafeAreaView

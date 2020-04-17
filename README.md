@@ -28,17 +28,19 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 | react-native-document-picker         | 3.2.4               |
 | react-native-device-info             | 5.4.1               |
 | @react-native-community/geolocation  | 2.0.2               |
+| lottie-react-native                  | 3.3.2               |
+| lottie-ios                           | 3.1.3               |
 
 To get all of these by single command run the following command:
 
 ```bash
-yarn add react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
+yarn add react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation lottie-react-native lottie-ios@3.1.3
 ```
 
 or
 
 ```bash
-npm install react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation
+npm install react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation lottie-react-native lottie-ios@3.1.3
 ```
 
 If your React Native version is below the 0.60, to link all these dependencies to your project, please run command below.
