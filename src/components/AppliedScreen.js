@@ -53,6 +53,12 @@ const SendEmailContent = () => {
       <Text style={styles.popupHeaderWhite}>
         Sözleşmeyi göndermek istediğin e-posta adresini gir
       </Text>
+      <Text
+        style={[styles.message, { textAlign: 'left', marginHorizontal: 0 }]}>
+        Kayıtlı e-posta adresine sözleşmenin bir kopyasını gönderdik. Farklı bir
+        e-posta adresine yollamak istersen "e-posta ile gönder" seçeneğini
+        seçebilirsin.
+      </Text>
       <TextInput
         style={styles.textInput}
         onChangeText={(val) => setFormData({ ...formData, email: val })}
@@ -87,42 +93,8 @@ const dateParse = (date) => {
   return expiration_date.toLocaleDateString('tr-TR');
 };
 
-const CargoContent = ({ customer }) => {
-  return (
-    <View>
-      <Text style={styles.popupHeader}>Göndereceğin Adres</Text>
-      <Text style={styles.popupText}>Lorem Ipsum dolor sit amet</Text>
-      <View style={styles.seperator} />
-      <Text style={styles.popupHeader}>Anlaşmalı Kargo Firması</Text>
-      <Text style={styles.popupText}>MNG Kargo</Text>
-      <View style={styles.seperator} />
-      <Text style={styles.popupHeader}>Kullanman Gereken Kargo Kodu</Text>
-      <Text style={styles.popupText}>XXX91237123</Text>
-      <View style={styles.seperator} />
-      <Text style={[styles.popupText, { marginBottom: 10 }]}>
-        Unutma, limit artışını kalıcı olabilmesi için en geç 14 gün içinde
-        yollamalısın.
-      </Text>
-      {customer.approval_expiration && (
-        <Button
-          text={`Son teslim tarihi: ${dateParse(customer.approval_expiration)}`}
-          style={{ marginVertical: 10 }}
-          backgroundImage={blueBackground}
-        />
-      )}
-      <Button
-        text="MNG KARGO ŞUBELERİ"
-        style={{ marginVertical: 10 }}
-        onPress={() =>
-          Linking.openURL('https://www.mngkargo.com.tr/icerik/en-yakin-sube')
-        }
-      />
-    </View>
-  );
-};
-
 const AppliedScreen = (props) => {
-  const { customer, goBack } = props;
+  const { customer, goBack, takePhoto } = props;
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
 
@@ -159,7 +131,10 @@ const AppliedScreen = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{
+          minHeight: '100%',
+        }}>
         <TopBar
           onLeftButtonPressed={goBack}
           leftButtonIcon={backArrow}
@@ -192,33 +167,19 @@ const AppliedScreen = (props) => {
           )}
 
           <Text style={styles.message}>
-            Limit artışının kalıcı olması için ininal kullanıcı sözleşmesini
-            yazdırıp, imzalaman ve en geç
+            Limit artışının kalıcı olması için en geç
             <Text style={{ fontWeight: 'bold' }}>
               {customer.status === 'Temporarily Approved'
                 ? ` ${dateParse(customer.approval_expiration)} tarihine kadar `
                 : ` iki hafta içerisinde `}
             </Text>
-            bize kargolaman gerekiyor. Aksi durumda limitin tekrar 750 TL'ye
-            düşecek.
-          </Text>
-
-          <Text style={styles.message}>
-            Kayıtlı e-posta adresine sözleşmenin bir kopyasını gönderdik. Farklı
-            bir e-posta adresine yollamak istersen "e-posta ile gönder"
-            seçeneğini seçebilirsin.
+            aşağıda yer alan ininal kullanıcı sözleşmesini yazdırıp, imzalayıp
+            fotoğrafını yüklemen gerekiyor. Aksi durumda limitin tekrar 750
+            TL'ye düşecek.
           </Text>
         </View>
 
         <View>
-          <Button
-            onPress={() =>
-              setShowPopup(<CargoContent customer={customerData} />)
-            }
-            text="Anlaşmalı kargo firması için tıkla"
-            style={styles.buttonStyle}
-            backgroundImage={blueBackground}
-          />
           <Button
             onPress={getContractURL}
             noBackground={true}
@@ -231,10 +192,17 @@ const AppliedScreen = (props) => {
               setShowPopup(<SendEmailContent customer={customerData} />)
             }
             noBackground={true}
-            text="E-posta ile gönder"
+            text="Sözleşmeni E-posta ile Gönder"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
           />
+          {takePhoto && (
+            <Button
+              onPress={takePhoto}
+              text="Sözleşmenin Fotoğrafını Çek"
+              style={styles.buttonStyle}
+            />
+          )}
         </View>
       </ScrollView>
     </ImageBackground>
@@ -269,7 +237,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontSize: height * 0.022,
     textAlign: 'center',
-    opacity: 0.8,
+    opacity: 0.9,
   },
   buttonStyle: {
     marginBottom: 10,

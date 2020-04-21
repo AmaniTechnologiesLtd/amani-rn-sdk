@@ -28,7 +28,7 @@ const Popup = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <TopBar />
+      <TopBar noBackground />
       <View style={styles.popup}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Image style={styles.closeIcon} source={closeIcon} />

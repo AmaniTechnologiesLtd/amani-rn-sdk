@@ -18,15 +18,8 @@ import warningIcon from '../../assets/warning-icon.png';
 const { width, height } = Dimensions.get('window');
 
 const MessageScreen = (props) => {
-  const {
-    header,
-    title,
-    message,
-    nextStepMessage,
-    type,
-    onClick,
-    buttonText,
-  } = props;
+  const { header, title, message, type, onClick, buttonText } = props;
+
   const messageIcon = () => {
     if (type === 'error') {
       return failedIcon;
@@ -49,11 +42,6 @@ const MessageScreen = (props) => {
         {header && <Text style={styles.header}>{header}</Text>}
         {title && <Text style={styles.message}>{title}</Text>}
         {message && <Text style={styles.message}>{message}</Text>}
-        {nextStepMessage && (
-          <Text style={[styles.message, styles.nextStep]}>
-            {nextStepMessage}
-          </Text>
-        )}
       </View>
 
       <View style={styles.bottomBar}>
@@ -104,13 +92,6 @@ const styles = StyleSheet.create({
     fontSize: height * 0.02,
     textAlign: 'center',
     opacity: 0.8,
-  },
-  nextStep: {
-    textAlign: 'center',
-    borderTopColor: '#13283D',
-    borderTopWidth: 1,
-    marginTop: 20,
-    paddingTop: 20,
   },
   bottomBar: {
     position: 'absolute',

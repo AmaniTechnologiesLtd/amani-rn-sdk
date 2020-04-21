@@ -115,7 +115,7 @@ const CaptureDocument = (props) => {
             onCapture(image);
             calculateNextStep();
           }
-          setIsProcessStarted(false);
+          // setIsProcessStarted(false);
         }
         setButtonDisabled(false);
       });
@@ -130,7 +130,7 @@ const CaptureDocument = (props) => {
         RNFS.readFile(file.uri, 'base64').then((source) => {
           onCapture(`data:application/pdf;base64,${source}`);
           calculateNextStep();
-          setIsProcessStarted(false);
+          // setIsProcessStarted(false);
         });
       })
       .catch((error) => setIsProcessStarted(false));
@@ -145,6 +145,10 @@ const CaptureDocument = (props) => {
       return;
     }
     setSelectedDocumentVersion(document.versions[versionGroup][groupIndex]);
+    if (!document.options.includes('async')) {
+      setIsProcessStarted(true);
+    }
+
     onStepsFinished(true);
   };
 
@@ -192,7 +196,7 @@ const CaptureDocument = (props) => {
     setCorners(captureCorners);
     onManualCropCorners(captureCorners);
     calculateNextStep();
-    setIsProcessStarted(false);
+    // setIsProcessStarted(false);
   };
 
   const checkForVersions = () => {

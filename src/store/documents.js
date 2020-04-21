@@ -22,7 +22,7 @@ export const initialDocuments = [
           'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
     ],
-    options: ['takePicture'],
+    options: ['takePicture', 'async'],
     captureVideo: false,
     cameraFacing: 'environment',
     versionTitle: 'Kimlik Tipini Seçin',
@@ -60,6 +60,8 @@ export const initialDocuments = [
     successTitle: 'Kimliğini başarıyla yükledin',
     successDescription:
       'Biz kimliğini kontrol ederken selfie çekimi ile devam et',
+    errorTitle: 'Kimliğni yüklerken bir hata oluştu',
+    errorDescription: 'Lütfen tekrar dene',
   },
   {
     id: 'SE',
@@ -97,8 +99,10 @@ export const initialDocuments = [
       REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: "Selfie'ni başarıyla yükledin",
-    nextStepDescription:
+    successDescription:
       'Şimdi adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
+    errorTitle: "Selfie'ni yüklerken bir hata oluştu",
+    errorDescription: 'Lütfen tekrar dene',
   },
   {
     id: 'PA',
@@ -134,6 +138,10 @@ export const initialDocuments = [
       APPROVED: 'Pasaportun doğrulandı',
       REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
     },
+    successTitle: 'Pasaportunu başarıyla yükledin',
+    successDescription: 'Bir sonraki adıma geçebilirsin',
+    errorTitle: 'Pasaportunu yüklerken bir hata oluştu',
+    errorDescription: 'Lütfen tekrar dene',
   },
   {
     id: 'VA',
@@ -170,6 +178,10 @@ export const initialDocuments = [
       APPROVED: 'Vizen doğrulandı',
       REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
     },
+    successTitle: 'Vizeni başarıyla yükledin',
+    successDescription: 'Bir sonraki adıma geçebilirsin',
+    errorTitle: 'Vizeni yüklerken bir hata oluştu',
+    errorDescription: 'Lütfen tekrar dene',
   },
   {
     id: 'UB',
@@ -252,6 +264,8 @@ export const initialDocuments = [
     },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: 'Sözleşmeyi imzalamak için devam et',
+    errorTitle: 'Adres belgeni yüklerken bir hata oluştu',
+    errorDescription: 'Lütfen tekrar dene',
   },
   {
     id: 'SG',
@@ -283,12 +297,54 @@ export const initialDocuments = [
       ],
     },
     messages: {
-      NOT_UPLOADED: 'Dijital Sözleşmeni İmzala',
-      PENDING_REVIEW: 'İmzan yüklendi',
+      NOT_UPLOADED: 'Dijital sözleşmeni imzala',
+      PENDING_REVIEW: 'Dijital sözleşmen ve imzan yüklendi',
       PROCESSING: 'İmzan doğrulanıyor',
-      APPROVED: 'Dijital sözleşme İmzalandı',
-      REJECTED: `İmzan doğrulanamadı\nLütfen tekrar dene`,
+      APPROVED: 'Dijital sözleşme imzalandı',
+      REJECTED: 'İmzan doğrulanamadı\nLütfen tekrar dene',
     },
+    successTitle: 'Dijital sözleşmeni başarıyla yükledin',
+    successDescription: 'Fiziksel sözleşmeyi imzalamak için devam et',
+    errorTitle: 'Dijital sözleşmeni yüklerken bir hata oluştu',
+    errorDescription: 'Lütfen tekrar dene',
+  },
+  {
+    id: 'CO',
+    title: 'Fiziksel Sözleşme Yükle',
+    status: 'NOT_UPLOADED',
+    steps: [
+      {
+        title: 'Fiziksel Sözleşme',
+        description: '',
+      },
+    ],
+    options: ['takePicture', 'fileUpload'],
+    type: 'image',
+    captureVideo: false,
+    cameraFacing: 'environment',
+    versionTitle: '',
+    versionDescription: '',
+    versions: {
+      '': [
+        {
+          title: 'Fiziksel Sözleşme',
+          crop: true,
+          autoCrop: false,
+        },
+      ],
+    },
+    messages: {
+      NOT_UPLOADED: 'Fiziksel Sözleşmeni Yükle',
+      PENDING_REVIEW: 'Fiziksel sözleşmen yüklendi',
+      PROCESSING: 'Fiziksel sözleşmen doğrulanıyor',
+      APPROVED: 'Fiziksel sözleşme İmzalandı',
+      REJECTED: 'Fiziksel sözleşmen doğrulanamadı\nLütfen tekrar dene',
+    },
+    successTitle: 'Fiziksel sözleşmeni başarıyla yükledin',
+    successDescription:
+      'Tüm adımları tamamladın\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız',
+    errorTitle: 'Fiziksel sözleşmeni yüklerken bir hata oluştu',
+    errorDescription: 'Lütfen tekrar dene',
   },
 ];
 

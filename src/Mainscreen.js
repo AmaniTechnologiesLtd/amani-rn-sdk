@@ -49,7 +49,6 @@ const MainScreen = (props) => {
   const [files, setFiles] = useState([]);
   const [isStepsFinished, setIsStepsFinished] = useState(false);
   const [customer, setCustomer] = useState({});
-  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
   const [location, setLocation] = useState(null);
   const [permissions, setPermission] = useState({
     camera: null,
@@ -78,7 +77,7 @@ const MainScreen = (props) => {
     !permissions.camera &&
     !permissions.location
   ) {
-    (async function() {
+    (async function () {
       setPermission({
         camera: await PermissionsAndroid.request('android.permission.CAMERA'),
         location: await PermissionsAndroid.request(
@@ -135,7 +134,7 @@ const MainScreen = (props) => {
   useEffect(() => {
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
-      (async function() {
+      (async function () {
         try {
           const loginResponse = await api.login({
             email: authData.appKey,
@@ -213,9 +212,11 @@ const MainScreen = (props) => {
       status: 'PROCESSING',
     });
 
-    updateCustomerRules();
+    updateCustomerRules('PROCESSING');
 
-    setShowSuccessScreen(true);
+    if (selectedDocument.options.includes('async')) {
+      showSuccessMessage();
+    }
 
     const deviceData = {
       id: DeviceInfo.getUniqueId(),
@@ -256,20 +257,40 @@ const MainScreen = (props) => {
             document_id: selectedDocument.id,
             status: 'PENDING_REVIEW',
           });
+
+          updateCustomerRules('PENDING_REVIEW');
+
+          if (!selectedDocument.options.includes('async')) {
+            showSuccessMessage();
+          }
+
           return;
         }
+
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
-          status: 'PENDING_REVIEW',
+          status: 'REJECTED',
         });
+
+        updateCustomerRules('REJECTED');
+
+        if (!selectedDocument.options.includes('async')) {
+          showErrorMessage();
+        }
       })
       .catch((error) => {
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
-          status: 'PENDING_REVIEW',
+          status: 'REJECTED',
         });
+
+        updateCustomerRules('REJECTED');
+
+        if (!selectedDocument.options.includes('async')) {
+          showErrorMessage();
+        }
       });
   };
 
@@ -298,10 +319,40 @@ const MainScreen = (props) => {
     });
   };
 
-  const updateCustomerRules = () => {
+  const showSuccessMessage = () => {
+    if (selectedDocument) {
+      setMessage({
+        ...initialMessage,
+        show: true,
+        type: 'success',
+        header: 'Tebrikler!',
+        title: selectedDocument.successTitle,
+        message: selectedDocument.successDescription,
+        buttonText: 'DEVAM',
+        buttonClick: () => findIncompleteDocument(customer),
+      });
+    }
+  };
+
+  const showErrorMessage = () => {
+    if (selectedDocument) {
+      setMessage({
+        ...initialMessage,
+        show: true,
+        type: 'error',
+        header: 'Dikkat!',
+        title: selectedDocument.errorTitle,
+        message: selectedDocument.errorDescription,
+        buttonText: 'DEVAM',
+        buttonClick: () => findIncompleteDocument(customer),
+      });
+    }
+  };
+
+  const updateCustomerRules = (status) => {
     const rules = customer.rules.map((rule) => {
       if (rule.document_classes.includes(selectedDocument.id)) {
-        rule.status = 'PROCESSING';
+        rule.status = status;
       }
       return rule;
     });
@@ -323,7 +374,7 @@ const MainScreen = (props) => {
     setSelectedDocument(null);
     setFiles([]);
     setCorners([]);
-    setShowSuccessScreen(false);
+    setMessage({ ...initialMessage });
   };
 
   const checkPreviousSteps = (index, statuses) => {
@@ -430,14 +481,28 @@ const MainScreen = (props) => {
   };
 
   const findIncompleteDocument = (currentCustomer) => {
+    console.log('find', documents);
+    // If last step physical contract is done return to main application
+    if (
+      documents.every((document) =>
+        ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+      )
+    ) {
+      console.log('goback');
+      goBack();
+      return;
+    }
+
     // If not first time customer do not go to document automatically
+    // go to document selection screen
     if (currentCustomer.status !== 'Created') {
       clearSelectedDocument();
+      console.log('clear');
       return;
     }
 
     const incompleteRules = currentCustomer.rules.filter((doc) =>
-      ['NOT_UPLOADED'].includes(doc.status),
+      ['NOT_UPLOADED', 'REJECTED'].includes(doc.status),
     );
 
     clearSelectedDocument();
@@ -448,6 +513,7 @@ const MainScreen = (props) => {
       );
 
       if (startDoc) {
+        console.log('incomplete');
         if (startDoc.id === 'SG') {
           setShowContract(true);
         } else {
@@ -475,24 +541,32 @@ const MainScreen = (props) => {
     );
   }
 
-  if (
-    documents.every((document) =>
-      ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
-    )
-  ) {
-    return <AppliedScreen customer={customer} goBack={goBack} />;
+  const contract = documents.find((doc) => doc.id === 'CO');
+
+  //If contract is already uploaded show message screen and return to main app
+  if (['APPROVED', 'PENDING_REVIEW'].includes(contract.status)) {
+    console.log('test');
+    setSelectedDocument(contract);
+    showSuccessMessage();
   }
 
-  if (showSuccessScreen) {
+  // All documents approved or pending review except physical contract
+  // show applied screen and upload physical contract if needed
+  if (
+    documents
+      .filter((document) => document.id !== 'CO')
+      .every((document) =>
+        ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+      ) &&
+    selectedDocument === null
+  ) {
     return (
-      <MessageScreen
-        type="success"
-        header="Tebrikler!"
-        title={selectedDocument.successTitle}
-        message={selectedDocument.successDescription}
-        nextStepMessage={selectedDocument.nextStepDescription}
-        buttonText="DEVAM"
-        onClick={() => findIncompleteDocument(customer)}
+      <AppliedScreen
+        customer={customer}
+        goBack={goBack}
+        takePhoto={() => {
+          goToDocument(contract);
+        }}
       />
     );
   }
