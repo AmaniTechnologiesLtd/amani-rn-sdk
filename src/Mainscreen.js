@@ -212,7 +212,7 @@ const MainScreen = (props) => {
       status: 'PROCESSING',
     });
 
-    updateCustomerRules('PROCESSING');
+    updateCustomerRules(selectedDocument.id, 'PROCESSING');
 
     if (selectedDocument.options.includes('async')) {
       showSuccessMessage();
@@ -221,8 +221,9 @@ const MainScreen = (props) => {
     const deviceData = {
       id: DeviceInfo.getUniqueId(),
       os: Platform.OS,
+      brand: DeviceInfo.getBrand(),
       model: DeviceInfo.getModel(),
-      gsm: await DeviceInfo.getCarrier(),
+      carrier: await DeviceInfo.getCarrier(),
     };
 
     const requestData = new FormData();
@@ -258,7 +259,7 @@ const MainScreen = (props) => {
             status: 'PENDING_REVIEW',
           });
 
-          updateCustomerRules('PENDING_REVIEW');
+          updateCustomerRules(selectedDocument.id, 'PENDING_REVIEW');
 
           if (!selectedDocument.options.includes('async')) {
             showSuccessMessage();
@@ -273,7 +274,11 @@ const MainScreen = (props) => {
           status: 'REJECTED',
         });
 
-        updateCustomerRules('REJECTED');
+        updateCustomerRules(
+          selectedDocument.id,
+          'REJECTED',
+          'Belgeniz doğrulanamadı',
+        );
 
         if (!selectedDocument.options.includes('async')) {
           showErrorMessage();
@@ -286,7 +291,11 @@ const MainScreen = (props) => {
           status: 'REJECTED',
         });
 
-        updateCustomerRules('REJECTED');
+        updateCustomerRules(
+          selectedDocument.id,
+          'REJECTED',
+          'Belgeniz doğrulanamadı',
+        );
 
         if (!selectedDocument.options.includes('async')) {
           showErrorMessage();
@@ -308,7 +317,7 @@ const MainScreen = (props) => {
     setMessage({
       ...initialMessage,
       show: true,
-      header: 'Bir şeyler yanlış gitti!',
+      header: 'Bir hata oluştu!',
       title: errorMessage,
       buttonText: 'GERİ DÖN',
       buttonClick: () =>
@@ -349,10 +358,14 @@ const MainScreen = (props) => {
     }
   };
 
-  const updateCustomerRules = (status) => {
+  const updateCustomerRules = (documentID, status, statusMessage = null) => {
     const rules = customer.rules.map((rule) => {
-      if (rule.document_classes.includes(selectedDocument.id)) {
+      if (rule.document_classes.includes(documentID)) {
         rule.status = status;
+
+        if (statusMessage) {
+          rule.status_message = statusMessage;
+        }
       }
       return rule;
     });
@@ -446,22 +459,24 @@ const MainScreen = (props) => {
     );
   };
 
-  const handleDocumentClick = (document) => {
+  const selectDocument = (document) => {
     // First check if have any rejection message from studio
-    const rule = customer.rules.find((step) =>
-      step.document_classes.includes(document.id),
-    );
+    if (customer && customer.rules) {
+      const rule = customer.rules.find((step) =>
+        step.document_classes.includes(document.id),
+      );
 
-    if (rule && rule.status_message) {
-      setMessage({
-        ...initialMessage,
-        show: true,
-        type: 'warning',
-        header: rule.status_message,
-        buttonText: 'DEVAM',
-        buttonClick: () => goToDocument(document),
-      });
-      return;
+      if (rule && rule.status_message) {
+        setMessage({
+          ...initialMessage,
+          show: true,
+          type: 'warning',
+          header: rule.status_message,
+          buttonText: 'DEVAM',
+          buttonClick: () => goToDocument(document),
+        });
+        return;
+      }
     }
 
     // If no message directly go to document
@@ -472,7 +487,7 @@ const MainScreen = (props) => {
     setMessage({
       ...initialMessage,
     });
-    // Redirect to document capture page
+    // Go to document capture page
     if (document.id === 'SG') {
       setShowContract(true);
     } else {
@@ -481,14 +496,12 @@ const MainScreen = (props) => {
   };
 
   const findIncompleteDocument = (currentCustomer) => {
-    console.log('find', documents);
     // If last step physical contract is done return to main application
     if (
       documents.every((document) =>
         ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
       )
     ) {
-      console.log('goback');
       goBack();
       return;
     }
@@ -497,7 +510,6 @@ const MainScreen = (props) => {
     // go to document selection screen
     if (currentCustomer.status !== 'Created') {
       clearSelectedDocument();
-      console.log('clear');
       return;
     }
 
@@ -513,12 +525,7 @@ const MainScreen = (props) => {
       );
 
       if (startDoc) {
-        console.log('incomplete');
-        if (startDoc.id === 'SG') {
-          setShowContract(true);
-        } else {
-          setSelectedDocument(startDoc);
-        }
+        selectDocument(startDoc);
       }
     }
   };
@@ -541,12 +548,14 @@ const MainScreen = (props) => {
     );
   }
 
-  const contract = documents.find((doc) => doc.id === 'CO');
-
   //If contract is already uploaded show message screen and return to main app
-  if (['APPROVED', 'PENDING_REVIEW'].includes(contract.status)) {
-    console.log('test');
-    setSelectedDocument(contract);
+  if (
+    documents.every((document) =>
+      ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+    )
+  ) {
+    const contract = documents.find((doc) => doc.id === 'CO');
+    selectDocument(contract);
     showSuccessMessage();
   }
 
@@ -560,6 +569,7 @@ const MainScreen = (props) => {
       ) &&
     selectedDocument === null
   ) {
+    const contract = documents.find((doc) => doc.id === 'CO');
     return (
       <AppliedScreen
         customer={customer}
@@ -595,6 +605,7 @@ const MainScreen = (props) => {
         addressDocument={documents.find((document) => document.id === 'UB')}
         dispatch={dispatch}
         customer={customer}
+        updateCustomerRules={updateCustomerRules}
       />
     );
   }
@@ -614,7 +625,7 @@ const MainScreen = (props) => {
               <TouchableOpacity
                 disabled={checkIsNextStepDisabled(document, index)}
                 style={styles.moduleButton}
-                onPress={() => handleDocumentClick(document)}>
+                onPress={() => selectDocument(document)}>
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>
                     <Text

@@ -37,6 +37,7 @@ const ContractScreen = (props) => {
     customer,
     location,
     dispatch,
+    updateCustomerRules,
   } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [showContract, setShowContract] = useState(false);
@@ -213,6 +214,7 @@ const ContractScreen = (props) => {
         goBack={() => setShowSignatureScreen(false)}
         goBackToMainScreen={onContractDecline}
         customer={customer}
+        updateCustomerRules={updateCustomerRules}
       />
     );
   }

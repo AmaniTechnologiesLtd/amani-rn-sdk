@@ -27,6 +27,7 @@ const SignatureDraw = (props) => {
     goBack,
     formData,
     dispatch,
+    updateCustomerRules,
   } = props;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
@@ -56,31 +57,6 @@ const SignatureDraw = (props) => {
     }
   };
 
-  const handleIsSignatureCorrect = async (res) => {
-    if (res.data.status !== 'OK') {
-      setNotMatched(true);
-      setCurrentStep(0);
-      setSignature([]);
-      setIsProcessStarted(false);
-
-      await dispatch({
-        type: 'CHANGE_STATUS',
-        document_id: document.id,
-        status: 'REJECTED',
-      });
-
-      return;
-    }
-
-    await dispatch({
-      type: 'CHANGE_STATUS',
-      document_id: document.id,
-      status: 'PENDING_REVIEW',
-    });
-
-    goBackToMainScreen();
-  };
-
   const handleSignatureMatch = async () => {
     setIsProcessStarted(true);
     await sendContractForm();
@@ -105,7 +81,36 @@ const SignatureDraw = (props) => {
     await api
       .sendDocument(requestData)
       .then(async (res) => {
-        handleIsSignatureCorrect(res);
+        if (res.data.status !== 'OK') {
+          setNotMatched(true);
+          setCurrentStep(0);
+          setSignature([]);
+          setIsProcessStarted(false);
+
+          await dispatch({
+            type: 'CHANGE_STATUS',
+            document_id: document.id,
+            status: 'REJECTED',
+          });
+
+          updateCustomerRules(
+            document.id,
+            'REJECTED',
+            'Belgeniz doğrulanamadı',
+          );
+
+          return;
+        }
+
+        await dispatch({
+          type: 'CHANGE_STATUS',
+          document_id: document.id,
+          status: 'PENDING_REVIEW',
+        });
+
+        updateCustomerRules(document.id, 'PENDING_REVIEW');
+
+        goBackToMainScreen();
       })
       .catch(async (error) => {
         setCurrentStep(0);
@@ -121,6 +126,13 @@ const SignatureDraw = (props) => {
           ],
           { cancelable: false },
         );
+        await dispatch({
+          type: 'CHANGE_STATUS',
+          document_id: document.id,
+          status: 'REJECTED',
+        });
+
+        updateCustomerRules(document.id, 'REJECTED', 'Belgeniz doğrulanamadı');
       });
   };
 
