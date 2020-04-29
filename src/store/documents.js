@@ -75,7 +75,7 @@ export const initialDocuments = [
           'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
       },
     ],
-    options: ['takePicture', 'async'],
+    options: ['takePicture'],
     type: 'video',
     captureVideo: true,
     cameraFacing: 'user',

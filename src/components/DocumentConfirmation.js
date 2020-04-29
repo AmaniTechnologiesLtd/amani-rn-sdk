@@ -27,7 +27,6 @@ const DocumentConfirmation = (props) => {
     onTryAgain,
     continueProcess,
     corners,
-    trialCount,
     step,
   } = props;
   const [errorMessage, setErrorMessage] = useState(null);
@@ -88,7 +87,7 @@ const DocumentConfirmation = (props) => {
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <TopBar
-        onLeftButtonPressed={onTryAgain}
+        onLeftButtonPressed={() => onTryAgain(false)}
         leftButtonIcon={backArrow}
         title={document.title}
       />
@@ -117,7 +116,7 @@ const DocumentConfirmation = (props) => {
           <Button
             text="Tekrar Dene"
             noBackground
-            onPress={() => onTryAgain(!!errorMessage, trialCount)}
+            onPress={() => onTryAgain(!!errorMessage)}
             style={[styles.bottomButtons, styles.tryAgainButton]}
           />
           {!errorMessage && (

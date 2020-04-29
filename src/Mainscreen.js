@@ -470,7 +470,7 @@ const MainScreen = (props) => {
         setMessage({
           ...initialMessage,
           show: true,
-          type: 'warning',
+          type: 'error',
           header: rule.status_message,
           buttonText: 'DEVAM',
           buttonClick: () => goToDocument(document),

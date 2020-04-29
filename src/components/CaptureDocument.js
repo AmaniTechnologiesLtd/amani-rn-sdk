@@ -109,7 +109,7 @@ const CaptureDocument = (props) => {
 
           setCapturedImageUrl(image);
 
-          if (trialCount < 3) {
+          if (trialCount < 4) {
             setShowDocumentConfirmation(true);
           } else {
             onCapture(image);
