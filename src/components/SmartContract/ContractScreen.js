@@ -10,6 +10,8 @@ import {
   StyleSheet,
   BackHandler,
   Dimensions,
+  Image,
+  Platform,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { WebView } from 'react-native-webview';
@@ -20,6 +22,8 @@ import TopBar from '../TopBar';
 import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
+import checkboxEmpty from '../../../assets/checkbox_empty.png';
+import checkboxChecked from '../../../assets/checkbox_checked.png';
 import Button from 'amani-rn-sdk/src/components/Button';
 import Loading from '../Loading';
 import ModalPicker from '../ModalPicker';
@@ -351,11 +355,22 @@ const ContractScreen = (props) => {
 
       <View style={styles.bottomBar}>
         <View style={styles.approveButton}>
-          <CheckBox
-            value={isContractApproved}
-            onValueChange={setIsContractApproved}
-            tintColors={{ true: 'white', false: 'white' }}
-          />
+          {Platform.OS === 'ios' ? (
+            // TODO: When @react-native-community/checkbox supports iOS remove checkbox PNG
+            <TouchableOpacity
+              onPress={() => setIsContractApproved(!isContractApproved)}>
+              <Image
+                style={styles.checkboxIOS}
+                source={isContractApproved ? checkboxChecked : checkboxEmpty}
+              />
+            </TouchableOpacity>
+          ) : (
+            <CheckBox
+              value={isContractApproved}
+              onValueChange={setIsContractApproved}
+              tintColors={{ true: 'white', false: 'white' }}
+            />
+          )}
           <TouchableOpacity
             onPress={() => setIsContractApproved(!isContractApproved)}>
             <Text style={styles.approveButtonText}>
@@ -428,6 +443,11 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  checkboxIOS: {
+    width: height * 0.03,
+    height: height * 0.03,
+    marginRight: 10,
   },
   addressNote: {
     color: 'white',
