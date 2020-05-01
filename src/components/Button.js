@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     fontWeight: 'bold',
+    minHeight: 20,
     fontSize: width * 0.04,
     color: 'white',
   },

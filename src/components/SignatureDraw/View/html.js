@@ -103,6 +103,7 @@ export const content = (script) =>
         border-radius: 0;
         outline: none;
         box-shadow: none;
+        font-size: 14px;
       }
 
     .m-signature-pad--footer
