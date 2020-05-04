@@ -111,6 +111,7 @@ cd ios && pod install
 | server          | false    | string            | tr      |
 | onError         | false    | callback function | -       |
 | onExit          | false    | callback function | -       |
+| sendEvent       | false    | callback function | -       |
 
 ```js
 import AmaniAi from 'amani-rn-sdk';
@@ -138,6 +139,7 @@ return (
     customerData={customer}
     onError={(error) => console.log(error)}
     onExit={(values) => console.log(values)}
+    sendEvent={sendEvent} // Optional for analytics event firing
   />
 );
 ```

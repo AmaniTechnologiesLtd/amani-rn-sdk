@@ -29,6 +29,20 @@ const MessageScreen = (props) => {
     return successIcon;
   };
 
+  const messageDescription = () => {
+    if (message) {
+      if (Array.isArray(message)) {
+        return message.map((error, index) => (
+          <Text style={styles.message} key={index}>
+            {error.error_message}
+          </Text>
+        ));
+      } else {
+        return <Text style={styles.message}>{message}</Text>;
+      }
+    }
+  };
+
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -41,7 +55,7 @@ const MessageScreen = (props) => {
         />
         {header && <Text style={styles.header}>{header}</Text>}
         {title && <Text style={styles.message}>{title}</Text>}
-        {message && <Text style={styles.message}>{message}</Text>}
+        {messageDescription()}
       </View>
 
       <View style={styles.bottomBar}>

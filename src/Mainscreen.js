@@ -274,14 +274,10 @@ const MainScreen = (props) => {
           status: 'REJECTED',
         });
 
-        updateCustomerRules(
-          selectedDocument.id,
-          'REJECTED',
-          'Belgeniz doğrulanamadı',
-        );
+        updateCustomerRules(selectedDocument.id, 'REJECTED');
 
         if (!selectedDocument.options.includes('async')) {
-          showErrorMessage();
+          showErrorMessage(res.data.errors);
         }
       })
       .catch((error) => {
@@ -343,7 +339,7 @@ const MainScreen = (props) => {
     }
   };
 
-  const showErrorMessage = () => {
+  const showErrorMessage = (errors) => {
     if (selectedDocument) {
       setMessage({
         ...initialMessage,
@@ -351,9 +347,9 @@ const MainScreen = (props) => {
         type: 'error',
         header: 'Dikkat!',
         title: selectedDocument.errorTitle,
-        message: selectedDocument.errorDescription,
+        message: errors || selectedDocument.errorDescription,
         buttonText: 'DEVAM',
-        buttonClick: () => findIncompleteDocument(customer),
+        buttonClick: () => findIncompleteDocument(customer, true),
       });
     }
   };
@@ -400,15 +396,24 @@ const MainScreen = (props) => {
   };
 
   const checkIsNextStepDisabled = (document, index) => {
+    // Accessibility check for only physical contract
     return Boolean(
-      (index !== 0 &&
+      (document.id === 'CO' &&
         checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])) ||
         ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
     );
+
+    // Accessibility check for all documents
+    // return Boolean(
+    //   (index !== 0 &&
+    //     checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])) ||
+    //     ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+    // );
   };
 
   const modalStatusIcon = (document, index) => {
     if (
+      document.id === 'CO' && // Show lock icon for only physical contract
       !['APPROVED', 'PENDING_REVIEW'].includes(document.status) &&
       index !== 0 &&
       checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])
@@ -495,7 +500,7 @@ const MainScreen = (props) => {
     }
   };
 
-  const findIncompleteDocument = (currentCustomer) => {
+  const findIncompleteDocument = (currentCustomer, autoSelect = false) => {
     // If last step physical contract is done return to main application
     if (
       documents.every((document) =>
@@ -508,7 +513,7 @@ const MainScreen = (props) => {
 
     // If not first time customer do not go to document automatically
     // go to document selection screen
-    if (currentCustomer.status !== 'Created') {
+    if (currentCustomer.status !== 'Created' && autoSelect === false) {
       clearSelectedDocument();
       return;
     }
