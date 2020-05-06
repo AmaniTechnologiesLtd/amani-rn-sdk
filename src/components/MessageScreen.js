@@ -9,7 +9,8 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import Button from 'amani-rn-sdk/src/components/Button';
+import { errorMessages } from '../constants';
+import Button from './Button';
 import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import failedIcon from '../../assets/failed-icon.png';
@@ -34,7 +35,7 @@ const MessageScreen = (props) => {
       if (Array.isArray(message)) {
         return message.map((error, index) => (
           <Text style={styles.message} key={index}>
-            {error.error_message}
+            {errorMessages[error.error_code] || error.error_message}
           </Text>
         ));
       } else {
