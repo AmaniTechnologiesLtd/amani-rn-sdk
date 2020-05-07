@@ -349,7 +349,7 @@ const MainScreen = (props) => {
         title: selectedDocument.errorTitle,
         message: errors || selectedDocument.errorDescription,
         buttonText: 'DEVAM',
-        buttonClick: () => findIncompleteDocument(customer, true),
+        buttonClick: () => setMessage({ ...initialMessage }),
       });
     }
   };
@@ -500,7 +500,7 @@ const MainScreen = (props) => {
     }
   };
 
-  const findIncompleteDocument = (currentCustomer, autoSelect = false) => {
+  const findIncompleteDocument = (currentCustomer) => {
     // If last step physical contract is done return to main application
     if (
       documents.every((document) =>
@@ -513,7 +513,7 @@ const MainScreen = (props) => {
 
     // If not first time customer do not go to document automatically
     // go to document selection screen
-    if (currentCustomer.status !== 'Created' && autoSelect === false) {
+    if (currentCustomer.status !== 'Created') {
       clearSelectedDocument();
       return;
     }
