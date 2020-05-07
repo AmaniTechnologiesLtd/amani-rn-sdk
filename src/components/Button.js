@@ -76,10 +76,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   noBackground: {
-    borderWidth: 2,
-    borderColor: '#D5D5D5',
     padding: 15,
-    borderRadius: 10,
     opacity: 0.7,
   },
   buttonText: {

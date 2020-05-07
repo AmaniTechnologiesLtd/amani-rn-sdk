@@ -2,8 +2,7 @@ import axios from 'axios';
 
 const servers = {
   tr: 'https://tr.amani.ai/api/v1/',
-  uae: 'https://uae.amani.ai/api/v1/',
-  sandbox: 'http://tr.amani.ai:8000/api/v1/',
+  sandbox: 'https://sandbox.amani.ai/api/v1/',
 };
 
 export default {

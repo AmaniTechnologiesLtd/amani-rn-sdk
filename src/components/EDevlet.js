@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import TopBar from './TopBar';
-import Button from 'amani-rn-sdk/src/components/Button';
+import Button from './Button';
 import backArrow from '../../assets/back-arrow.png';
 import mainBackground from '../../assets/main-bg.png';
 import Number1 from '../../assets/number-1-icon.png';

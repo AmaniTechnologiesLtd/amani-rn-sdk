@@ -16,7 +16,7 @@ import api from '../services/api';
 import TopBar from './TopBar';
 import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
-import Button from 'amani-rn-sdk/src/components/Button';
+import Button from './Button';
 import mainBackground from '../../assets/main-bg.png';
 import blueBackground from '../../assets/btn-blue.png';
 import successIcon from '../../assets/success-icon.png';
@@ -24,6 +24,7 @@ import successIcon from '../../assets/success-icon.png';
 const { height } = Dimensions.get('window');
 
 const handleSendButton = (formData) => {
+  // TODO: Implement Ininal messaging system
   console.log(formData);
 };
 

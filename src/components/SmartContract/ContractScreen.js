@@ -24,7 +24,7 @@ import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
 import checkboxEmpty from '../../../assets/checkbox_empty.png';
 import checkboxChecked from '../../../assets/checkbox_checked.png';
-import Button from 'amani-rn-sdk/src/components/Button';
+import Button from '../Button';
 import Loading from '../Loading';
 import ModalPicker from '../ModalPicker';
 import { content } from './View/html';

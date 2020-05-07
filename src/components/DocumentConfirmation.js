@@ -13,7 +13,8 @@ import {
 import api from '../services/api';
 import Loading from './Loading';
 import TopBar from './TopBar';
-import Button from 'amani-rn-sdk/src/components/Button';
+import Button from './Button';
+import { errorMessages } from '../constants';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 
@@ -34,12 +35,6 @@ const DocumentConfirmation = (props) => {
 
   useEffect(() => {
     if (!imgSrc && document.id !== 'UB') {
-      // If it is selfie do not send to autocropper
-      if (document.id === 'SE') {
-        setImgSrc(imageUrl);
-        return;
-      }
-
       const requestData = new FormData();
       if (corners) {
         corners.forEach((corner) =>
@@ -54,23 +49,8 @@ const DocumentConfirmation = (props) => {
         .cropImage(requestData)
         .then((res) => {
           setImgSrc(res.data.image);
-          if (res.data.glare) {
-            setErrorMessage(
-              'Fotoğrafta parlama tespit edildi.\n\nLütfen belgenizin üstüne doğrudan ışık gelmemesine dikkat edin.',
-            );
-            return;
-          }
-          if (res.data.blur) {
-            setErrorMessage(
-              'Fotoğrafta bulanıklık tespit edildi.\n\nLütfen daha iyi aydınlatılmış bir ortamda tekrar deneyin.',
-            );
-            return;
-          }
-          if (!res.data.cropped) {
-            setErrorMessage(
-              'Belgeyi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar deneyin.',
-            );
-            return;
+          if (res.data.errors.length) {
+            setErrorMessage(errorMessages[res.data.errors[0].error_code]);
           }
         })
         .catch(() => {
@@ -121,7 +101,9 @@ const DocumentConfirmation = (props) => {
           />
           {!errorMessage && (
             <Button
-              onPress={() => continueProcess(imgSrc)}
+              onPress={
+                () => continueProcess(document.id === 'SE' ? imageUrl : imgSrc) // Send full image for selfie for other documents send cropped
+              }
               text="ONAYLA"
               style={{ marginLeft: width * 0.05, flex: 1 }}
             />
@@ -182,9 +164,6 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     flex: 1,
-    justifyContent: 'center',
-    borderRadius: 10,
-    overflow: 'hidden',
   },
   tryAgainButton: {
     borderColor: 'white',

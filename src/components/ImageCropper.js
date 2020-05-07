@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get('window');
 // Local files
 import CustomCrop from './CustomCrop';
 import TopBar from './TopBar';
-import Button from 'amani-rn-sdk/src/components/Button';
+import Button from './Button';
 import PoweredBy from './PoweredBy';
 import backArrow from '../../assets/back-arrow.png';
 

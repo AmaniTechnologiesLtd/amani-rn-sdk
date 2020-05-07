@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import { strNormalize } from '../helpers';
-import TopBar from 'amani-rn-sdk/src/components/TopBar';
+import TopBar from './TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import searchIcon from '../../assets/search-icon.png';
