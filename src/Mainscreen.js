@@ -349,7 +349,11 @@ const MainScreen = (props) => {
         title: selectedDocument.errorTitle,
         message: errors || selectedDocument.errorDescription,
         buttonText: 'DEVAM',
-        buttonClick: () => setMessage({ ...initialMessage }),
+        buttonClick: () => {
+          setFiles([]);
+          setCorners([]);
+          setMessage({ ...initialMessage });
+        },
       });
     }
   };
