@@ -225,6 +225,8 @@ const CaptureDocument = (props) => {
         customer={customer}
         document={document}
         corners={corners}
+        versionGroup={versionGroup}
+        groupIndex={groupIndex}
         imageUrl={capturedImageUrl}
         step={currentStep}
         continueProcess={(image) => {

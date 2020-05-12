@@ -29,12 +29,20 @@ const DocumentConfirmation = (props) => {
     continueProcess,
     corners,
     step,
+    versionGroup,
+    groupIndex,
   } = props;
   const [errorMessage, setErrorMessage] = useState(null);
   const [imgSrc, setImgSrc] = useState(null);
 
   useEffect(() => {
-    if (!imgSrc && document.id !== 'UB') {
+    if (!imgSrc) {
+      // If document is not for autoCapture
+      if (!document.versions[versionGroup][groupIndex].autoCapture) {
+        setImgSrc(imageUrl);
+        return;
+      }
+
       const requestData = new FormData();
       if (corners) {
         corners.forEach((corner) =>
@@ -59,7 +67,7 @@ const DocumentConfirmation = (props) => {
     }
   }, []);
 
-  if (!imgSrc && document.id !== 'UB') {
+  if (!imgSrc) {
     return <Loading type={document.id} />;
   }
 
