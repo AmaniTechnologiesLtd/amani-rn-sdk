@@ -278,153 +278,154 @@ const CaptureDocument = (props) => {
         type={cameraType}
         captureAudio={false}
         ratio="16:9">
-        {buttonDisabled ? (
-          <Loading type={document.id} />
-        ) : (
-          <>
-            <View
-              style={{
+        <>
+          <View
+            style={{
+              backgroundColor:
+                document.versions[versionGroup][groupIndex].aspectRatio ||
+                document.id === 'SE'
+                  ? backdropColor
+                  : 'transparent',
+            }}>
+            <TopBar
+              onLeftButtonPressed={goBack}
+              leftButtonIcon={backArrow}
+              title={document.versions[versionGroup][groupIndex].title}
+            />
+          </View>
+
+          <View
+            style={[
+              styles.topArea,
+              {
                 backgroundColor:
                   document.versions[versionGroup][groupIndex].aspectRatio ||
                   document.id === 'SE'
                     ? backdropColor
                     : 'transparent',
-              }}>
-              <TopBar
-                onLeftButtonPressed={goBack}
-                leftButtonIcon={backArrow}
-                title={document.versions[versionGroup][groupIndex].title}
-              />
-            </View>
-
-            <View
-              style={[
-                styles.topArea,
-                {
-                  backgroundColor:
-                    document.versions[versionGroup][groupIndex].aspectRatio ||
-                    document.id === 'SE'
-                      ? backdropColor
-                      : 'transparent',
-                  maxHeight: document.id === 'SE' ? height * 0.005 : 'auto',
-                },
-              ]}>
-              {document.steps.length > 1 && (
-                <Text style={styles.topText}>
-                  {document.steps[currentStep].title}
-                </Text>
-              )}
-            </View>
-
-            {document.versions[versionGroup][groupIndex].aspectRatio && (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.backDrop} />
-                <View
-                  onLayout={(event) => {
-                    setPreviewArea({
-                      previewAreaWidth: width * 0.85,
-                      previewAreaHeight:
-                        width *
-                        0.85 *
-                        document.versions[versionGroup][groupIndex].aspectRatio,
-                      previewAreaX: event.nativeEvent.layout.x,
-                      previewAreaY: event.nativeEvent.layout.y + width * 0.85,
-                    });
-                  }}
-                  style={[
-                    styles.previewMiddle,
-                    {
-                      width: width * 0.85,
-                      height:
-                        width *
-                        0.85 *
-                        document.versions[versionGroup][groupIndex].aspectRatio,
-                    },
-                  ]}
-                />
-                <View style={styles.backDrop} />
-              </View>
-            )}
-
-            {document.id === 'SE' && (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.selfieContainer}>
-                  <SelfieMask />
-                </View>
-              </View>
-            )}
-
-            <View
-              style={{
-                backgroundColor:
-                  document.versions[versionGroup][groupIndex].aspectRatio ||
-                  document.id === 'SE'
-                    ? backdropColor
-                    : 'transparent',
-              }}>
-              <Text style={styles.bottomText}>
-                {document.steps[currentStep].description}
+                maxHeight: document.id === 'SE' ? height * 0.005 : 'auto',
+              },
+            ]}>
+            {document.steps.length > 1 && (
+              <Text style={styles.topText}>
+                {document.steps[currentStep].title}
               </Text>
+            )}
+          </View>
+
+          {document.versions[versionGroup][groupIndex].aspectRatio && (
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.backDrop} />
+              <View
+                onLayout={(event) => {
+                  setPreviewArea({
+                    previewAreaWidth: width * 0.85,
+                    previewAreaHeight:
+                      width *
+                      0.85 *
+                      document.versions[versionGroup][groupIndex].aspectRatio,
+                    previewAreaX: event.nativeEvent.layout.x,
+                    previewAreaY: event.nativeEvent.layout.y + width * 0.85,
+                  });
+                }}
+                style={[
+                  styles.previewMiddle,
+                  {
+                    width: width * 0.85,
+                    height:
+                      width *
+                      0.85 *
+                      document.versions[versionGroup][groupIndex].aspectRatio,
+                  },
+                ]}
+              />
+              <View style={styles.backDrop} />
             </View>
-            <View
+          )}
+
+          {document.id === 'SE' && (
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.selfieContainer}>
+                <SelfieMask />
+              </View>
+            </View>
+          )}
+
+          <View
+            style={{
+              backgroundColor:
+                document.versions[versionGroup][groupIndex].aspectRatio ||
+                document.id === 'SE'
+                  ? backdropColor
+                  : 'transparent',
+            }}>
+            <Text style={styles.bottomText}>
+              {document.steps[currentStep].description}
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.bottomArea,
+              {
+                backgroundColor:
+                  document.versions[versionGroup][groupIndex].aspectRatio ||
+                  document.id === 'SE'
+                    ? backdropColor
+                    : '#263B5B',
+                flex:
+                  document.versions[versionGroup][groupIndex].aspectRatio ||
+                  document.id === 'SE'
+                    ? 1
+                    : 0,
+              },
+            ]}>
+            {document.versions[versionGroup][groupIndex].edevlet && (
+              <Button
+                text="E-Devletten al"
+                onPress={() => setShowEDevlet(true)}
+                style={styles.eDevlet}
+                backgroundStyle={{
+                  paddingVertical: 5,
+                  paddingHorizontal: 15,
+                }}
+                backgroundImage={darkBlueBackground}
+              />
+            )}
+
+            <TouchableOpacity
               style={[
-                styles.bottomArea,
+                styles.takePhotoButtonCircle,
                 {
-                  backgroundColor:
-                    document.versions[versionGroup][groupIndex].aspectRatio ||
-                    document.id === 'SE'
-                      ? backdropColor
-                      : '#263B5B',
-                  flex:
-                    document.versions[versionGroup][groupIndex].aspectRatio ||
-                    document.id === 'SE'
-                      ? 1
-                      : 0,
+                  borderColor: buttonDisabled ? '#9e9e9e' : 'white',
                 },
-              ]}>
-              {document.versions[versionGroup][groupIndex].edevlet && (
-                <Button
-                  text="E-Devletten al"
-                  onPress={() => setShowEDevlet(true)}
-                  style={styles.eDevlet}
-                  backgroundStyle={{
-                    paddingVertical: 5,
-                    paddingHorizontal: 15,
-                  }}
-                  backgroundImage={darkBlueBackground}
-                />
-              )}
+              ]}
+              disabled={buttonDisabled}
+              onPress={takePicture}>
+              <View
+                style={[
+                  styles.takePhotoButton,
+                  {
+                    backgroundColor: buttonDisabled ? '#9e9e9e' : 'white',
+                  },
+                ]}
+              />
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.takePhotoButtonCircle}
-                disabled={buttonDisabled}
-                onPress={takePicture}>
-                <View
-                  style={[
-                    styles.takePhotoButton,
-                    {
-                      backgroundColor: buttonDisabled ? '#9e9e9e' : 'white',
-                    },
-                  ]}
-                />
-              </TouchableOpacity>
-
-              {document.options.includes('fileUpload') && (
-                <Button
-                  text="PDF Yükle"
-                  onPress={pickAndTransformPdf}
-                  style={styles.fileUpload}
-                  backgroundStyle={{
-                    paddingVertical: 5,
-                    paddingHorizontal: 25,
-                  }}
-                  backgroundImage={darkBlueBackground}
-                />
-              )}
-            </View>
-            <PoweredBy />
-          </>
-        )}
+            {document.options.includes('fileUpload') && (
+              <Button
+                text="PDF Yükle"
+                onPress={pickAndTransformPdf}
+                style={styles.fileUpload}
+                backgroundStyle={{
+                  paddingVertical: 5,
+                  paddingHorizontal: 25,
+                }}
+                backgroundImage={darkBlueBackground}
+              />
+            )}
+          </View>
+          <PoweredBy />
+        </>
       </RNCamera>
     </View>
   );
