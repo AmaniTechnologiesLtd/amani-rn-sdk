@@ -7,6 +7,7 @@ import {
   Dimensions,
   StyleSheet,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 
 import { errorMessages } from '../constants';
@@ -15,6 +16,7 @@ import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import failedIcon from '../../assets/failed-icon.png';
 import warningIcon from '../../assets/warning-icon.png';
+import closeIcon from '../../assets/close-icon.png';
 
 const { width, height } = Dimensions.get('window');
 
@@ -48,23 +50,28 @@ const MessageScreen = (props) => {
     <ImageBackground source={mainBackground} style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
 
-      <View style={styles.messageContainer}>
-        <Image
-          resizeMode="contain"
-          style={styles.successIcon}
-          source={messageIcon()}
-        />
-        {header && <Text style={styles.header}>{header}</Text>}
-        {title && <Text style={styles.message}>{title}</Text>}
-        {messageDescription()}
-      </View>
+      <View style={styles.messagePopup}>
+        <TouchableOpacity style={styles.closeButton} onPress={onClick}>
+          <Image style={styles.closeIcon} source={closeIcon} />
+        </TouchableOpacity>
+        <View style={styles.messageContainer}>
+          <Image
+            resizeMode="contain"
+            style={styles.successIcon}
+            source={messageIcon()}
+          />
+          {header && <Text style={styles.header}>{header}</Text>}
+          {title && <Text style={styles.message}>{title}</Text>}
+          {messageDescription()}
+        </View>
 
-      <View style={styles.bottomBar}>
-        <Button
-          onPress={onClick}
-          text={buttonText}
-          style={[styles.buttonStyle, { flex: 1 }]}
-        />
+        <View style={styles.bottomBar}>
+          <Button
+            onPress={onClick}
+            text={buttonText}
+            style={[styles.buttonStyle, { flex: 1 }]}
+          />
+        </View>
       </View>
     </ImageBackground>
   );
@@ -82,11 +89,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'white',
     padding: 20,
   },
+  messagePopup: {
+    marginTop: 40,
+    height: height * 0.8,
+    width: width * 0.9,
+    alignItems: 'center',
+    backgroundColor: 'rgba(38, 59, 91, 0.7)',
+    borderRadius: 10,
+    borderColor: 'rgba(0, 232, 255, 0.4)',
+    borderWidth: 2,
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    padding: 10,
+  },
+  closeIcon: {
+    resizeMode: 'contain',
+    width: width * 0.08,
+    height: width * 0.08,
+  },
   messageContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -118,5 +144,6 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     flex: 1,
+    marginHorizontal: 10,
   },
 });

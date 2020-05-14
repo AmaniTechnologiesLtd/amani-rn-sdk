@@ -28,11 +28,11 @@ import TopBar from './components/TopBar';
 import AppliedScreen from './components/AppliedScreen';
 import mainBackground from '../assets/main-bg.png';
 import backArrow from '../assets/back-arrow.png';
-import forwardArrow from '../assets/forward-arrow.png';
-import lockIcon from '../assets/locked-icon.png';
+import stepWarning from '../assets/step-warning-icon.png';
+import stepWarningDark from '../assets/step-warning-dark-icon.png';
+import lockIcon from '../assets/locked-dark-icon.png';
 import successIcon from '../assets/success-icon.png';
 import approvedIcon from '../assets/approved-icon.png';
-import failedIcon from '../assets/failed-icon.png';
 import seperatorIcon from '../assets/seperator-icon.png';
 
 const { width, height } = Dimensions.get('window');
@@ -271,10 +271,10 @@ const MainScreen = (props) => {
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
-          status: 'REJECTED',
+          status: 'AUTOMATICALLY_REJECTED',
         });
 
-        updateCustomerRules(selectedDocument.id, 'REJECTED');
+        updateCustomerRules(selectedDocument.id, 'AUTOMATICALLY_REJECTED');
 
         if (!selectedDocument.options.includes('async')) {
           showErrorMessage(res.data.errors);
@@ -284,12 +284,12 @@ const MainScreen = (props) => {
         dispatch({
           type: 'CHANGE_STATUS',
           document_id: selectedDocument.id,
-          status: 'REJECTED',
+          status: 'AUTOMATICALLY_REJECTED',
         });
 
         updateCustomerRules(
           selectedDocument.id,
-          'REJECTED',
+          'AUTOMATICALLY_REJECTED',
           'Belgeniz doğrulanamadı',
         );
 
@@ -403,7 +403,11 @@ const MainScreen = (props) => {
     // Accessibility check for only physical contract
     return Boolean(
       (document.id === 'CO' &&
-        checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])) ||
+        checkPreviousSteps(index, [
+          'NOT_UPLOADED',
+          'REJECTED',
+          'AUTOMATICALLY_REJECTED',
+        ])) ||
         ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
     );
 
@@ -415,12 +419,42 @@ const MainScreen = (props) => {
     // );
   };
 
-  const modalStatusIcon = (document, index) => {
+  const moduleStatusBackground = (document) => {
+    if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(document.status)) {
+      return { backgroundColor: '#FF5C65', paddingVertical: 5 };
+    } else if (document.status === 'NOT_UPLOADED') {
+      return { backgroundColor: '#00FFD1' };
+    }
+  };
+
+  const moduleTitleStyle = (document) => {
+    if (document.status === 'APPROVED') {
+      return {
+        color: '#CAE0F5',
+        fontSize: width * 0.035,
+        fontWeight: 'normal',
+      };
+    } else if (
+      ['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(document.status)
+    ) {
+      return {
+        color: '#FFFFFF',
+      };
+    } else if (document.status === 'PENDING_REVIEW') {
+      return { color: '#CAE0F5' };
+    }
+  };
+
+  const moduleStatusIcon = (document, index) => {
     if (
       document.id === 'CO' && // Show lock icon for only physical contract
       !['APPROVED', 'PENDING_REVIEW'].includes(document.status) &&
       index !== 0 &&
-      checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])
+      checkPreviousSteps(index, [
+        'NOT_UPLOADED',
+        'REJECTED',
+        'AUTOMATICALLY_REJECTED',
+      ])
     ) {
       return (
         <Image
@@ -434,7 +468,7 @@ const MainScreen = (props) => {
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={forwardArrow}
+          source={stepWarningDark}
         />
       );
     } else if (document.status === 'PENDING_REVIEW') {
@@ -453,12 +487,14 @@ const MainScreen = (props) => {
           source={approvedIcon}
         />
       );
-    } else if (document.status === 'REJECTED') {
+    } else if (
+      ['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(document.status)
+    ) {
       return (
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={failedIcon}
+          source={stepWarning}
         />
       );
     }
@@ -523,7 +559,9 @@ const MainScreen = (props) => {
     }
 
     const incompleteRules = currentCustomer.rules.filter((doc) =>
-      ['NOT_UPLOADED', 'REJECTED'].includes(doc.status),
+      ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
+        doc.status,
+      ),
     );
 
     clearSelectedDocument();
@@ -599,7 +637,17 @@ const MainScreen = (props) => {
         onCapture={(capture) => setFiles([...files, capture])}
         onManualCropCorners={(cropData) => setCorners([...corners, cropData])}
         onStepsFinished={setIsStepsFinished}
-        onClearDocument={clearSelectedDocument}
+        onClearDocument={() => {
+          // If customer directly go to ID validation (new customer)
+          // when pressed go back button exit to Ininal App
+          if (customer.status === 'Created') {
+            goBack();
+            return;
+          }
+
+          // Otherwise exit to main screen
+          clearSelectedDocument();
+        }}
         onSkipDocument={skipDocument}
       />
     );
@@ -633,22 +681,17 @@ const MainScreen = (props) => {
             <Fragment key={document.id}>
               <TouchableOpacity
                 disabled={checkIsNextStepDisabled(document, index)}
-                style={styles.moduleButton}
+                style={[styles.moduleButton, moduleStatusBackground(document)]}
                 onPress={() => selectDocument(document)}>
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>
                     <Text
-                      style={[
-                        styles.moduleTitle,
-                        ['APPROVED'].includes(document.status)
-                          ? styles.moduleTitleApproved
-                          : {},
-                      ]}>
+                      style={[styles.moduleTitle, moduleTitleStyle(document)]}>
                       {document.messages[document.status]}
                     </Text>
                   </View>
                   <View style={styles.moduleStatusContainer}>
-                    {modalStatusIcon(document, index)}
+                    {moduleStatusIcon(document, index)}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -716,15 +759,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   moduleTitle: {
-    color: '#eee',
+    color: '#263B5B',
     fontSize: width * 0.04,
     fontWeight: 'bold',
     letterSpacing: 0.5,
-  },
-  moduleTitleApproved: {
-    color: '#CAE0F5',
-    fontSize: width * 0.035,
-    fontWeight: 'normal',
   },
   moduleStatusContainer: {
     width: '10%',

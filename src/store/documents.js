@@ -59,6 +59,7 @@ export const initialDocuments = [
       PROCESSING: 'Kimliğin doğrulanıyor',
       APPROVED: 'Kimliğin doğrulandı',
       REJECTED: `Kimliğin doğrulanamadı\nLütfen tekrar dene`,
+      AUTOMATICALLY_REJECTED: `Kimliğin doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Kimliğini başarıyla yükledin',
     successDescription:
@@ -101,6 +102,7 @@ export const initialDocuments = [
       PROCESSING: 'Selfie doğrulanıyor',
       APPROVED: 'Selfie doğrulandı',
       REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
+      AUTOMATICALLY_REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: "Selfie'ni başarıyla yükledin",
     successDescription:
@@ -142,6 +144,7 @@ export const initialDocuments = [
       PROCESSING: 'Pasaportub doğrulanıyor',
       APPROVED: 'Pasaportun doğrulandı',
       REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
+      AUTOMATICALLY_REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Pasaportunu başarıyla yükledin',
     successDescription: 'Bir sonraki adıma geçebilirsin',
@@ -183,6 +186,7 @@ export const initialDocuments = [
       PROCESSING: 'Vizen doğrulanıyor',
       APPROVED: 'Vizen doğrulandı',
       REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
+      AUTOMATICALLY_REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Vizeni başarıyla yükledin',
     successDescription: 'Bir sonraki adıma geçebilirsin',
@@ -275,6 +279,7 @@ export const initialDocuments = [
       PROCESSING: 'Adresin doğrulanıyor',
       APPROVED: 'Adresin doğrulandı',
       REJECTED: `Adresin doğrulanamadı\nLütfen tekrar dene`,
+      AUTOMATICALLY_REJECTED: `Adresin doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: 'Sözleşmeyi imzalamak için devam et',
@@ -317,6 +322,7 @@ export const initialDocuments = [
       PROCESSING: 'İmzan doğrulanıyor',
       APPROVED: 'Dijital sözleşme imzalandı',
       REJECTED: 'İmzan doğrulanamadı\nLütfen tekrar dene',
+      AUTOMATICALLY_REJECTED: 'İmzan doğrulanamadı\nLütfen tekrar dene',
     },
     successTitle: 'Dijital sözleşmeni başarıyla yükledin',
     successDescription: 'Fiziksel sözleşmeyi imzalamak için devam et',
@@ -355,6 +361,8 @@ export const initialDocuments = [
       PROCESSING: 'Fiziksel sözleşmen doğrulanıyor',
       APPROVED: 'Fiziksel sözleşme İmzalandı',
       REJECTED: 'Fiziksel sözleşmen doğrulanamadı\nLütfen tekrar dene',
+      AUTOMATICALLY_REJECTED:
+        'Fiziksel sözleşmen doğrulanamadı\nLütfen tekrar dene',
     },
     successTitle: 'Fiziksel sözleşmeni başarıyla yükledin',
     successDescription:
