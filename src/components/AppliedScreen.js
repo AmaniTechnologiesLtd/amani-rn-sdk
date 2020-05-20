@@ -23,17 +23,20 @@ import successIcon from '../../assets/success-icon.png';
 
 const { height } = Dimensions.get('window');
 
-const handleSendButton = (formData) => {
-  // TODO: Implement Ininal messaging system
-  console.log(formData);
-};
-
-const SendEmailContent = () => {
-  const [formData, setFormData] = useState({
-    type: 'email',
-    email: '',
-  });
+const SendEmailContent = (props) => {
+  const { customer } = props;
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState(false);
+
+  const sendContractEmail = async () => {
+    try {
+      const response = await api.sendContractEmail(customer.id, { email });
+      console.log(response);
+      // if (response.data.document_url) {
+      //   Linking.openURL(response.data.document_url);
+      // }
+    } catch (error) {}
+  };
 
   if (message) {
     return (
@@ -62,26 +65,26 @@ const SendEmailContent = () => {
       </Text>
       <TextInput
         style={styles.textInput}
-        onChangeText={(val) => setFormData({ ...formData, email: val })}
+        onChangeText={(val) => setEmail(val)}
         placeholder="E-posta adresi"
         placeholderTextColor="#CAE0F5"
         autoCompleteType="email"
         keyboardType="email-address"
         returnKeyType="send"
         onSubmitEditing={() => {
-          if (formData.email) {
-            handleSendButton(formData);
+          if (email) {
+            sendContractEmail();
             setMessage(true);
           }
         }}
-        value={formData.email}
+        value={email}
       />
       <Button
-        disabled={!formData.email}
+        disabled={!email}
         text="GÖNDER"
         style={{ marginVertical: 10 }}
         onPress={() => {
-          handleSendButton(formData);
+          sendContractEmail();
           setMessage(true);
         }}
       />
@@ -183,7 +186,6 @@ const AppliedScreen = (props) => {
         <View>
           <Button
             onPress={getContractURL}
-            noBackground={true}
             text="Sözleşmeyi İndir"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}
@@ -192,7 +194,6 @@ const AppliedScreen = (props) => {
             onPress={() =>
               setShowPopup(<SendEmailContent customer={customerData} />)
             }
-            noBackground={true}
             text="Sözleşmeni E-posta ile Gönder"
             style={styles.buttonStyle}
             backgroundImage={blueBackground}

@@ -13,6 +13,8 @@ export default {
   createCustomer: (param) => axios.post('customer', param),
   getCustomer: (id) => axios.get(`customer/detail/${id}`),
   getContractURL: (id) => axios.get(`company_forms/2/customer/${id}/file`),
+  sendContractEmail: (id, email) =>
+    axios.post(`company_forms/2/customer/${id}/email`, email),
   getCities: () => axios.get('/cities'),
   cropImage: (documentData) => axios.post('engine/autocapture', documentData),
   sendDocument: (documentData) =>
