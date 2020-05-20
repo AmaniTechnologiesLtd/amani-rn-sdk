@@ -92,7 +92,7 @@ export const initialDocuments = [
           title: 'Selfie',
           crop: false,
           autoCrop: false,
-          autoCapture: false,
+          autoCapture: true,
         },
       ],
     },

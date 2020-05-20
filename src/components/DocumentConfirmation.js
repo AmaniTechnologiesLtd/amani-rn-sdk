@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   ScrollView,
@@ -10,11 +10,9 @@ import {
 } from 'react-native';
 
 // Local files
-import api from '../services/api';
-import Loading from './Loading';
+
 import TopBar from './TopBar';
 import Button from './Button';
-import { errorMessages } from '../constants';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 
@@ -22,54 +20,14 @@ const { width, height } = Dimensions.get('window');
 
 const DocumentConfirmation = (props) => {
   const {
-    customer,
-    imageUrl,
+    imgSrc,
+    originalImage,
     document,
     onTryAgain,
     continueProcess,
-    corners,
     step,
-    versionGroup,
-    groupIndex,
+    errorMessage,
   } = props;
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [imgSrc, setImgSrc] = useState(null);
-
-  useEffect(() => {
-    if (!imgSrc) {
-      // If document is not for autoCapture
-      if (!document.versions[versionGroup][groupIndex].autoCapture) {
-        setImgSrc(imageUrl);
-        return;
-      }
-
-      const requestData = new FormData();
-      if (corners) {
-        corners.forEach((corner) =>
-          requestData.append('corners[]', JSON.stringify(corner)),
-        );
-      }
-      requestData.append('customer_id', customer.id);
-      requestData.append('type', document.id);
-      requestData.append('files[]', imageUrl);
-
-      api
-        .cropImage(requestData)
-        .then((res) => {
-          setImgSrc(res.data.image);
-          if (res.data.errors.length) {
-            setErrorMessage(errorMessages[res.data.errors[0].error_code]);
-          }
-        })
-        .catch(() => {
-          setErrorMessage('Bir şeyler yanlış gitti. Lütfen tekrar deneyin.');
-        });
-    }
-  }, []);
-
-  if (!imgSrc) {
-    return <Loading type={document.id} />;
-  }
 
   // Ask user for confirmation or show error messages
   return (
@@ -110,7 +68,8 @@ const DocumentConfirmation = (props) => {
           {!errorMessage && (
             <Button
               onPress={
-                () => continueProcess(document.id === 'SE' ? imageUrl : imgSrc) // Send full image for selfie for other documents send cropped
+                () =>
+                  continueProcess(document.id === 'SE' ? originalImage : imgSrc) // Send full image for selfie for other documents send cropped
               }
               text="ONAYLA"
               style={{ marginLeft: width * 0.05, flex: 1 }}

@@ -440,6 +440,8 @@ const MainScreen = (props) => {
       return {
         color: '#FFFFFF',
       };
+    } else if (document.status === 'PROCESSING') {
+      return { color: '#FFFFFF' };
     } else if (document.status === 'PENDING_REVIEW') {
       return { color: '#CAE0F5' };
     }
