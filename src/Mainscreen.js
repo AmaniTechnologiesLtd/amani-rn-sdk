@@ -124,7 +124,7 @@ const MainScreen = (props) => {
 
     // Set location for later use
     if (permissions.location === 'granted' || Platform.OS === 'ios') {
-      Geolocation.setRNConfiguration('whenInUse');
+      Geolocation.setRNConfiguration({ authorizationLevel: 'whenInUse' });
       Geolocation.getCurrentPosition(
         (position) => setLocation(position.coords),
         (error) => console.log(error),
