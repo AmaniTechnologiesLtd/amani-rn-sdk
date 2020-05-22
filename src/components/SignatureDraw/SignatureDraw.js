@@ -18,11 +18,12 @@ import MessageScreen from '../MessageScreen';
 import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
 import animationSignature from '../../../assets/animation_signature.json';
+import { errorMessages } from '../../constants';
 
 const SignatureDraw = (props) => {
   const {
     document,
-    goBackToMainScreen,
+    showSuccessMessage,
     customer,
     goBack,
     formData,
@@ -31,7 +32,7 @@ const SignatureDraw = (props) => {
   } = props;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
-  const [notMatched, setNotMatched] = useState(false);
+  const [notMatched, setNotMatched] = useState(null);
   const [showAnimation, setShowAnimation] = useState(true);
   const [isProcessStarted, setIsProcessStarted] = useState(null);
 
@@ -64,6 +65,13 @@ const SignatureDraw = (props) => {
   };
 
   const sendSignatureDocuments = async () => {
+    await dispatch({
+      type: 'INCREMENT_TRIAL',
+      document_id: document.id,
+    });
+
+    document.trial += 1;
+
     const deviceData = {
       id: DeviceInfo.getUniqueId(),
       os: Platform.OS,
@@ -81,8 +89,8 @@ const SignatureDraw = (props) => {
     await api
       .sendDocument(requestData)
       .then(async (res) => {
-        if (res.data.status !== 'OK') {
-          setNotMatched(true);
+        if (res.data.status !== 'OK' && document.trial < 4) {
+          setNotMatched(errorMessages[res.data.errors[0].error_code]);
           setCurrentStep(0);
           setSignature([]);
           setIsProcessStarted(false);
@@ -90,14 +98,8 @@ const SignatureDraw = (props) => {
           await dispatch({
             type: 'CHANGE_STATUS',
             document_id: document.id,
-            status: 'REJECTED',
+            status: 'AUTOMATICALLY_REJECTED',
           });
-
-          updateCustomerRules(
-            document.id,
-            'REJECTED',
-            'Belgeniz doğrulanamadı',
-          );
 
           return;
         }
@@ -110,7 +112,7 @@ const SignatureDraw = (props) => {
 
         updateCustomerRules(document.id, 'PENDING_REVIEW');
 
-        goBackToMainScreen();
+        showSuccessMessage(document);
       })
       .catch(async (error) => {
         setCurrentStep(0);
@@ -126,13 +128,12 @@ const SignatureDraw = (props) => {
           ],
           { cancelable: false },
         );
+
         await dispatch({
           type: 'CHANGE_STATUS',
           document_id: document.id,
-          status: 'REJECTED',
+          status: 'AUTOMATICALLY_REJECTED',
         });
-
-        updateCustomerRules(document.id, 'REJECTED', 'Belgeniz doğrulanamadı');
       });
   };
 
@@ -170,10 +171,10 @@ const SignatureDraw = (props) => {
     return (
       <MessageScreen
         type="error"
-        header="İmzanızı eşleştiremedik!"
-        title="Dijital imzanız kimliğinizdeki imza ile aynı olmalıdır"
-        buttonText="TEKRAR DENE"
-        onClick={() => setNotMatched(false)}
+        header="Dikkat!"
+        title={notMatched}
+        buttonText="DEVAM"
+        onClick={() => setNotMatched(null)}
       />
     );
   }

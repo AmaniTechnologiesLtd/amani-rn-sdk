@@ -266,7 +266,7 @@ const MainScreen = (props) => {
     await api
       .sendDocument(requestData)
       .then((res) => {
-        if (res.data.status === 'OK' || selectedDocument.trial > 2) {
+        if (res.data.status === 'OK' || selectedDocument.trial >= 2) {
           dispatch({
             type: 'CHANGE_STATUS',
             document_id: selectedDocument.id,
@@ -338,15 +338,16 @@ const MainScreen = (props) => {
     });
   };
 
-  const showSuccessMessage = () => {
-    if (selectedDocument) {
+  const showSuccessMessage = (document = null) => {
+    const messageDocument = document ? document : selectedDocument;
+    if (messageDocument) {
       setMessage({
         ...initialMessage,
         show: true,
         type: 'success',
         header: 'Tebrikler!',
-        title: selectedDocument.successTitle,
-        message: selectedDocument.successDescription,
+        title: messageDocument.successTitle,
+        message: messageDocument.successDescription,
         buttonText: 'DEVAM',
         buttonClick: () => findIncompleteDocument(customer),
       });
@@ -401,6 +402,7 @@ const MainScreen = (props) => {
     setSelectedDocument(null);
     setFiles([]);
     setCorners([]);
+    setShowContract(false);
     setMessage({ ...initialMessage });
   };
 
@@ -679,6 +681,7 @@ const MainScreen = (props) => {
         dispatch={dispatch}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
+        showSuccessMessage={showSuccessMessage}
       />
     );
   }

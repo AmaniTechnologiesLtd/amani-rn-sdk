@@ -205,7 +205,7 @@ const CaptureDocument = (props) => {
           );
         }
 
-        if (trialCount < 3) {
+        if (trialCount < 2) {
           setAutoCapturedImage(res.data.image);
         } else {
           onCapture(image);
@@ -236,7 +236,6 @@ const CaptureDocument = (props) => {
     setCorners(captureCorners);
     onManualCropCorners(captureCorners);
     calculateNextStep();
-    // setIsProcessStarted(false);
   };
 
   const checkForVersions = () => {

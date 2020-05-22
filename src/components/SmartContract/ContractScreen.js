@@ -42,6 +42,7 @@ const ContractScreen = (props) => {
     location,
     dispatch,
     updateCustomerRules,
+    showSuccessMessage,
   } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [showContract, setShowContract] = useState(false);
@@ -216,7 +217,7 @@ const ContractScreen = (props) => {
         dispatch={dispatch}
         location={location}
         goBack={() => setShowSignatureScreen(false)}
-        goBackToMainScreen={onContractDecline}
+        showSuccessMessage={showSuccessMessage}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
       />
