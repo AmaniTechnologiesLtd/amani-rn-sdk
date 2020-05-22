@@ -8,7 +8,7 @@ export const initialDocuments = [
       {
         title: 'Kimliğinin ön yüzünü fotoğrafını çek',
         description:
-          'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
+          'Fotoğrafı aydınlık bir alanda çek.\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Kimliğinin Ön Yüzü',
         confirmationDescription:
           'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
@@ -22,6 +22,7 @@ export const initialDocuments = [
           'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
     ],
+    trial: 1,
     options: ['takePicture', 'async'],
     captureVideo: false,
     cameraFacing: 'environment',
@@ -79,6 +80,7 @@ export const initialDocuments = [
           'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
       },
     ],
+    trial: 1,
     options: ['takePicture'],
     type: 'video',
     captureVideo: true,
@@ -121,6 +123,7 @@ export const initialDocuments = [
           'Lütfen pasaportunuzu kutucuğun içinde olacak şekilde konumlandırın',
       },
     ],
+    trial: 1,
     options: ['takePicture'],
     type: 'image',
     captureVideo: false,
@@ -162,6 +165,7 @@ export const initialDocuments = [
           'Lütfen vizenizi kutucuğun içinde olacak şekilde konumlandırın',
       },
     ],
+    trial: 1,
     options: ['takePicture'],
     type: 'image',
     captureVideo: false,
@@ -203,6 +207,7 @@ export const initialDocuments = [
         description: '',
       },
     ],
+    trial: 1,
     options: ['takePicture', 'fileUpload', 'skipDocument', 'async'],
     type: 'image',
     captureVideo: false,
@@ -300,6 +305,7 @@ export const initialDocuments = [
         description: '',
       },
     ],
+    trial: 1,
     options: ['takePicture'],
     type: 'image',
     captureVideo: false,
@@ -339,6 +345,7 @@ export const initialDocuments = [
         description: '',
       },
     ],
+    trial: 1,
     options: ['takePicture', 'fileUpload'],
     type: 'image',
     captureVideo: false,
@@ -385,8 +392,14 @@ export const documentsReducer = (state, action) => {
           (document.secondary_id &&
             document.secondary_id.includes(action.document_id))
         ) {
-          const updateDoc = { ...document, status: action.status };
-          return updateDoc;
+          return { ...document, status: action.status };
+        }
+        return document;
+      });
+    case 'INCREMENT_TRIAL':
+      return state.map((document) => {
+        if (action.document_id === document.id) {
+          return { ...document, trial: document.trial + 1 };
         }
         return document;
       });

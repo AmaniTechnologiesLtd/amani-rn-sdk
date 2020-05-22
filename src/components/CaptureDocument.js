@@ -6,6 +6,7 @@ import {
   BackHandler,
   Dimensions,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import RNFS from 'react-native-fs';
@@ -24,6 +25,7 @@ import VersionSelection from './VersionSelection';
 import DocumentConfirmation from './DocumentConfirmation';
 import api from '../services/api';
 import backArrow from '../../assets/back-arrow.png';
+import blueBackground from '../../assets/btn-blue.png';
 import darkBlueBackground from '../../assets/btn-dark-blue.png';
 import { backdropColor } from '../constants';
 import { errorMessages } from '../constants';
@@ -202,7 +204,8 @@ const CaptureDocument = (props) => {
             errorMessages[res.data.errors[0].error_code],
           );
         }
-        if (trialCount < 4) {
+
+        if (trialCount < 3) {
           setAutoCapturedImage(res.data.image);
         } else {
           onCapture(image);
@@ -390,17 +393,27 @@ const CaptureDocument = (props) => {
             )}
 
             <View
-              style={{
-                backgroundColor:
-                  document.versions[versionGroup][groupIndex].aspectRatio ||
-                  document.id === 'SE'
-                    ? backdropColor
-                    : 'transparent',
-              }}>
-              <Text style={styles.bottomText}>
-                {document.steps[currentStep].description}
-              </Text>
+              style={[
+                styles.descriptionArea,
+                {
+                  backgroundColor:
+                    document.versions[versionGroup][groupIndex].aspectRatio ||
+                    document.id === 'SE'
+                      ? backdropColor
+                      : 'transparent',
+                },
+              ]}>
+              {document.steps[currentStep].description !== '' && (
+                <ImageBackground
+                  source={blueBackground}
+                  style={styles.bottomTextBackground}>
+                  <Text style={styles.bottomText}>
+                    {document.steps[currentStep].description}
+                  </Text>
+                </ImageBackground>
+              )}
             </View>
+
             <View
               style={[
                 styles.bottomArea,
@@ -532,12 +545,25 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     position: 'relative',
   },
+  bottomTextBackground: {
+    alignSelf: 'center',
+    resizeMode: 'cover',
+    paddingHorizontal: '10%',
+    width: width * 0.9,
+    paddingVertical: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
   bottomText: {
     color: 'white',
     fontSize: height * 0.02,
-    paddingHorizontal: '10%',
     textAlign: 'center',
-    marginVertical: 10,
+  },
+  descriptionArea: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   takePhotoButtonCircle: {
     alignItems: 'center',

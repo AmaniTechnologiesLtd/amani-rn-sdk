@@ -74,8 +74,7 @@ const MainScreen = (props) => {
 
   if (
     Platform.OS === 'android' &&
-    !permissions.camera &&
-    !permissions.location
+    (!permissions.camera || !permissions.location)
   ) {
     (async function () {
       setPermission({
@@ -125,8 +124,11 @@ const MainScreen = (props) => {
 
     // Set location for later use
     if (permissions.location === 'granted' || Platform.OS === 'ios') {
-      Geolocation.getCurrentPosition((position) =>
-        setLocation(position.coords),
+      Geolocation.setRNConfiguration('whenInUse');
+      Geolocation.getCurrentPosition(
+        (position) => setLocation(position.coords),
+        (error) => console.log(error),
+        { enableHighAccuracy: true },
       );
     }
   }, [permissions]);
@@ -212,6 +214,16 @@ const MainScreen = (props) => {
       status: 'PROCESSING',
     });
 
+    await dispatch({
+      type: 'INCREMENT_TRIAL',
+      document_id: selectedDocument.id,
+    });
+
+    setSelectedDocument({
+      ...selectedDocument,
+      trial: selectedDocument.trial + 1,
+    });
+
     updateCustomerRules(selectedDocument.id, 'PROCESSING');
 
     if (selectedDocument.options.includes('async')) {
@@ -247,12 +259,14 @@ const MainScreen = (props) => {
       requestData.append('cropped', true);
     }
 
+    requestData.append('attempt', selectedDocument.trial);
+
     files.forEach((file) => requestData.append('files[]', file));
 
     await api
       .sendDocument(requestData)
       .then((res) => {
-        if (res.data.status === 'OK') {
+        if (res.data.status === 'OK' || selectedDocument.trial > 2) {
           dispatch({
             type: 'CHANGE_STATUS',
             document_id: selectedDocument.id,

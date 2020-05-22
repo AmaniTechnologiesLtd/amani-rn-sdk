@@ -86,6 +86,7 @@ export const content = (script) =>
       display:flex;
       width:100%;
       flex-direction:row;
+      justify-content: center;
     }
 
     .m-signature-pad--footer
@@ -133,6 +134,17 @@ export const content = (script) =>
           opacity: 0.7;
         }
 
+      .m-signature-pad--footer-text-bg {
+        background: linear-gradient(352.16deg, #5E3B9B -5.46%, #157EC1 115.71%);
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+      }
+    
     .m-signature-pad--footer-text {
       color: #fff;
       font-size: 14px;
@@ -187,7 +199,9 @@ export const content = (script) =>
       <canvas></canvas>
     </div>
     <div class="m-signature-pad--footer">
-      <p class="m-signature-pad--footer-text">Atacağınız imza kimliğinizdeki imzaya benzemeli</p>
+    <div class="m-signature-pad--footer-text-bg">
+      <p class="m-signature-pad--footer-text">Atacağın imza kimliğindeki imzaya benzemeli</p>
+    </div>
       <button id="clear" type="button" class="button clear" data-action="clear">Temizle</button>
       <button id="onayla" type="button" class="button save" data-action="save">ONAYLA</button>
     </div>

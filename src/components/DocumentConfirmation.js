@@ -14,6 +14,7 @@ import {
 import TopBar from './TopBar';
 import Button from './Button';
 import mainBackground from '../../assets/main-bg.png';
+import blueBackground from '../../assets/btn-blue.png';
 import backArrow from '../../assets/back-arrow.png';
 
 const { width, height } = Dimensions.get('window');
@@ -51,11 +52,15 @@ const DocumentConfirmation = (props) => {
         />
 
         <View style={{ flex: 1 }}>
-          <Text style={styles.errorMessageText}>
-            {errorMessage
-              ? errorMessage
-              : document.steps[step].confirmationDescription}
-          </Text>
+          <ImageBackground
+            source={blueBackground}
+            style={styles.bottomTextBackground}>
+            <Text style={styles.errorMessageText}>
+              {errorMessage
+                ? errorMessage
+                : document.steps[step].confirmationDescription}
+            </Text>
+          </ImageBackground>
         </View>
 
         <View style={styles.bottomBar}>
@@ -63,7 +68,7 @@ const DocumentConfirmation = (props) => {
             text="Tekrar Dene"
             noBackground
             onPress={() => onTryAgain(!!errorMessage)}
-            style={[styles.bottomButtons, styles.tryAgainButton]}
+            style={styles.bottomButtons}
           />
           {!errorMessage && (
             <Button
@@ -102,12 +107,18 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     height: height * 0.5,
   },
+  bottomTextBackground: {
+    resizeMode: 'cover',
+    padding: 10,
+    width: width * 0.9,
+    marginVertical: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
   errorMessageText: {
     color: 'white',
     fontSize: width * 0.04,
     textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 20,
   },
   successMessage: {
     flex: 1,
@@ -131,9 +142,5 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     flex: 1,
-  },
-  tryAgainButton: {
-    borderColor: 'white',
-    borderWidth: 1,
   },
 });
