@@ -424,7 +424,7 @@ const MainScreen = (props) => {
           'REJECTED',
           'AUTOMATICALLY_REJECTED',
         ])) ||
-        ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+        ['APPROVED'].includes(document.status),
     );
 
     // Accessibility check for all documents
