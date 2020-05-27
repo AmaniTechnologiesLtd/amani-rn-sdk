@@ -35,7 +35,10 @@ const MessageScreen = (props) => {
   const messageDescription = () => {
     if (message) {
       if (Array.isArray(message)) {
-        return message.map((error, index) => (
+        // Added to show only first error message
+        const firstMessage = [message[0]];
+
+        return firstMessage.map((error, index) => (
           <Text style={styles.message} key={index}>
             {errorMessages[error.error_code] || error.error_message}
           </Text>
