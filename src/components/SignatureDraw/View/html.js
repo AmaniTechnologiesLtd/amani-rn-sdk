@@ -21,15 +21,16 @@ export const content = (script) =>
     }
 
     .m-signature-pad {
-      position: absolute;
       font-size: 10px;
-      width: 700px;
-      height: 400px;
-      top: 50%;
-      left: 50%;
-      margin-left: -350px;
-      margin-top: -200px;
       background-color: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: auto;
+      margin: 0;
     }
 
     .m-signature-pad:before, .m-signature-pad:after {
@@ -83,6 +84,7 @@ export const content = (script) =>
       bottom: 0px;
       background-color: #263B5B;
       height: 20vh;
+      min-Height: 125px;
       display:flex;
       width:100%;
       flex-direction:row;
@@ -140,8 +142,10 @@ export const content = (script) =>
         display: flex;
         justify-content: center;
         align-items: center;
+        text-align: center;
         padding: 0 20px;
-        margin-top: 10px;
+        margin: 10px;
+        margin-bottom: 0;
         border-radius: 10px;
       }
     
@@ -150,48 +154,7 @@ export const content = (script) =>
       font-size: 14px;
       margin: 10px auto;
     }
-
-    @media screen and (max-width: 1024px) {
-      .m-signature-pad {
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: auto;
-        height: auto;
-        min-width: 250px;
-        min-height: 140px;
-        margin: 0;
-      }
-    }
-
-    @media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-      .m-signature-pad {
-        margin: 10%;
-      }
-    }
-
-    @media screen and (max-height: 320px) {
-      .m-signature-pad--body {
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 32px;
-      }
-      .m-signature-pad--footer {
-        left: 20px;
-        right: 20px;
-        bottom: 4px;
-        height: 28px;
-      }
-      .m-signature-pad--footer
-        .description {
-          font-size: 1em;
-          margin-top: 1em;
-        }
-    }
-    <%style%>
-    </style>
+</style>
 </head>
 <body onselectstart="return false">
   <div id="signature-pad" class="m-signature-pad">
@@ -199,9 +162,9 @@ export const content = (script) =>
       <canvas></canvas>
     </div>
     <div class="m-signature-pad--footer">
-    <div class="m-signature-pad--footer-text-bg">
-      <p class="m-signature-pad--footer-text">Atacağın imza kimliğindeki imzaya benzemeli</p>
-    </div>
+      <div class="m-signature-pad--footer-text-bg">
+        <p class="m-signature-pad--footer-text">Atacağın imza kimliğindeki imzaya benzemeli</p>
+      </div>
       <button id="clear" type="button" class="button clear" data-action="clear">Temizle</button>
       <button id="onayla" type="button" class="button save" data-action="save">ONAYLA</button>
     </div>

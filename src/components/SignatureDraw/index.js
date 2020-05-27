@@ -1,40 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-// Local files
 import { content } from './View/html';
 import { SignaturePad } from './View/js/signature_pad';
 import { AppContent } from './View/js/app';
 
-class SignatureView extends Component {
-  static defaultProps = {
-    webStyle: '',
-    onOK: () => {},
-    onEmpty: () => {},
-    clearText: 'Clear',
-    confirmText: 'Confirm',
-  };
+const SignatureView = (props) => {
+  const { onOK, onEmpty } = props;
+  const html = content(SignaturePad + AppContent);
 
-  constructor(props) {
-    super(props);
-    const { clearText, confirmText, webStyle } = props;
-    this.state = {
-      base64DataUrl: props.dataURL || null,
-      isLoading: true,
-    };
-
-    const injectedJavaScript = SignaturePad + AppContent;
-    let html = content(injectedJavaScript);
-    html = html.replace('<%style%>', webStyle);
-    html = html.replace('<%confirm%>', confirmText);
-    html = html.replace('<%clear%>', clearText);
-
-    this.source = { html };
-  }
-
-  getSignature = (e) => {
-    const { onOK, onEmpty } = this.props;
+  const getSignature = (e) => {
     if (e.nativeEvent.data === 'EMPTY') {
       onEmpty();
     } else {
@@ -42,22 +18,24 @@ class SignatureView extends Component {
     }
   };
 
-  render() {
-    return (
-      <View style={styles.webBg}>
-        <WebView
-          useWebKit={true}
-          source={this.source}
-          onMessage={this.getSignature}
-          javaScriptEnabled={true}
-          onLoadEnd={() => this.setState({ isLoading: false })}
-        />
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.webBg}>
+      <WebView
+        useWebKit={true}
+        source={{ html }}
+        onMessage={getSignature}
+        javaScriptEnabled={true}
+      />
+    </View>
+  );
+};
 
 export default SignatureView;
+
+SignatureView.defaultProps = {
+  onOK: () => {},
+  onEmpty: () => {},
+};
 
 const styles = StyleSheet.create({
   webBg: {
