@@ -67,8 +67,8 @@ const ContractScreen = (props) => {
     { name: 'Diğer' },
   ];
 
-  const sortCities = () => {
-    return cities.sort((a, b) => {
+  const sortCities = (toBeSorted) => {
+    return toBeSorted.sort((a, b) => {
       const topCities = ['İstanbul', 'Ankara', 'İzmir'];
 
       if (topCities.includes(a.name) && topCities.includes(b.name)) {
@@ -81,6 +81,10 @@ const ContractScreen = (props) => {
         return trCompare(a.name, b.name);
       }
     });
+  };
+
+  const sortProvinces = (provinces) => {
+    return provinces.sort((a, b) => trCompare(a.name, b.name));
   };
 
   useEffect(() => {
@@ -290,9 +294,11 @@ const ContractScreen = (props) => {
                   cities.find(
                     (city) => city.name === (formData.city || 'Adana'),
                   )
-                    ? cities.find(
-                        (city) => city.name === (formData.city || 'Adana'),
-                      ).district
+                    ? sortProvinces(
+                        cities.find(
+                          (city) => city.name === (formData.city || 'Adana'),
+                        ).district,
+                      )
                     : []
                 }
                 onSelected={(val) =>
