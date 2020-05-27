@@ -575,8 +575,8 @@ const styles = StyleSheet.create({
   },
   takePhotoButton: {
     borderRadius: 50,
-    paddingHorizontal: width * 0.06,
-    paddingVertical: width * 0.06,
+    paddingHorizontal: height * 0.03,
+    paddingVertical: height * 0.03,
   },
   buttonLoader: {
     alignSelf: 'flex-end',
