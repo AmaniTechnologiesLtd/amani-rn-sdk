@@ -17,7 +17,7 @@ export const initialDocuments = [
         title: 'Kimliğinin arka yüzünü fotoğrafını çek',
         description:
           'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
-        confirmationTitle: 'Kimliğinin Ön Yüzü',
+        confirmationTitle: 'Kimliğinin Arka Yüzü',
         confirmationDescription:
           'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },

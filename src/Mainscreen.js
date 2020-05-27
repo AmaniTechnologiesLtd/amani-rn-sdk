@@ -681,7 +681,6 @@ const MainScreen = (props) => {
         dispatch={dispatch}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
-        showSuccessMessage={showSuccessMessage}
       />
     );
   }
@@ -745,7 +744,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width * 0.06,
     fontWeight: 'bold',
-    marginVertical: 30,
+    marginVertical: height * 0.03,
   },
   modulesContainer: {
     justifyContent: 'center',

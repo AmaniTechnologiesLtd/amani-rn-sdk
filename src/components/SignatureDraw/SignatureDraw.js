@@ -23,7 +23,7 @@ import { errorMessages } from '../../constants';
 const SignatureDraw = (props) => {
   const {
     document,
-    showSuccessMessage,
+    goBackToMainScreen,
     customer,
     goBack,
     formData,
@@ -112,7 +112,7 @@ const SignatureDraw = (props) => {
 
         updateCustomerRules(document.id, 'PENDING_REVIEW');
 
-        showSuccessMessage(document);
+        goBackToMainScreen();
       })
       .catch(async (error) => {
         setCurrentStep(0);
