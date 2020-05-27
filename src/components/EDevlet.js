@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -9,6 +9,7 @@ import {
   Dimensions,
   Linking,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 
 import TopBar from './TopBar';
@@ -27,6 +28,14 @@ const eDevletURL =
 
 const EDevlet = (props) => {
   const { onGoBack } = props;
+  useEffect(() => {
+    BackHandler.addEventListener('eDevletBackPress', () => {
+      onGoBack();
+      return true;
+    });
+    return () => BackHandler.removeEventListener('eDevletBackPress');
+  }, []);
+
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <TopBar
@@ -43,7 +52,7 @@ const EDevlet = (props) => {
           <Image source={Number1} style={styles.bulletIcon} />
           <TouchableOpacity onPress={() => Linking.openURL(eDevletURL)}>
             <Text style={styles.bulletText}>
-              <Text style={{ textDecorationLine: 'underline' }}>
+              <Text style={{ textDecorationLine: 'underline', fontSize: 15 }}>
                 {eDevletURL}
               </Text>
               <Text> adresine git</Text>
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingTop: height * 0.05,
-    paddingHorizontal: width * 0.03,
+    paddingHorizontal: width * 0.04,
   },
   scrollContainer: {
     paddingHorizontal: width * 0.04,

@@ -400,6 +400,7 @@ const CaptureDocument = (props) => {
                     document.id === 'SE'
                       ? backdropColor
                       : 'transparent',
+                  flex: document.id === 'UB' ? 1 : 0,
                 },
               ]}>
               {document.steps[currentStep].description !== '' && (
@@ -433,7 +434,7 @@ const CaptureDocument = (props) => {
                 <Button
                   text="E-Devletten al"
                   onPress={() => setShowEDevlet(true)}
-                  style={styles.eDevlet}
+                  style={styles.fileUpload}
                   backgroundStyle={{
                     paddingVertical: 5,
                     paddingHorizontal: 15,
@@ -468,7 +469,7 @@ const CaptureDocument = (props) => {
                   style={styles.fileUpload}
                   backgroundStyle={{
                     paddingVertical: 5,
-                    paddingHorizontal: 25,
+                    paddingHorizontal: 20,
                   }}
                   backgroundImage={darkBlueBackground}
                 />
@@ -523,26 +524,17 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   topArea: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingBottom: 20,
-  },
-  topText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingHorizontal: 20,
-    textAlign: 'center',
-  },
-  bottomArea: {
-    flex: 1,
+    flex: 0.8,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 20,
-    position: 'relative',
+  },
+  topText: {
+    color: 'white',
+    fontSize: height * 0.028,
+    fontWeight: 'bold',
+    paddingHorizontal: 20,
+    textAlign: 'center',
   },
   bottomTextBackground: {
     alignSelf: 'center',
@@ -560,9 +552,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   descriptionArea: {
-    flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+  bottomArea: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingTop: height * 0.03,
+    position: 'relative',
   },
   takePhotoButtonCircle: {
     alignItems: 'center',
@@ -589,16 +588,10 @@ const styles = StyleSheet.create({
     marginTop: -(height * 0.015),
   },
   fileUpload: {
-    position: 'absolute',
-    bottom: width * 0.13,
-    right: 10,
-    borderRadius: 20,
-  },
-  eDevlet: {
-    position: 'absolute',
-    bottom: width * 0.13,
-    borderRadius: 20,
-    left: 10,
+    height: 30,
+    marginBottom: height * 0.05,
+    marginHorizontal: 13,
+    flex: 1,
   },
   previewMiddle: {
     borderColor: 'white',

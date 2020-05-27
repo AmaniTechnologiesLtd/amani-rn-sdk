@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     backgroundColor: 'transparent',
     alignItems: 'center',
-    borderRadius: 10,
     marginBottom: 10,
   },
   verticalGroupViewContainer: {
@@ -163,15 +162,13 @@ const styles = StyleSheet.create({
   },
   versionButtonVertical: {
     marginBottom: 10,
-    borderRadius: 10,
     width: '99%',
     overflow: 'hidden',
   },
   versionButtonHorizontal: {
-    overflow: 'hidden',
-    borderRadius: 10,
     marginBottom: 10,
     marginRight: 10,
+    height: 40,
   },
   horizontalButtonBackground: {
     resizeMode: 'cover',
