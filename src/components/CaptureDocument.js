@@ -447,18 +447,20 @@ const CaptureDocument = (props) => {
                       : 0,
                 },
               ]}>
-              {document.versions[versionGroup][groupIndex].edevlet && (
-                <Button
-                  text="E-Devletten al"
-                  onPress={() => setShowEDevlet(true)}
-                  style={styles.fileUpload}
-                  backgroundStyle={{
-                    paddingVertical: 5,
-                    paddingHorizontal: 15,
-                  }}
-                  backgroundImage={darkBlueBackground}
-                />
-              )}
+              <View style={{ flex: 1 }}>
+                {document.versions[versionGroup][groupIndex].edevlet && (
+                  <Button
+                    text="E-Devletten al"
+                    onPress={() => setShowEDevlet(true)}
+                    style={styles.fileUpload}
+                    backgroundStyle={{
+                      paddingVertical: 5,
+                      paddingHorizontal: 15,
+                    }}
+                    backgroundImage={darkBlueBackground}
+                  />
+                )}
+              </View>
 
               <TouchableOpacity
                 style={[
@@ -479,18 +481,20 @@ const CaptureDocument = (props) => {
                 />
               </TouchableOpacity>
 
-              {document.options.includes('fileUpload') && (
-                <Button
-                  text="PDF Yükle"
-                  onPress={pickAndTransformPdf}
-                  style={styles.fileUpload}
-                  backgroundStyle={{
-                    paddingVertical: 5,
-                    paddingHorizontal: 20,
-                  }}
-                  backgroundImage={darkBlueBackground}
-                />
-              )}
+              <View style={{ flex: 1 }}>
+                {document.options.includes('fileUpload') && (
+                  <Button
+                    text="PDF Yükle"
+                    onPress={pickAndTransformPdf}
+                    style={styles.fileUpload}
+                    backgroundStyle={{
+                      paddingVertical: 5,
+                      paddingHorizontal: 20,
+                    }}
+                    backgroundImage={darkBlueBackground}
+                  />
+                )}
+              </View>
             </View>
             <PoweredBy />
           </>
@@ -608,7 +612,6 @@ const styles = StyleSheet.create({
     height: 30,
     marginBottom: height * 0.05,
     marginHorizontal: width * 0.03,
-    flex: 1,
   },
   previewMiddle: {
     borderColor: 'white',

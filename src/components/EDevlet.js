@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   bulletText: {
     color: 'white',
-    fontSize: height * 0.025,
+    fontSize: height * 0.02,
     flexShrink: 1,
     opacity: 0.8,
   },
