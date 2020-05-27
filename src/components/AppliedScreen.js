@@ -175,11 +175,11 @@ const AppliedScreen = (props) => {
             <Text style={{ fontWeight: 'bold' }}>
               {customer.status === 'Temporarily Approved'
                 ? ` ${dateParse(customer.approval_expiration)} tarihine kadar `
-                : ` iki hafta içerisinde `}
+                : ` iki hafta içinde `}
             </Text>
             aşağıda yer alan ininal kullanıcı sözleşmesini yazdırıp, imzalayıp
-            fotoğrafını yüklemen gerekiyor. Aksi durumda limitin tekrar 750
-            TL'ye düşecek.
+            fotoğrafını yüklemen gerekiyor. Aksi durumda ininal plus hesabın
+            ayrıcalıklarını kaybedeceksin ve limitin tekrar 750 TL'ye düşecek.
           </Text>
         </View>
 

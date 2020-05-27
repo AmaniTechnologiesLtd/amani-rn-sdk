@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   View,
+  ScrollView,
   Text,
   StyleSheet,
   Image,
@@ -32,64 +33,69 @@ const EDevlet = (props) => {
         onLeftButtonPressed={onGoBack}
         leftButtonIcon={backArrow}
         noBackground
+        style={styles.topBar}
       />
-      <Text style={styles.header}>
-        İkametgah Belgesini E-devlet’ten Almak İçin;
-      </Text>
-      <View style={styles.bullet}>
-        <Image source={Number1} style={styles.bulletIcon} />
-        <TouchableOpacity onPress={() => Linking.openURL(eDevletURL)}>
-          <Text style={styles.bulletText}>
-            <Text style={{ textDecorationLine: 'underline' }}>
-              {eDevletURL}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.header}>
+          İkametgah Belgesini E-devlet’ten Almak İçin;
+        </Text>
+        <View style={styles.bullet}>
+          <Image source={Number1} style={styles.bulletIcon} />
+          <TouchableOpacity onPress={() => Linking.openURL(eDevletURL)}>
+            <Text style={styles.bulletText}>
+              <Text style={{ textDecorationLine: 'underline' }}>
+                {eDevletURL}
+              </Text>
+              <Text> adresine git</Text>
             </Text>
-            <Text> adresine git</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.bullet}>
+          <Image source={Number2} style={styles.bulletIcon} />
+          <Text style={styles.bulletText}>
+            <Text style={{ fontWeight: 'bold' }}>TCKN ve e-devlet şifren</Text>{' '}
+            ile giriş yap
           </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bullet}>
-        <Image source={Number2} style={styles.bulletIcon} />
-        <Text style={styles.bulletText}>
-          <Text style={{ fontWeight: 'bold' }}>TCKN ve e-devlet şifren</Text>{' '}
-          ile giriş yap
-        </Text>
-      </View>
-      <View style={styles.bullet}>
-        <Image source={Number3} style={styles.bulletIcon} />
-        <Text style={styles.bulletText}>
-          <Text>"Belgenin Kimin İçin Alınacağı" sorusuna </Text>
-          <Text style={{ fontWeight: 'bold' }}>"Kendisi"</Text>
-          <Text>
-            {` seçeneğini,\n"Belgenin Neden Verileceği" sorusuna da `}
+        </View>
+        <View style={styles.bullet}>
+          <Image source={Number3} style={styles.bulletIcon} />
+          <Text style={styles.bulletText}>
+            <Text>"Belgenin Kimin İçin Alınacağı" sorusuna </Text>
+            <Text style={{ fontWeight: 'bold' }}>"Kendisi"</Text>
+            <Text>
+              {` seçeneğini,\n"Belgenin Neden Verileceği" sorusuna da `}
+            </Text>
+            <Text style={{ fontWeight: 'bold' }}>"Kuruma İbraz"</Text>
+            <Text> seçeneğini seç. Kurum adı olarak </Text>
+            <Text style={{ fontWeight: 'bold' }}>"İninal"</Text>
+            <Text> yaz</Text>
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>"Kişi Talebi"</Text>
-          <Text> seçeneğini seç</Text>
-        </Text>
-      </View>
-      <View style={styles.bullet}>
-        <Image source={Number4} style={styles.bulletIcon} />
-        <Text style={styles.bulletText}>
-          Oluşturulan ikametgâh belgesini "dosyayı indir" butonuna basarak PDF
-          olarak indirebilirsin
-        </Text>
-      </View>
-      <View style={styles.darkBackground}>
-        <Text style={styles.bulletText}>
-          <Text>Ya da E-posta gönder seçeneğinden </Text>
-          <Text style={{ textDecorationLine: 'underline', color: 'white' }}>
-            kimlik@ininal.com{' '}
+        </View>
+        <View style={styles.bullet}>
+          <Image source={Number4} style={styles.bulletIcon} />
+          <Text style={styles.bulletText}>
+            Oluşturulan ikametgâh belgesini "dosyayı indir" butonuna basarak PDF
+            olarak indirebilirsin
           </Text>
-          <Text>
-            adresine e-posta gönderebilirsin. E-posta gönderdiğin takdirde
-            belgenin onaylanması 15 dakika sürebilir.
+        </View>
+        <View style={styles.darkBackground}>
+          <Text style={styles.bulletText}>
+            <Text>Ya da E-posta gönder seçeneğinden </Text>
+            <Text style={{ textDecorationLine: 'underline', color: 'white' }}>
+              kimlik@ininal.com{' '}
+            </Text>
+            <Text>
+              adresine e-posta gönderebilirsin. E-posta gönderdiğin takdirde
+              belgenin onaylanması 15 dakika sürebilir.
+            </Text>
           </Text>
-        </Text>
-      </View>
-      <Button
-        text="E-DEVLET'TEN AL"
-        onPress={() => Linking.openURL(eDevletURL)}
-        style={{ marginTop: 20 }}
-      />
+        </View>
+        <Button
+          text="E-DEVLET'TEN AL"
+          onPress={() => Linking.openURL(eDevletURL)}
+          style={{ marginVertical: 20 }}
+        />
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -99,17 +105,22 @@ export default EDevlet;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 30,
+  },
+  topBar: {
+    paddingTop: height * 0.05,
+    paddingHorizontal: width * 0.03,
+  },
+  scrollContainer: {
+    paddingHorizontal: width * 0.04,
   },
   header: {
-    fontSize: height * 0.035,
+    fontSize: height * 0.033,
     fontWeight: 'bold',
     color: 'white',
   },
   bullet: {
     flexDirection: 'row',
-    marginTop: 20,
+    marginTop: height * 0.01,
     alignItems: 'center',
   },
   bulletIcon: {
@@ -119,12 +130,12 @@ const styles = StyleSheet.create({
   },
   bulletText: {
     color: 'white',
-    fontSize: height * 0.02,
+    fontSize: height * 0.025,
     flexShrink: 1,
     opacity: 0.8,
   },
   darkBackground: {
-    marginTop: 20,
+    marginTop: height * 0.03,
     backgroundColor: 'rgba(14, 37, 70, 0.6)',
     borderRadius: 10,
     padding: 10,
