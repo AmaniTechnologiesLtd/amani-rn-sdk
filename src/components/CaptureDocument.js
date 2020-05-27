@@ -250,6 +250,51 @@ const CaptureDocument = (props) => {
     return false;
   };
 
+  const showPreviewArea = () => {
+    if (!document.versions[versionGroup][groupIndex].aspectRatio) {
+      return;
+    }
+
+    let previewRatio = 0.85;
+
+    if (
+      document.versions[versionGroup][groupIndex].aspectRatio > 1 &&
+      height < 600
+    ) {
+      previewRatio = 0.7;
+    }
+
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <View style={styles.backDrop} />
+        <View
+          onLayout={(event) => {
+            setPreviewArea({
+              previewAreaWidth: width * previewRatio,
+              previewAreaHeight:
+                width *
+                previewRatio *
+                document.versions[versionGroup][groupIndex].aspectRatio,
+              previewAreaX: event.nativeEvent.layout.x,
+              previewAreaY: event.nativeEvent.layout.y + width * previewRatio,
+            });
+          }}
+          style={[
+            styles.previewMiddle,
+            {
+              width: width * previewRatio,
+              height:
+                width *
+                previewRatio *
+                document.versions[versionGroup][groupIndex].aspectRatio,
+            },
+          ]}
+        />
+        <View style={styles.backDrop} />
+      </View>
+    );
+  };
+
   if (isProcessStarted) {
     return <Loading type={document.id} />;
   }
@@ -353,35 +398,7 @@ const CaptureDocument = (props) => {
               )}
             </View>
 
-            {document.versions[versionGroup][groupIndex].aspectRatio && (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.backDrop} />
-                <View
-                  onLayout={(event) => {
-                    setPreviewArea({
-                      previewAreaWidth: width * 0.85,
-                      previewAreaHeight:
-                        width *
-                        0.85 *
-                        document.versions[versionGroup][groupIndex].aspectRatio,
-                      previewAreaX: event.nativeEvent.layout.x,
-                      previewAreaY: event.nativeEvent.layout.y + width * 0.85,
-                    });
-                  }}
-                  style={[
-                    styles.previewMiddle,
-                    {
-                      width: width * 0.85,
-                      height:
-                        width *
-                        0.85 *
-                        document.versions[versionGroup][groupIndex].aspectRatio,
-                    },
-                  ]}
-                />
-                <View style={styles.backDrop} />
-              </View>
-            )}
+            {showPreviewArea()}
 
             {document.id === 'SE' && (
               <View style={{ flexDirection: 'row' }}>
@@ -590,7 +607,7 @@ const styles = StyleSheet.create({
   fileUpload: {
     height: 30,
     marginBottom: height * 0.05,
-    marginHorizontal: 13,
+    marginHorizontal: width * 0.03,
     flex: 1,
   },
   previewMiddle: {
