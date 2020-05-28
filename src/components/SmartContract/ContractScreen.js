@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     borderColor: 'rgba(255, 255, 255, .3)',
     color: '#FFFFFF',
-    minHeight: height * 0.1,
+    minHeight: 65,
   },
   charCount: {
     color: '#76889B',
