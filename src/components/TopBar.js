@@ -28,7 +28,11 @@ const TopBar = (props) => {
 
   const topbarContent = (
     <Fragment>
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
       {onLeftButtonPressed && leftButtonIcon && (
         <TouchableOpacity
           style={[styles.topBarLeft, styles.topBarIcon]}

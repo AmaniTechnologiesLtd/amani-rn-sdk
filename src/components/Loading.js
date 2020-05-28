@@ -27,7 +27,11 @@ const Loading = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
       {animationType()}
     </ImageBackground>
   );

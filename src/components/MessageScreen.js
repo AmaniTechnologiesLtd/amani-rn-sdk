@@ -51,7 +51,11 @@ const MessageScreen = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
 
       <View style={styles.messagePopup}>
         <TouchableOpacity style={styles.closeButton} onPress={onClick}>
