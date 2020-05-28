@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: width * 0.04,
     color: 'white',
-    minHeight: 15,
+    minHeight: 20,
   },
 });
