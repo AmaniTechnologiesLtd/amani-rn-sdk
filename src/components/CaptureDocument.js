@@ -417,7 +417,9 @@ const CaptureDocument = (props) => {
                     document.id === 'SE'
                       ? backdropColor
                       : 'transparent',
-                  flex: document.id === 'UB' ? 1 : 0,
+                  flex: document.versions[versionGroup][groupIndex].crop
+                    ? 1
+                    : 0,
                 },
               ]}>
               {document.steps[currentStep].description !== '' && (
