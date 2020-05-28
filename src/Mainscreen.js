@@ -304,7 +304,7 @@ const MainScreen = (props) => {
         updateCustomerRules(
           selectedDocument.id,
           'AUTOMATICALLY_REJECTED',
-          'Belgeniz doğrulanamadı',
+          'Belge doğrulanamadı',
         );
 
         if (!selectedDocument.options.includes('async')) {
@@ -321,7 +321,7 @@ const MainScreen = (props) => {
     } else if (error.response && error.response.data.errors) {
       errorMessage = error.response.data.errors[0].ERROR_MESSAGE;
     } else {
-      errorMessage = 'Lütfen daha sonra tekrar deneyin...';
+      errorMessage = 'Lütfen tekrar dene';
     }
 
     setMessage({

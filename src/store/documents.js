@@ -65,7 +65,7 @@ export const initialDocuments = [
     successTitle: 'Kimliğini başarıyla yükledin',
     successDescription:
       'Biz kimliğini kontrol ederken selfie çekimi ile devam et',
-    errorTitle: 'Kimliğni yüklerken bir hata oluştu',
+    errorTitle: 'Kimliğni yüklerken teknik bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -109,7 +109,7 @@ export const initialDocuments = [
     successTitle: "Selfie'ni başarıyla yükledin",
     successDescription:
       'Şimdi adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
-    errorTitle: "Selfie'ni yüklerken bir hata oluştu",
+    errorTitle: "Selfie'ni yüklerken teknik bir hata oluştu",
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -151,7 +151,7 @@ export const initialDocuments = [
     },
     successTitle: 'Pasaportunu başarıyla yükledin',
     successDescription: 'Bir sonraki adıma geçebilirsin',
-    errorTitle: 'Pasaportunu yüklerken bir hata oluştu',
+    errorTitle: 'Pasaportunu yüklerken teknik bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -194,7 +194,7 @@ export const initialDocuments = [
     },
     successTitle: 'Vizeni başarıyla yükledin',
     successDescription: 'Bir sonraki adıma geçebilirsin',
-    errorTitle: 'Vizeni yüklerken bir hata oluştu',
+    errorTitle: 'Vizeni yüklerken teknik bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -288,7 +288,7 @@ export const initialDocuments = [
     },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: 'Sözleşmeyi imzalamak için devam et',
-    errorTitle: 'Adres belgeni yüklerken bir hata oluştu',
+    errorTitle: 'Adres belgeni yüklerken teknik bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -332,7 +332,7 @@ export const initialDocuments = [
     },
     successTitle: 'Dijital sözleşmeni başarıyla yükledin',
     successDescription: 'Fiziksel sözleşmeyi imzalamak için devam et',
-    errorTitle: 'Dijital sözleşmeni yüklerken bir hata oluştu',
+    errorTitle: 'Sözleşmeni yüklerken teknik bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -374,7 +374,7 @@ export const initialDocuments = [
     successTitle: 'Fiziksel sözleşmeni başarıyla yükledin',
     successDescription:
       'Tüm adımları tamamladın\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız',
-    errorTitle: 'Fiziksel sözleşmeni yüklerken bir hata oluştu',
+    errorTitle: 'Sözleşmeni yüklerken teknik bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
 ];

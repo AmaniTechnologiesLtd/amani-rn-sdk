@@ -173,7 +173,7 @@ const CaptureDocument = (props) => {
       },
     };
 
-    const src = await ImageEditor.cropImage(data.uri, cropData).then(
+    const src = await ImageEditor.autocapture(data.uri, cropData).then(
       async (path) => await RNFS.readFile(path, 'base64'),
     );
     return `data:image/jpeg;base64,${src}`;
@@ -197,7 +197,7 @@ const CaptureDocument = (props) => {
     requestData.append('files[]', image);
 
     await api
-      .cropImage(requestData)
+      .autocapture(requestData)
       .then((res) => {
         if (res.data.errors.length) {
           setAutoCaptureErrorMessage(
@@ -213,9 +213,7 @@ const CaptureDocument = (props) => {
         }
       })
       .catch(() => {
-        setAutoCaptureErrorMessage(
-          'Bir şeyler yanlış gitti. Lütfen tekrar deneyin.',
-        );
+        setAutoCaptureErrorMessage('Teknik bir hata oldu. Lütfen tekrar dene.');
 
         setAutoCapturedImage(image);
       });

@@ -3,7 +3,7 @@ export const backdropColor = 'rgba(38, 59, 91, 0.8)';
 export const errorMessages = {
   1001: 'Fotoğrafta yüz bulunamadı',
   1002: 'Fotoğrafta bulanıklık tespit edildi.\n\nLütfen daha iyi aydınlatılmış bir ortamda tekrar dene',
-  1003: 'Fotoğrafta parlama tespit edildi.\n\nLütfen belgenizin üstüne doğrudan ışık gelmemesine dikkat et',
+  1003: 'Fotoğrafta parlama tespit edildi.\n\nLütfen belgenin üstüne doğrudan ışık gelmemesine dikkat et',
   1004: 'Belgeyi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar dene',
   1005: 'Bu belge tipi desteklenmiyor.\n\nLütfen tekrar dene',
   1008: 'Bu kimlik sana ait değil.\n\nLütfen kendine ait bir kimlik kullan',
