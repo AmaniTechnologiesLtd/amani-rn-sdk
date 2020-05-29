@@ -40,6 +40,7 @@ const CaptureDocument = (props) => {
     onStepsFinished,
     onClearDocument,
     onSkipDocument,
+    onActivity,
     setSelectedDocumentVersion,
     customer,
   } = props;
@@ -298,7 +299,9 @@ const CaptureDocument = (props) => {
   }
 
   if (showEDevlet) {
-    return <EDevlet onGoBack={() => setShowEDevlet(false)} />;
+    return (
+      <EDevlet onGoBack={() => setShowEDevlet(false)} onActivity={onActivity} />
+    );
   }
 
   if (autoCapturedImage) {
@@ -313,6 +316,7 @@ const CaptureDocument = (props) => {
           calculateNextStep();
         }}
         onTryAgain={handleDocumentRetake}
+        onActivity={onActivity}
         errorMessage={autoCaptureErrorMessage}
       />
     );
@@ -332,6 +336,7 @@ const CaptureDocument = (props) => {
         groupIndex={setGroupIndex}
         closeVersionSelected={() => setShowVersionSelection(false)}
         onSkipDocument={onSkipDocument}
+        onActivity={onActivity}
       />
     );
   }
@@ -346,12 +351,13 @@ const CaptureDocument = (props) => {
           return true; // Added for react navigation not to intervene
         }}
         onCropped={(data) => handleManualCrop(data)}
+        onActivity={onActivity}
       />
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onTouchStart={onActivity}>
       <RNCamera
         ref={camera}
         style={styles.preview}

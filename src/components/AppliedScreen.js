@@ -98,7 +98,7 @@ const dateParse = (date) => {
 };
 
 const AppliedScreen = (props) => {
-  const { customer, goBack, takePhoto } = props;
+  const { customer, goBack, takePhoto, onActivity } = props;
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
 
@@ -130,7 +130,11 @@ const AppliedScreen = (props) => {
   };
 
   if (showPopup) {
-    return <Popup onClose={() => setShowPopup(false)}>{showPopup}</Popup>;
+    return (
+      <Popup onClose={() => setShowPopup(false)} onActivity={onActivity}>
+        {showPopup}
+      </Popup>
+    );
   }
 
   return (
@@ -138,7 +142,8 @@ const AppliedScreen = (props) => {
       <ScrollView
         contentContainerStyle={{
           minHeight: '100%',
-        }}>
+        }}
+        onTouchStart={onActivity}>
         <TopBar
           onLeftButtonPressed={goBack}
           leftButtonIcon={backArrow}

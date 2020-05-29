@@ -111,6 +111,7 @@ cd ios && pod install
 | server          | false    | string            | tr      |
 | onError         | false    | callback function | -       |
 | onExit          | false    | callback function | -       |
+| onActivity      | false    | callback function | -       |
 | sendEvent       | false    | callback function | -       |
 
 ```js
@@ -139,6 +140,7 @@ return (
     customerData={customer}
     onError={(error) => console.log(error)}
     onExit={(values) => console.log(values)}
+    onActivity={(event) => console.log(event)} // Fired on every screen touch events
     sendEvent={sendEvent} // Optional for analytics event firing
   />
 );

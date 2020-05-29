@@ -28,6 +28,7 @@ const VersionSelection = (props) => {
     menuMode,
     goBack,
     onSkipDocument,
+    onActivity,
   } = props;
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const VersionSelection = (props) => {
         noBackground
       />
 
-      <ScrollView style={styles.childContainer}>
+      <ScrollView style={styles.childContainer} onTouchStart={onActivity}>
         <Text style={styles.childContainerTitle}>{document.versionTitle}</Text>
 
         <Text style={styles.childContainerDescription}>

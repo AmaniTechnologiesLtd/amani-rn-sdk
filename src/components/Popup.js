@@ -16,7 +16,7 @@ import closeIcon from '../../assets/close-icon.png';
 const { width } = Dimensions.get('window');
 
 const Popup = (props) => {
-  const { onClose, children } = props;
+  const { onClose, onActivity, children } = props;
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPressPopup', () => {
@@ -29,7 +29,7 @@ const Popup = (props) => {
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <TopBar noBackground />
-      <View style={styles.popup}>
+      <View style={styles.popup} onTouchStart={onActivity}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Image style={styles.closeIcon} source={closeIcon} />
         </TouchableOpacity>

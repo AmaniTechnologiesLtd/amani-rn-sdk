@@ -42,6 +42,7 @@ const ContractScreen = (props) => {
     location,
     dispatch,
     updateCustomerRules,
+    onActivity,
   } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [showContract, setShowContract] = useState(false);
@@ -223,6 +224,7 @@ const ContractScreen = (props) => {
         goBackToMainScreen={onContractDecline}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
+        onActivity={onActivity}
       />
     );
   }
@@ -235,7 +237,7 @@ const ContractScreen = (props) => {
           leftButtonIcon={backArrow}
           title={currentDocument.title}
         />
-        <ScrollView style={styles.contactForm}>
+        <ScrollView style={styles.contactForm} onTouchStart={onActivity}>
           <Text style={styles.contactFormTitle}>
             Sözleşmeni hazırlayabilmemiz için lütfen gerekli alanları doldur
           </Text>
@@ -350,7 +352,7 @@ const ContractScreen = (props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onTouchStart={onActivity}>
       <TopBar
         onLeftButtonPressed={() => setShowContract(false)}
         leftButtonIcon={backArrow}

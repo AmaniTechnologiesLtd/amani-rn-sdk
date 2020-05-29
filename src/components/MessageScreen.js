@@ -21,7 +21,15 @@ import closeIcon from '../../assets/close-icon.png';
 const { width, height } = Dimensions.get('window');
 
 const MessageScreen = (props) => {
-  const { header, title, message, type, onClick, buttonText } = props;
+  const {
+    header,
+    title,
+    message,
+    type,
+    onClick,
+    buttonText,
+    onActivity,
+  } = props;
 
   const messageIcon = () => {
     if (type === 'error') {
@@ -57,7 +65,7 @@ const MessageScreen = (props) => {
         barStyle="light-content"
       />
 
-      <View style={styles.messagePopup}>
+      <View style={styles.messagePopup} onTouchStart={onActivity}>
         <TouchableOpacity style={styles.closeButton} onPress={onClick}>
           <Image style={styles.closeIcon} source={closeIcon} />
         </TouchableOpacity>

@@ -29,6 +29,7 @@ const SignatureDraw = (props) => {
     formData,
     dispatch,
     updateCustomerRules,
+    onActivity,
   } = props;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
@@ -180,7 +181,7 @@ const SignatureDraw = (props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onTouchStart={onActivity}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}

@@ -27,7 +27,7 @@ const eDevletURL =
   'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama';
 
 const EDevlet = (props) => {
-  const { onGoBack } = props;
+  const { onGoBack, onActivity } = props;
   useEffect(() => {
     BackHandler.addEventListener('eDevletBackPress', () => {
       onGoBack();
@@ -44,7 +44,9 @@ const EDevlet = (props) => {
         noBackground
         style={styles.topBar}
       />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        onTouchStart={onActivity}>
         <Text style={styles.header}>
           İkametgah Belgesini E-devlet’ten Almak İçin;
         </Text>

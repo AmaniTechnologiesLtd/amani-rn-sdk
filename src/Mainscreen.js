@@ -38,7 +38,7 @@ import seperatorIcon from '../assets/seperator-icon.png';
 const { width, height } = Dimensions.get('window');
 
 const MainScreen = (props) => {
-  const { onError, onExit, server, authData, customerData } = props;
+  const { onActivity, onError, onExit, server, authData, customerData } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -609,6 +609,7 @@ const MainScreen = (props) => {
         message={newMessage.message}
         buttonText={newMessage.buttonText}
         onClick={newMessage.buttonClick}
+        onActivity={onActivity}
       />
     );
   }
@@ -642,6 +643,7 @@ const MainScreen = (props) => {
         takePhoto={() => {
           goToDocument(contract);
         }}
+        onActivity={onActivity}
       />
     );
   }
@@ -667,6 +669,7 @@ const MainScreen = (props) => {
           clearSelectedDocument();
         }}
         onSkipDocument={skipDocument}
+        onActivity={onActivity}
       />
     );
   }
@@ -681,19 +684,23 @@ const MainScreen = (props) => {
         dispatch={dispatch}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
+        onActivity={onActivity}
       />
     );
   }
 
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <ImageBackground
+      source={mainBackground}
+      style={styles.container}
+      onTouchStart={onActivity}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
         noBackground
       />
       <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
-      <View style={styles.modulesContainer}>
+      <View style={styles.modulesContainer} onTouchStart={onActivity}>
         {documents.map((document, index) => {
           return (
             <Fragment key={document.id}>

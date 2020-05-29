@@ -28,6 +28,7 @@ const DocumentConfirmation = (props) => {
     continueProcess,
     step,
     errorMessage,
+    onActivity,
   } = props;
 
   // Ask user for confirmation or show error messages
@@ -38,7 +39,9 @@ const DocumentConfirmation = (props) => {
         leftButtonIcon={backArrow}
         title={document.title}
       />
-      <ScrollView contentContainerStyle={styles.childContainer}>
+      <ScrollView
+        contentContainerStyle={styles.childContainer}
+        onTouchStart={onActivity}>
         <Text style={styles.confirmationTitle}>
           {document.steps.length > 0 && document.steps[step].confirmationTitle}
         </Text>

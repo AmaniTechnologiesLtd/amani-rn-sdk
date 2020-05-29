@@ -11,7 +11,7 @@ import PoweredBy from './PoweredBy';
 import backArrow from '../../assets/back-arrow.png';
 
 const ImageCropper = (props) => {
-  const { image, title, onCancel } = props;
+  const { image, title, onCancel, onActivity } = props;
   const ratioX = image.width / width;
   const ratioY = image.height / height;
   let customCrop = useRef(null);
@@ -38,7 +38,7 @@ const ImageCropper = (props) => {
   }, [onCancel]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onTouchStart={onActivity}>
       <TopBar
         onLeftButtonPressed={onCancel}
         leftButtonIcon={backArrow}
