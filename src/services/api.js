@@ -16,7 +16,7 @@ export default {
   sendContractEmail: (id, email) =>
     axios.post(`company_forms/2/customer/${id}/email`, email),
   getCities: () => axios.get('/cities'),
-  autocapture: (documentData) => axios.post('engine/autocapture', documentData),
+  autoCapture: (documentData) => axios.post('engine/autocapture', documentData),
   sendDocument: (documentData) =>
     axios.post('recognition/web/upload', documentData),
 };
