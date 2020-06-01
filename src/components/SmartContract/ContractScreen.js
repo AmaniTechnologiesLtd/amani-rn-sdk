@@ -144,7 +144,7 @@ const ContractScreen = (props) => {
       if (data[key] === null) {
         Alert.alert(
           '',
-          'Devam etmeden önce formu doldurmalısınız.',
+          'Devam etmek için lütfen formu doldur.',
           [
             {
               text: 'Anladım',

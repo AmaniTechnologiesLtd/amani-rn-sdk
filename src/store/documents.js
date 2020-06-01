@@ -6,7 +6,7 @@ export const initialDocuments = [
     status: 'NOT_UPLOADED',
     steps: [
       {
-        title: 'Kimliğinin ön yüzünü fotoğrafını çek',
+        title: 'Kimliğinin ön yüzünün fotoğrafını çek',
         description:
           'Fotoğrafı aydınlık bir alanda çek.\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Kimliğinin Ön Yüzü',
@@ -14,7 +14,7 @@ export const initialDocuments = [
           'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
       {
-        title: 'Kimliğinin arka yüzünü fotoğrafını çek',
+        title: 'Kimliğinin arka yüzünün fotoğrafını çek',
         description:
           'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
         confirmationTitle: 'Kimliğinin Arka Yüzü',
@@ -107,8 +107,7 @@ export const initialDocuments = [
       AUTOMATICALLY_REJECTED: `Selfie doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: "Selfie'ni başarıyla yükledin",
-    successDescription:
-      'Şimdi adresini doğrulamak için son 3 aya ait faturanı ya da ikametgah belgeni hazırla',
+    successDescription: '',
     errorTitle: "Selfie'ni yüklerken teknik bir hata oluştu",
     errorDescription: 'Lütfen tekrar dene',
   },

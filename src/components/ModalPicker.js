@@ -108,12 +108,10 @@ const ModalPicker = (props) => {
                   <TouchableOpacity
                     key={item.name}
                     onPress={() => selectItem(item)}>
-                    <ImageBackground
-                      style={styles.item}
-                      source={itemBackground}>
+                    <View style={styles.item}>
                       <Text style={styles.itemText}>{item.name}</Text>
                       <Image source={forwardArrrow} style={styles.itemArrow} />
-                    </ImageBackground>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
@@ -152,14 +150,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   item: {
-    marginHorizontal: 20,
-    borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     overflow: 'hidden',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 1,
     flexDirection: 'row',
+    backgroundColor: '#13283D',
   },
   itemText: {
     color: '#ffffff',
@@ -173,8 +170,8 @@ const styles = StyleSheet.create({
   searchArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginBottom: 10,
+    marginHorizontal: 10,
+    marginBottom: 20,
     borderBottomWidth: 2,
     borderColor: 'rgba(255, 255, 255, .3)',
     paddingBottom: 5,

@@ -46,7 +46,7 @@ const SendEmailContent = (props) => {
             styles.popupHeaderWhite,
             { textAlign: 'center', marginVertical: 20 },
           ]}>
-          Sözleşmenin bir kopyası e-posta adresinize gönderildi
+          Sözleşmenin bir kopyası e-posta adresine gönderildi
         </Text>
       </View>
     );
