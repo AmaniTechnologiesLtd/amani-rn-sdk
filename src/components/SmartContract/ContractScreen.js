@@ -60,9 +60,10 @@ const ContractScreen = (props) => {
 
   const jobList = [
     { name: 'Öğrenci' },
+    { name: 'Kamu Çalışanı' },
+    { name: 'Özel Sektör Çalışanı' },
+    { name: 'Serbest Meslek' },
     { name: 'Ev Hanımı' },
-    { name: 'Memur' },
-    { name: 'Serbest Çalışan' },
     { name: 'İşsiz' },
     { name: 'Diğer' },
   ];
