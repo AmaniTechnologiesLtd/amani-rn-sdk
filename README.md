@@ -92,9 +92,6 @@ ios/[...]/Info.plist:
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Example Location Description</string>
 
-<key>NSLocationAlwaysUsageDescription</key>
-<string>Example Location Description</string>
-
 ```
 
 ios/Podfile:
@@ -108,7 +105,6 @@ target 'YourAwesomeProject' do
 
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
-  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
 
 end
 ```
