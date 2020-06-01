@@ -44,6 +44,28 @@ const VersionSelection = (props) => {
     closeVersionSelected();
   };
 
+  const showAddressDescription = () => {
+    return (
+      <>
+        <Text style={styles.childContainerDescription}>
+          Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir
+          <Text style={{ fontWeight: 'bold', color: 'white' }}> fatura</Text> ya
+          da{' '}
+          <Text style={{ fontWeight: 'bold', color: 'white' }}>
+            ikametgah belgeni{' '}
+          </Text>
+          yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf)
+          olarak yükleyebilirsin.
+        </Text>
+        <Text style={styles.childContainerDescription}>
+          Eğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da
+          hemen e-devletten ikametgah belgeni pdf olarak indirip
+          yükleyebilirsin.'
+        </Text>
+      </>
+    );
+  };
+
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <TopBar
@@ -56,9 +78,13 @@ const VersionSelection = (props) => {
       <ScrollView style={styles.childContainer} onTouchStart={onActivity}>
         <Text style={styles.childContainerTitle}>{document.versionTitle}</Text>
 
-        <Text style={styles.childContainerDescription}>
-          {document.versionDescription}
-        </Text>
+        {['UB', 'IB'].includes(document.id) ? (
+          showAddressDescription()
+        ) : (
+          <Text style={styles.childContainerDescription}>
+            {document.versionDescription}
+          </Text>
+        )}
 
         {Object.keys(document.versions).map((group, groupKey) => {
           return (
@@ -137,7 +163,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   childContainerDescription: {
-    marginVertical: 10,
+    marginBottom: 10,
     fontSize: height * 0.022,
     color: '#CAE0F5',
   },
