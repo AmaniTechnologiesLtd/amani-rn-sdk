@@ -8,13 +8,19 @@ import {
   StyleSheet,
   Image,
   BackHandler,
-  PermissionsAndroid,
   Platform,
   ImageBackground,
 } from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from 'react-native-device-info';
+import {
+  check,
+  request,
+  openSettings,
+  PERMISSIONS,
+  RESULTS,
+} from 'react-native-permissions';
 
 // Local files
 import CaptureDocument from './components/CaptureDocument';
@@ -72,20 +78,6 @@ const MainScreen = (props) => {
       }),
   };
 
-  if (
-    Platform.OS === 'android' &&
-    (!permissions.camera || !permissions.location)
-  ) {
-    (async function () {
-      setPermission({
-        camera: await PermissionsAndroid.request('android.permission.CAMERA'),
-        location: await PermissionsAndroid.request(
-          'android.permission.ACCESS_FINE_LOCATION',
-        ),
-      });
-    })();
-  }
-
   const goBack = async () => {
     const callbackData = [];
     documents.forEach((element) => {
@@ -99,11 +91,7 @@ const MainScreen = (props) => {
 
   // If camera and location permissions not granted show error screen
   useEffect(() => {
-    if (
-      Platform.OS === 'android' &&
-      permissions.camera !== 'granted' &&
-      permissions.location !== 'granted'
-    ) {
+    if (!permissions.camera || !permissions.location) {
       setPermissionMessage({
         show: true,
         type: 'error',
@@ -112,18 +100,20 @@ const MainScreen = (props) => {
         message:
           'Kamera ve Konum izinlerini verdikten sonra uygulamayı tekrar başlatın',
         buttonText: 'GERİ DÖN',
-        buttonClick: () =>
+        buttonClick: () => {
+          openSettings();
           onError({
             status: 'ERROR',
             message: 'Kamera ve konum izni kullanılamıyor...',
-          }),
+          });
+        },
       });
     } else {
       setPermissionMessage({ show: false });
     }
 
     // Set location for later use
-    if (permissions.location === 'granted' || Platform.OS === 'ios') {
+    if (permissions.location) {
       Geolocation.setRNConfiguration({ authorizationLevel: 'whenInUse' });
       Geolocation.getCurrentPosition(
         (position) => setLocation(position.coords),
@@ -134,6 +124,8 @@ const MainScreen = (props) => {
   }, [permissions]);
 
   useEffect(() => {
+    handlePermissions();
+
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
       (async function () {
@@ -205,6 +197,40 @@ const MainScreen = (props) => {
       handleSendDocumentsRequest();
     }
   }, [isStepsFinished]);
+
+  const handlePermissions = async () => {
+    let camera = false;
+    const cameraPermission =
+      Platform.OS === 'android'
+        ? PERMISSIONS.ANDROID.CAMERA
+        : PERMISSIONS.IOS.CAMERA;
+
+    const res = await check(cameraPermission);
+
+    if (res === RESULTS.GRANTED) {
+      camera = true;
+    } else if (res === RESULTS.DENIED) {
+      const res2 = await request(cameraPermission);
+      res2 === RESULTS.GRANTED ? (camera = true) : (camera = false);
+    }
+
+    let location = false;
+    const locationPermission =
+      Platform.OS === 'android'
+        ? PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+        : PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
+
+    const locationRes = await check(locationPermission);
+
+    if (locationRes === RESULTS.GRANTED) {
+      location = true;
+    } else if (locationRes === RESULTS.DENIED) {
+      const res2 = await request(locationPermission);
+      res2 === RESULTS.GRANTED ? (location = true) : (location = false);
+    }
+
+    setPermission({ camera, location });
+  };
 
   const handleSendDocumentsRequest = async () => {
     setIsStepsFinished(false);
