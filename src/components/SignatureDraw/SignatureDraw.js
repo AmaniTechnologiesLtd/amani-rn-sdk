@@ -67,11 +67,11 @@ const SignatureDraw = (props) => {
 
   const sendSignatureDocuments = async () => {
     await dispatch({
-      type: 'INCREMENT_TRIAL',
+      type: 'INCREMENT_ATTEMPT',
       document_id: document.id,
     });
 
-    document.trial += 1;
+    document.attempt += 1;
 
     const deviceData = {
       id: DeviceInfo.getUniqueId(),
@@ -85,12 +85,16 @@ const SignatureDraw = (props) => {
     requestData.append('type', document.id);
     requestData.append('customer_id', customer.id);
     requestData.append('device_data', JSON.stringify(deviceData));
+    requestData.append('attempt', document.attempt);
     signature.forEach((sign) => requestData.append('files[]', sign));
 
     await api
       .sendDocument(requestData)
       .then(async (res) => {
-        if (res.data.status !== 'OK' && document.trial < 4) {
+        if (
+          res.data.status !== 'OK' &&
+          document.attempt < document.maxAttempt
+        ) {
           setNotMatched(errorMessages[res.data.errors[0].error_code]);
           setCurrentStep(0);
           setSignature([]);

@@ -241,13 +241,13 @@ const MainScreen = (props) => {
     });
 
     await dispatch({
-      type: 'INCREMENT_TRIAL',
+      type: 'INCREMENT_ATTEMPT',
       document_id: selectedDocument.id,
     });
 
     setSelectedDocument({
       ...selectedDocument,
-      trial: selectedDocument.trial + 1,
+      attempt: selectedDocument.attempt + 1,
     });
 
     updateCustomerRules(selectedDocument.id, 'PROCESSING');
@@ -285,14 +285,17 @@ const MainScreen = (props) => {
       requestData.append('cropped', true);
     }
 
-    requestData.append('attempt', selectedDocument.trial);
+    requestData.append('attempt', selectedDocument.attempt);
 
     files.forEach((file) => requestData.append('files[]', file));
 
     await api
       .sendDocument(requestData)
       .then((res) => {
-        if (res.data.status === 'OK' || selectedDocument.trial >= 2) {
+        if (
+          res.data.status === 'OK' ||
+          selectedDocument.attempt >= selectedDocument.maxAttempt
+        ) {
           dispatch({
             type: 'CHANGE_STATUS',
             document_id: selectedDocument.id,
@@ -435,7 +438,7 @@ const MainScreen = (props) => {
   const checkPreviousSteps = (index, statuses) => {
     return documents.some((document, docIndex) => {
       if (docIndex < index) {
-        return statuses.includes(document.status);
+        return statuses.includes(documentStatus(document));
       }
       return false;
     });
@@ -450,7 +453,7 @@ const MainScreen = (props) => {
           'REJECTED',
           'AUTOMATICALLY_REJECTED',
         ])) ||
-        ['APPROVED'].includes(document.status),
+        ['APPROVED'].includes(documentStatus(document)),
     );
 
     // Accessibility check for all documents
@@ -462,37 +465,58 @@ const MainScreen = (props) => {
   };
 
   const moduleStatusBackground = (document) => {
-    if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(document.status)) {
+    const status = documentStatus(document);
+    if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
       return { backgroundColor: '#FF5C65', paddingVertical: 5 };
-    } else if (document.status === 'NOT_UPLOADED') {
+    } else if (status === 'NOT_UPLOADED') {
       return { backgroundColor: '#00FFD1' };
     }
   };
 
   const moduleTitleStyle = (document) => {
-    if (document.status === 'APPROVED') {
+    const status = documentStatus(document);
+
+    if (status === 'APPROVED') {
       return {
         color: '#CAE0F5',
         fontSize: width * 0.035,
         fontWeight: 'normal',
       };
-    } else if (
-      ['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(document.status)
-    ) {
+    } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
       return {
         color: '#FFFFFF',
       };
-    } else if (document.status === 'PROCESSING') {
+    } else if (status === 'PROCESSING') {
       return { color: '#FFFFFF' };
-    } else if (document.status === 'PENDING_REVIEW') {
+    } else if (status === 'PENDING_REVIEW') {
       return { color: '#CAE0F5' };
     }
   };
 
+  const documentStatus = (document) => {
+    let status = document.status;
+
+    if (!customer.rules) {
+      return;
+    }
+    const rule = customer.rules.find((rule) =>
+      rule.document_classes.includes(document.id),
+    );
+
+    if (document.status === 'AUTOMATICALLY_REJECTED') {
+      status =
+        rule.attempt >= document.maxAttempt ? 'PENDING_REVIEW' : 'REJECTED';
+    }
+
+    return status;
+  };
+
   const moduleStatusIcon = (document, index) => {
+    const status = documentStatus(document);
+
     if (
       document.id === 'CO' && // Show lock icon for only physical contract
-      !['APPROVED', 'PENDING_REVIEW'].includes(document.status) &&
+      !['APPROVED', 'PENDING_REVIEW'].includes(status) &&
       index !== 0 &&
       checkPreviousSteps(index, [
         'NOT_UPLOADED',
@@ -507,7 +531,7 @@ const MainScreen = (props) => {
           source={lockIcon}
         />
       );
-    } else if (document.status === 'NOT_UPLOADED') {
+    } else if (status === 'NOT_UPLOADED') {
       return (
         <Image
           resizeMode="contain"
@@ -515,7 +539,7 @@ const MainScreen = (props) => {
           source={stepWarningDark}
         />
       );
-    } else if (document.status === 'PENDING_REVIEW') {
+    } else if (status === 'PENDING_REVIEW') {
       return (
         <Image
           resizeMode="contain"
@@ -523,7 +547,7 @@ const MainScreen = (props) => {
           source={successIcon}
         />
       );
-    } else if (document.status === 'APPROVED') {
+    } else if (status === 'APPROVED') {
       return (
         <Image
           resizeMode="contain"
@@ -531,9 +555,7 @@ const MainScreen = (props) => {
           source={approvedIcon}
         />
       );
-    } else if (
-      ['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(document.status)
-    ) {
+    } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
       return (
         <Image
           resizeMode="contain"
@@ -549,6 +571,7 @@ const MainScreen = (props) => {
   };
 
   const selectDocument = (document) => {
+    console.log(document);
     // First check if have any rejection message from studio
     if (customer && customer.rules) {
       const rule = customer.rules.find((step) =>
@@ -588,7 +611,7 @@ const MainScreen = (props) => {
     // If last step physical contract is done return to main application
     if (
       documents.every((document) =>
-        ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+        ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
       )
     ) {
       goBack();
@@ -643,7 +666,7 @@ const MainScreen = (props) => {
   //If contract is already uploaded show message screen and return to main app
   if (
     documents.every((document) =>
-      ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+      ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
     )
   ) {
     const contract = documents.find((doc) => doc.id === 'CO');
@@ -657,7 +680,7 @@ const MainScreen = (props) => {
     documents
       .filter((document) => document.id !== 'CO')
       .every((document) =>
-        ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
+        ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
       ) &&
     selectedDocument === null
   ) {
@@ -738,7 +761,7 @@ const MainScreen = (props) => {
                   <View style={styles.moduleTitleContainer}>
                     <Text
                       style={[styles.moduleTitle, moduleTitleStyle(document)]}>
-                      {document.messages[document.status]}
+                      {document.messages[documentStatus(document)]}
                     </Text>
                   </View>
                   <View style={styles.moduleStatusContainer}>

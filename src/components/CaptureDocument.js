@@ -155,6 +155,7 @@ const CaptureDocument = (props) => {
     if (forced) {
       setTrialCount(trialCount + 1);
     }
+    setAutoCaptureErrorMessage(null);
     setAutoCapturedImage(null);
   };
 
@@ -209,7 +210,7 @@ const CaptureDocument = (props) => {
         if (trialCount < 2) {
           setAutoCapturedImage(res.data.image);
         } else {
-          onCapture(image);
+          onCapture(res.data.image);
           calculateNextStep();
         }
       })

@@ -129,6 +129,7 @@ const ContractScreen = (props) => {
             : null,
           job: response.data.occupation ? response.data.occupation : null,
         });
+        setOtherJob(response.data.occupation);
       }
 
       setIsLoading(false);
@@ -268,6 +269,7 @@ const ContractScreen = (props) => {
                   onChangeText={setOtherJob}
                   placeholder="Mesleğinizi yazın"
                   placeholderTextColor="#CAE0F5"
+                  value={otherJob}
                 />
               )}
             </View>

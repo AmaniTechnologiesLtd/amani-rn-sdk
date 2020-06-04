@@ -22,7 +22,8 @@ export const initialDocuments = [
           'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 2,
     options: ['takePicture', 'async'],
     captureVideo: false,
     cameraFacing: 'environment',
@@ -64,7 +65,7 @@ export const initialDocuments = [
     },
     successTitle: 'Kimliğini Başarıyla Yükledin',
     successDescription: '',
-    errorTitle: 'Kimliğni yüklerken teknik bir hata oluştu',
+    errorTitle: 'Kimliğni yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -79,7 +80,8 @@ export const initialDocuments = [
           'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 2,
     options: ['takePicture'],
     type: 'video',
     captureVideo: true,
@@ -107,7 +109,7 @@ export const initialDocuments = [
     },
     successTitle: "Selfie'ni Başarıyla Yükledin",
     successDescription: '',
-    errorTitle: "Selfie'ni yüklerken teknik bir hata oluştu",
+    errorTitle: "Selfie'ni yüklerken bir hata oluştu",
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -121,7 +123,8 @@ export const initialDocuments = [
           'Lütfen pasaportunuzu kutucuğun içinde olacak şekilde konumlandırın',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 2,
     options: ['takePicture'],
     type: 'image',
     captureVideo: false,
@@ -149,7 +152,7 @@ export const initialDocuments = [
     },
     successTitle: 'Pasaportunu başarıyla yükledin',
     successDescription: 'Bir sonraki adıma geçebilirsin',
-    errorTitle: 'Pasaportunu yüklerken teknik bir hata oluştu',
+    errorTitle: 'Pasaportunu yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -163,7 +166,8 @@ export const initialDocuments = [
           'Lütfen vizenizi kutucuğun içinde olacak şekilde konumlandırın',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 2,
     options: ['takePicture'],
     type: 'image',
     captureVideo: false,
@@ -192,7 +196,7 @@ export const initialDocuments = [
     },
     successTitle: 'Vizeni başarıyla yükledin',
     successDescription: 'Bir sonraki adıma geçebilirsin',
-    errorTitle: 'Vizeni yüklerken teknik bir hata oluştu',
+    errorTitle: 'Vizeni yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -205,7 +209,8 @@ export const initialDocuments = [
         description: '',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 2,
     options: ['takePicture', 'fileUpload', 'skipDocument', 'async'],
     type: 'image',
     captureVideo: false,
@@ -286,7 +291,7 @@ export const initialDocuments = [
     },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: '',
-    errorTitle: 'Adres belgeni yüklerken teknik bir hata oluştu',
+    errorTitle: 'Adres belgeni yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -303,7 +308,8 @@ export const initialDocuments = [
         description: '',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 3,
     options: ['takePicture'],
     type: 'image',
     captureVideo: false,
@@ -330,7 +336,7 @@ export const initialDocuments = [
     },
     successTitle: 'Dijital Sözleşmeni Başarıyla Yükledin',
     successDescription: '',
-    errorTitle: 'Sözleşmeni yüklerken teknik bir hata oluştu',
+    errorTitle: 'Sözleşmeni yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
   {
@@ -343,7 +349,8 @@ export const initialDocuments = [
         description: '',
       },
     ],
-    trial: 1,
+    attempt: 1,
+    maxAttempt: 2,
     options: ['takePicture', 'fileUpload'],
     type: 'image',
     captureVideo: false,
@@ -372,7 +379,7 @@ export const initialDocuments = [
     successTitle: 'Fiziksel Sözleşmeni Başarıyla Yükledin',
     successDescription:
       'Tüm adımları tamamladın\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız',
-    errorTitle: 'Sözleşmeni yüklerken teknik bir hata oluştu',
+    errorTitle: 'Sözleşmeni yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },
 ];
@@ -394,10 +401,10 @@ export const documentsReducer = (state, action) => {
         }
         return document;
       });
-    case 'INCREMENT_TRIAL':
+    case 'INCREMENT_ATTEMPT':
       return state.map((document) => {
         if (action.document_id === document.id) {
-          return { ...document, trial: document.trial + 1 };
+          return { ...document, attempt: document.attempt + 1 };
         }
         return document;
       });
