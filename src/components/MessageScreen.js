@@ -26,9 +26,11 @@ const MessageScreen = (props) => {
     title,
     message,
     type,
+    onClose,
     onClick,
     buttonText,
     onActivity,
+    popup,
   } = props;
 
   const messageIcon = () => {
@@ -57,18 +59,9 @@ const MessageScreen = (props) => {
     }
   };
 
-  return (
-    <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-
-      <View style={styles.messagePopup} onTouchStart={onActivity}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClick}>
-          <Image style={styles.closeIcon} source={closeIcon} />
-        </TouchableOpacity>
+  const messageContent = () => {
+    return (
+      <>
         <View style={styles.messageContainer}>
           <Image
             resizeMode="contain"
@@ -87,7 +80,28 @@ const MessageScreen = (props) => {
             style={[styles.buttonStyle, { flex: 1 }]}
           />
         </View>
-      </View>
+      </>
+    );
+  };
+
+  return (
+    <ImageBackground source={mainBackground} style={styles.container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+
+      {popup ? (
+        <View style={styles.messagePopup} onTouchStart={onActivity}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Image style={styles.closeIcon} source={closeIcon} />
+          </TouchableOpacity>
+          {messageContent()}
+        </View>
+      ) : (
+        messageContent()
+      )}
     </ImageBackground>
   );
 };
@@ -98,6 +112,7 @@ MessageScreen.defaultProps = {
   title: null,
   type: 'success',
   buttonText: 'DEVAM',
+  popup: false,
 };
 
 const styles = StyleSheet.create({

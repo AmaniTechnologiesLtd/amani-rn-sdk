@@ -70,7 +70,7 @@ const CaptureDocument = (props) => {
   const [showVersionSelection, setShowVersionSelection] = useState(true);
   const [capturedImageUrl, setCapturedImageUrl] = useState(null);
   const [autoCapturedImage, setAutoCapturedImage] = useState(null);
-  const [autoCaptureErrorMessage, setAutoCaptureErrorMessage] = useState(null);
+  const [autoCaptureError, setAutoCaptureError] = useState(null);
 
   const camera = useRef(null);
 
@@ -78,6 +78,7 @@ const CaptureDocument = (props) => {
     if (checkForVersions() && !showVersionSelection) {
       setTrialCount(1);
       setCurrentStep(0);
+      setAutoCapturedImage(null);
       setShowVersionSelection(true);
     } else {
       onClearDocument();
@@ -155,7 +156,7 @@ const CaptureDocument = (props) => {
     if (forced) {
       setTrialCount(trialCount + 1);
     }
-    setAutoCaptureErrorMessage(null);
+    setAutoCaptureError(null);
     setAutoCapturedImage(null);
   };
 
@@ -202,9 +203,10 @@ const CaptureDocument = (props) => {
       .autoCapture(requestData)
       .then((res) => {
         if (res.data.errors.length) {
-          setAutoCaptureErrorMessage(
-            errorMessages[res.data.errors[0].error_code],
-          );
+          setAutoCaptureError({
+            code: res.data.errors[0].error_code,
+            message: errorMessages[res.data.errors[0].error_code],
+          });
         }
 
         if (trialCount < 2) {
@@ -215,7 +217,10 @@ const CaptureDocument = (props) => {
         }
       })
       .catch(() => {
-        setAutoCaptureErrorMessage('Teknik bir hata oldu. Lütfen tekrar dene.');
+        setAutoCaptureError({
+          code: 1000,
+          message: 'Teknik bir hata oldu. Lütfen tekrar dene.',
+        });
 
         setAutoCapturedImage(image);
       });
@@ -312,13 +317,19 @@ const CaptureDocument = (props) => {
         originalImage={capturedImageUrl}
         imgSrc={autoCapturedImage}
         step={currentStep}
+        versionGroup={versionGroup}
+        groupIndex={groupIndex}
         continueProcess={(image) => {
           onCapture(image);
           calculateNextStep();
         }}
-        onTryAgain={handleDocumentRetake}
+        onTryAgain={
+          autoCaptureError && autoCaptureError.code === 1008
+            ? goBack
+            : handleDocumentRetake
+        }
         onActivity={onActivity}
-        errorMessage={autoCaptureErrorMessage}
+        errorMessage={autoCaptureError && autoCaptureError.message}
       />
     );
   }
@@ -346,7 +357,7 @@ const CaptureDocument = (props) => {
     return (
       <ImageCropper
         image={imageCrop}
-        title={document.versions[versionGroup][groupIndex].title}
+        title={document.versions[versionGroup][groupIndex].captureTopBar}
         onCancel={() => {
           setImageCrop(false);
           return true; // Added for react navigation not to intervene
@@ -380,7 +391,9 @@ const CaptureDocument = (props) => {
               <TopBar
                 onLeftButtonPressed={goBack}
                 leftButtonIcon={backArrow}
-                title={document.versions[versionGroup][groupIndex].title}
+                title={
+                  document.versions[versionGroup][groupIndex].captureTopBar
+                }
               />
             </View>
 
@@ -460,6 +473,7 @@ const CaptureDocument = (props) => {
                     text="E-Devletten al"
                     onPress={() => setShowEDevlet(true)}
                     style={styles.fileUpload}
+                    textStyle={{ fontSize: width * 0.04 }}
                     backgroundStyle={{
                       paddingVertical: 5,
                       paddingHorizontal: 15,
@@ -494,6 +508,7 @@ const CaptureDocument = (props) => {
                     text="PDF Yükle"
                     onPress={pickAndTransformPdf}
                     style={styles.fileUpload}
+                    textStyle={{ fontSize: width * 0.04 }}
                     backgroundStyle={{
                       paddingVertical: 5,
                       paddingHorizontal: 20,

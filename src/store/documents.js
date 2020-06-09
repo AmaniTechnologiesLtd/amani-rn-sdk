@@ -2,24 +2,24 @@ export const initialDocuments = [
   {
     id: 'ID',
     secondary_id: 'DL',
-    title: 'Kimliğini Doğrula',
+    title: 'Kimliğini Yükle',
     status: 'NOT_UPLOADED',
     steps: [
       {
         title: 'Kimliğinin ön yüzünün fotoğrafını çek',
         description:
-          'Fotoğrafı aydınlık bir alanda çek.\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
+          'Fotoğrafı aydınlık bir alanda çek.\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol.',
         confirmationTitle: 'Kimliğinin Ön Yüzü',
         confirmationDescription:
-          'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
+          'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol.',
       },
       {
         title: 'Kimliğinin arka yüzünün fotoğrafını çek',
         description:
-          'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol',
+          'Fotoğrafı aydınlık bir alanda çek.\n\nKimliğinin işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol.',
         confirmationTitle: 'Kimliğinin Arka Yüzü',
         confirmationDescription:
-          'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol',
+          'Kimliğinin bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol.',
       },
     ],
     attempt: 1,
@@ -34,6 +34,8 @@ export const initialDocuments = [
       '': [
         {
           title: 'T.C. Kimlik Kartı (Yeni Tip)',
+          captureTopBar: 'Kimliğini Yükle',
+          confirmationTopBar: 'Kimliğini Kontrol Et',
           aspectRatio: 0.63,
           crop: false,
           autoCrop: true,
@@ -41,6 +43,8 @@ export const initialDocuments = [
         },
         {
           title: 'Nüfus Cüzdanı (Eski Tip)',
+          captureTopBar: 'Kimliğini Yükle',
+          confirmationTopBar: 'Kimliğini Kontrol Et',
           aspectRatio: 1.2,
           crop: false,
           autoCrop: true,
@@ -48,6 +52,8 @@ export const initialDocuments = [
         },
         {
           title: 'Ehliyet (Yeni Tip)',
+          captureTopBar: 'Kimliğini Yükle',
+          confirmationTopBar: 'Kimliğini Kontrol Et',
           aspectRatio: 0.63,
           crop: false,
           autoCrop: true,
@@ -63,10 +69,10 @@ export const initialDocuments = [
       REJECTED: `Kimliğin Doğrulanamadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Kimliğin Doğrulanamadı\nLütfen tekrar dene`,
     },
-    successTitle: 'Kimliğini Başarıyla Yükledin',
+    successTitle: 'Kimliğini başarıyla yükledin.',
     successDescription: '',
-    errorTitle: 'Kimliğni yüklerken bir hata oluştu',
-    errorDescription: 'Lütfen tekrar dene',
+    errorTitle: 'Kimliğni yüklerken bir hata oluştu.',
+    errorDescription: 'Lütfen tekrar dene.',
   },
   {
     id: 'SE',
@@ -75,9 +81,9 @@ export const initialDocuments = [
     steps: [
       {
         title: '',
-        description: 'Lütfen yüzünü işaretli alana yerleştir',
+        description: 'Lütfen yüzünü işaretli alana yerleştir.',
         confirmationDescription:
-          'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol',
+          'Yüzünün net ve aydınlık bir şekilde çıktığından olduğundan emin ol.',
       },
     ],
     attempt: 1,
@@ -93,6 +99,8 @@ export const initialDocuments = [
       '': [
         {
           title: 'Selfie',
+          captureTopBar: 'Selfie Çek',
+          confirmationTopBar: "Selfie'ni Kontrol Et",
           crop: false,
           autoCrop: false,
           autoCapture: true,
@@ -113,95 +121,8 @@ export const initialDocuments = [
     errorDescription: 'Lütfen tekrar dene',
   },
   {
-    id: 'PA',
-    title: 'Pasaport',
-    status: 'NOT_UPLOADED',
-    steps: [
-      {
-        title: '',
-        description:
-          'Lütfen pasaportunuzu kutucuğun içinde olacak şekilde konumlandırın',
-      },
-    ],
-    attempt: 1,
-    maxAttempt: 2,
-    options: ['takePicture'],
-    type: 'image',
-    captureVideo: false,
-    cameraFacing: 'environment',
-    versionTitle: '',
-    versionDescription: '',
-    versions: {
-      '': [
-        {
-          title: 'Pasaport',
-          crop: false,
-          autoCrop: true,
-          autoCapture: true,
-          aspectRatio: 0.7042,
-        },
-      ],
-    },
-    messages: {
-      NOT_UPLOADED: 'Pasaportunu Doğrula',
-      PENDING_REVIEW: 'Pasaportun yüklendi',
-      PROCESSING: 'Pasaportub doğrulanıyor',
-      APPROVED: 'Pasaportun doğrulandı',
-      REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
-      AUTOMATICALLY_REJECTED: `Pasaportn doğrulanamadı\nLütfen tekrar dene`,
-    },
-    successTitle: 'Pasaportunu başarıyla yükledin',
-    successDescription: 'Bir sonraki adıma geçebilirsin',
-    errorTitle: 'Pasaportunu yüklerken bir hata oluştu',
-    errorDescription: 'Lütfen tekrar dene',
-  },
-  {
-    id: 'VA',
-    title: 'Vize',
-    status: 'NOT_UPLOADED',
-    steps: [
-      {
-        title: '',
-        description:
-          'Lütfen vizenizi kutucuğun içinde olacak şekilde konumlandırın',
-      },
-    ],
-    attempt: 1,
-    maxAttempt: 2,
-    options: ['takePicture'],
-    type: 'image',
-    captureVideo: false,
-    cameraFacing: 'environment',
-    versionTitle: '',
-    versionDescription: '',
-    versions: {
-      '': [
-        {
-          group: null,
-          title: 'Vize',
-          crop: false,
-          autoCrop: true,
-          autoCapture: true,
-          aspectRatio: 0.7042,
-        },
-      ],
-    },
-    messages: {
-      NOT_UPLOADED: 'Vize Doğrula',
-      PENDING_REVIEW: 'Vizen yüklendi',
-      PROCESSING: 'Vizen doğrulanıyor',
-      APPROVED: 'Vizen doğrulandı',
-      REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
-      AUTOMATICALLY_REJECTED: `Vizen doğrulanamadı\nLütfen tekrar dene`,
-    },
-    successTitle: 'Vizeni başarıyla yükledin',
-    successDescription: 'Bir sonraki adıma geçebilirsin',
-    errorTitle: 'Vizeni yüklerken bir hata oluştu',
-    errorDescription: 'Lütfen tekrar dene',
-  },
-  {
     id: 'UB',
-    title: 'Adress Doğrulama',
+    title: 'Adresini Doğrula',
     status: 'NOT_UPLOADED',
     steps: [
       {
@@ -222,6 +143,8 @@ export const initialDocuments = [
       Devlet: [
         {
           title: 'E-Devlet İkametgah Belgesi',
+          captureTopBar: 'İkametgah Belgeni Yükle',
+          confirmationTopBar: 'İkametgah Belgeni Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -231,18 +154,24 @@ export const initialDocuments = [
       GSM: [
         {
           title: 'Türk Telekom',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
         },
         {
           title: 'Turkcell',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
         },
         {
           title: 'Vodafone',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -251,6 +180,8 @@ export const initialDocuments = [
       Su: [
         {
           title: 'İski',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -259,6 +190,8 @@ export const initialDocuments = [
       Doğalgaz: [
         {
           title: 'İgdaş',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -267,6 +200,8 @@ export const initialDocuments = [
       Elektrik: [
         {
           title: 'Boğaziçi Elektrik',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -275,6 +210,8 @@ export const initialDocuments = [
       Diğer: [
         {
           title: 'Diğer Tüm Kurumlar',
+          captureTopBar: 'Faturanı Yükle',
+          confirmationTopBar: 'Yüklediğin Faturayı Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -285,14 +222,14 @@ export const initialDocuments = [
       NOT_UPLOADED: 'Adres Belgeni Yükle',
       PENDING_REVIEW: 'Adres Belgen Yüklendi',
       PROCESSING: 'Adres Belgen Kontrol Ediliyor',
-      APPROVED: 'Adres Belgen Yüklendi',
+      APPROVED: 'Adres Belgen Doğrulandı',
       REJECTED: `Adres Belgen Doğrulanamadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Adres Belgen Doğrulanamadı\nLütfen tekrar dene`,
     },
     successTitle: 'Adres belgeni başarıyla yükledin',
     successDescription: '',
     errorTitle: 'Adres belgeni yüklerken bir hata oluştu',
-    errorDescription: 'Lütfen tekrar dene',
+    errorDescription: 'Lütfen tekrar dene.',
   },
   {
     id: 'SG',
@@ -300,11 +237,11 @@ export const initialDocuments = [
     status: 'NOT_UPLOADED',
     steps: [
       {
-        title: 'İmzanızı Atın',
+        title: 'İmzanı At (1. İmza)',
         description: '',
       },
       {
-        title: 'İmzanı Tekrar At',
+        title: 'İmzanı At (2. İmza)',
         description: '',
       },
     ],
@@ -320,6 +257,7 @@ export const initialDocuments = [
       '': [
         {
           title: 'Sözleşme',
+          confirmationTopBar: 'Dijital Sözleşmeyi Onayla',
           crop: false,
           autoCrop: false,
           autoCapture: false,
@@ -337,7 +275,7 @@ export const initialDocuments = [
     successTitle: 'Dijital Sözleşmeni Başarıyla Yükledin',
     successDescription: '',
     errorTitle: 'Sözleşmeni yüklerken bir hata oluştu',
-    errorDescription: 'Lütfen tekrar dene',
+    errorDescription: 'Lütfen tekrar dene.',
   },
   {
     id: 'CO',
@@ -361,6 +299,8 @@ export const initialDocuments = [
       '': [
         {
           title: 'Fiziksel Sözleşme',
+          captureTopBar: 'Fiziksel Sözleşmeni Yükle',
+          confirmationTopBar: 'Fiziksel Sözleşmeni Kontrol Et',
           crop: true,
           autoCrop: false,
           autoCapture: false,
@@ -378,7 +318,7 @@ export const initialDocuments = [
     },
     successTitle: 'Fiziksel Sözleşmeni Başarıyla Yükledin',
     successDescription:
-      'Tüm adımları tamamladın\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız',
+      'Tüm adımları tamamladın\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız.',
     errorTitle: 'Sözleşmeni yüklerken bir hata oluştu',
     errorDescription: 'Lütfen tekrar dene',
   },

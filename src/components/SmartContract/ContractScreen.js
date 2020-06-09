@@ -359,7 +359,7 @@ const ContractScreen = (props) => {
       <TopBar
         onLeftButtonPressed={() => setShowContract(false)}
         leftButtonIcon={backArrow}
-        title={currentDocument.title}
+        title={currentDocument.versions[''][0].confirmationTopBar}
       />
 
       <WebView style={{}} source={{ html: content }} />

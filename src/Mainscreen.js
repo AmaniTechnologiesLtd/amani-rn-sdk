@@ -92,21 +92,30 @@ const MainScreen = (props) => {
   // If camera and location permissions not granted show error screen
   useEffect(() => {
     if (!permissions.camera || !permissions.location) {
+      let title = !permissions.camera
+        ? 'Doğrulamaların çalışabilmesi için kamera izni vermen gerekiyor.\n\n'
+        : '';
+      title += !permissions.location
+        ? 'Doğrulamaların çalışabilmesi için konum izni vermen gerekiyor.'
+        : '';
+
       setPermissionMessage({
         show: true,
         type: 'error',
-        header: 'Gerekli İzinler Eksik!',
-        title: 'Doğrulamaların çalışabilmesi için gereken izinler eksik',
-        message:
-          'Kamera ve Konum izinlerini verdikten sonra uygulamayı tekrar başlatın',
-        buttonText: 'GERİ DÖN',
-        buttonClick: () => {
-          openSettings();
+        header: 'Gerekli İzinler Eksik',
+        title: title,
+        message: '',
+        buttonText: 'Ayarlara Git',
+        onClose: () => {
           onError({
             status: 'ERROR',
-            message: 'Kamera ve konum izni kullanılamıyor...',
+            message: 'Kamera ve konum izni kullanılamıyor.',
           });
         },
+        buttonClick: () => {
+          openSettings();
+        },
+        popup: true,
       });
     } else {
       setPermissionMessage({ show: false });
@@ -343,15 +352,13 @@ const MainScreen = (props) => {
   };
 
   const handleError = (error) => {
-    let errorMessage;
+    let errorMessage = 'Lütfen daha sonra tekrar dene.';
 
-    if (error.message) {
-      errorMessage = error.message;
-    } else if (error.response && error.response.data.errors) {
-      errorMessage = error.response.data.errors[0].ERROR_MESSAGE;
-    } else {
-      errorMessage = 'Lütfen tekrar dene';
-    }
+    // if (error.message) {
+    //   errorMessage = error.message;
+    // } else if (error.response && error.response.data.errors) {
+    //   errorMessage = error.response.data.errors[0].ERROR_MESSAGE;
+    // }
 
     setMessage({
       ...initialMessage,
@@ -379,6 +386,7 @@ const MainScreen = (props) => {
         message: messageDocument.successDescription,
         buttonText: 'DEVAM',
         buttonClick: () => findIncompleteDocument(customer),
+        popup: true,
       });
     }
   };
@@ -398,6 +406,7 @@ const MainScreen = (props) => {
           setCorners([]);
           setMessage({ ...initialMessage });
         },
+        popup: true,
       });
     }
   };
@@ -586,6 +595,7 @@ const MainScreen = (props) => {
           header: rule.status_message,
           buttonText: 'DEVAM',
           buttonClick: () => goToDocument(document),
+          popup: true,
         });
         return;
       }
@@ -657,7 +667,11 @@ const MainScreen = (props) => {
         title={newMessage.title}
         message={newMessage.message}
         buttonText={newMessage.buttonText}
+        onClose={
+          newMessage.onClose ? newMessage.onClose : newMessage.buttonClick
+        }
         onClick={newMessage.buttonClick}
+        popup={newMessage.popup}
         onActivity={onActivity}
       />
     );

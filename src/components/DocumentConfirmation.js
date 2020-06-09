@@ -27,6 +27,8 @@ const DocumentConfirmation = (props) => {
     onTryAgain,
     continueProcess,
     step,
+    versionGroup,
+    groupIndex,
     errorMessage,
     onActivity,
   } = props;
@@ -37,7 +39,7 @@ const DocumentConfirmation = (props) => {
       <TopBar
         onLeftButtonPressed={() => onTryAgain(false)}
         leftButtonIcon={backArrow}
-        title={document.title}
+        title={document.versions[versionGroup][groupIndex].confirmationTopBar}
       />
       <ScrollView
         contentContainerStyle={styles.childContainer}
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
   },
   confirmationImagePreview: {
     width: width * 0.9,
-    height: height * 0.5,
+    height: height < 600 ? height * 0.35 : height * 0.5,
   },
   bottomTextBackground: {
     resizeMode: 'cover',

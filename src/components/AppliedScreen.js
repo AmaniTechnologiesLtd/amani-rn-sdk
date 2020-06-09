@@ -104,12 +104,12 @@ const AppliedScreen = (props) => {
 
   useEffect(() => {
     getCustomerData();
-    BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
+    BackHandler.addEventListener('hardwareBackPressAppliedScreen', () => {
       goBack();
       return true;
     });
     return () =>
-      BackHandler.removeEventListener('hardwareBackPressContractScreen');
+      BackHandler.removeEventListener('hardwareBackPressAppliedScreen');
   }, []);
 
   const getCustomerData = async () => {
