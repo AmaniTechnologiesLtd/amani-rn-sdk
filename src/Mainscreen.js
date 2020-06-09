@@ -55,7 +55,7 @@ const MainScreen = (props) => {
   const [files, setFiles] = useState([]);
   const [isStepsFinished, setIsStepsFinished] = useState(false);
   const [customer, setCustomer] = useState({});
-  const [location, setLocation] = useState(null);
+  const [locationData, setLocationData] = useState(null);
   const [permissions, setPermission] = useState({
     camera: null,
     location: null,
@@ -125,7 +125,7 @@ const MainScreen = (props) => {
     if (permissions.location) {
       Geolocation.setRNConfiguration({ authorizationLevel: 'whenInUse' });
       Geolocation.getCurrentPosition(
-        (position) => setLocation(position.coords),
+        (position) => setLocationData(position.coords),
         (error) => console.log(error),
         { enableHighAccuracy: true },
       );
@@ -281,8 +281,8 @@ const MainScreen = (props) => {
     );
     requestData.append('customer_id', customer.id);
     requestData.append('device_data', JSON.stringify(deviceData));
-    if (location) {
-      requestData.append('location', JSON.stringify(location));
+    if (locationData) {
+      requestData.append('location', JSON.stringify(locationData));
     }
     if (corners) {
       corners.forEach((corner) =>
@@ -386,7 +386,7 @@ const MainScreen = (props) => {
         message: messageDocument.successDescription,
         buttonText: 'DEVAM',
         buttonClick: () => findIncompleteDocument(customer),
-        popup: true,
+        popup: false,
       });
     }
   };
@@ -508,8 +508,8 @@ const MainScreen = (props) => {
     if (!customer.rules) {
       return;
     }
-    const rule = customer.rules.find((rule) =>
-      rule.document_classes.includes(document.id),
+    const rule = customer.rules.find((customerRule) =>
+      customerRule.document_classes.includes(document.id),
     );
 
     if (document.status === 'AUTOMATICALLY_REJECTED') {
@@ -742,7 +742,7 @@ const MainScreen = (props) => {
     return (
       <ContractScreen
         onContractDecline={() => setShowContract(false)}
-        location={location}
+        location={locationData}
         currentDocument={documents.find((document) => document.id === 'SG')}
         addressDocument={documents.find((document) => document.id === 'UB')}
         dispatch={dispatch}
