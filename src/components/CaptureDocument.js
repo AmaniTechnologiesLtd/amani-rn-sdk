@@ -473,11 +473,7 @@ const CaptureDocument = (props) => {
                     text="E-Devletten al"
                     onPress={() => setShowEDevlet(true)}
                     style={styles.fileUpload}
-                    textStyle={{ fontSize: width * 0.04 }}
-                    backgroundStyle={{
-                      paddingVertical: 5,
-                      paddingHorizontal: 15,
-                    }}
+                    backgroundStyle={styles.buttonBackground}
                     backgroundImage={darkBlueBackground}
                   />
                 )}
@@ -508,11 +504,7 @@ const CaptureDocument = (props) => {
                     text="PDF Yükle"
                     onPress={pickAndTransformPdf}
                     style={styles.fileUpload}
-                    textStyle={{ fontSize: width * 0.04 }}
-                    backgroundStyle={{
-                      paddingVertical: 5,
-                      paddingHorizontal: 20,
-                    }}
+                    backgroundStyle={styles.buttonBackground}
                     backgroundImage={darkBlueBackground}
                   />
                 )}
@@ -634,6 +626,10 @@ const styles = StyleSheet.create({
     height: 30,
     marginBottom: height * 0.05,
     marginHorizontal: width * 0.03,
+  },
+  buttonBackground: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   previewMiddle: {
     borderColor: 'white',

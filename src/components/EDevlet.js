@@ -54,7 +54,7 @@ const EDevlet = (props) => {
           <Image source={Number1} style={styles.bulletIcon} />
           <TouchableOpacity onPress={() => Linking.openURL(eDevletURL)}>
             <Text style={styles.bulletText}>
-              <Text style={{ textDecorationLine: 'underline', fontSize: 15 }}>
+              <Text style={{ textDecorationLine: 'underline' }}>
                 {eDevletURL}
               </Text>
               <Text> adresine git</Text>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.04,
   },
   header: {
-    fontSize: height * 0.033,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: height * 0.01,
     alignItems: 'center',
+    overflow: 'hidden',
   },
   bulletIcon: {
     resizeMode: 'contain',
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
   },
   bulletText: {
     color: 'white',
-    fontSize: height * 0.02,
+    fontSize: height * 0.022,
     flexShrink: 1,
     opacity: 0.8,
   },

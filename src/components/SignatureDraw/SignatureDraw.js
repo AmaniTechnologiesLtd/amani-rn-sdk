@@ -6,6 +6,7 @@ import {
   BackHandler,
   Platform,
   Modal,
+  Dimensions,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import LottieView from 'lottie-react-native';
@@ -19,6 +20,8 @@ import backArrow from '../../../assets/back-arrow.png';
 import api from '../../services/api';
 import animationSignature from '../../../assets/animation_signature.json';
 import { errorMessages } from '../../constants';
+
+const { width, height } = Dimensions.get('window');
 
 const SignatureDraw = (props) => {
   const {
@@ -198,6 +201,7 @@ const SignatureDraw = (props) => {
         animationType="none"
         visible={showAnimation}>
         <LottieView
+          style={{ height: height < 600 ? height * 0.78 : height * 0.9 }}
           source={animationSignature}
           autoPlay
           loop={false}
