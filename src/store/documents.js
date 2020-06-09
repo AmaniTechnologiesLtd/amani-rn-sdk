@@ -115,10 +115,10 @@ export const initialDocuments = [
       REJECTED: `Selfie Doğrulanamadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Selfie Doğrulanamadı\nLütfen tekrar dene`,
     },
-    successTitle: "Selfie'ni Başarıyla Yükledin",
+    successTitle: "Selfie'ni başarıyla yükledin.",
     successDescription: '',
-    errorTitle: "Selfie'ni yüklerken bir hata oluştu",
-    errorDescription: 'Lütfen tekrar dene',
+    errorTitle: "Selfie'ni yüklerken bir hata oluştu.",
+    errorDescription: 'Lütfen tekrar dene.',
   },
   {
     id: 'UB',
@@ -226,9 +226,9 @@ export const initialDocuments = [
       REJECTED: `Adres Belgen Doğrulanamadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Adres Belgen Doğrulanamadı\nLütfen tekrar dene`,
     },
-    successTitle: 'Adres belgeni başarıyla yükledin',
+    successTitle: 'Adres belgeni başarıyla yükledin.',
     successDescription: '',
-    errorTitle: 'Adres belgeni yüklerken bir hata oluştu',
+    errorTitle: 'Adres belgeni yüklerken bir hata oluştu.',
     errorDescription: 'Lütfen tekrar dene.',
   },
   {
@@ -272,9 +272,9 @@ export const initialDocuments = [
       REJECTED: 'İmzan Doğrulanamadı\nLütfen tekrar dene',
       AUTOMATICALLY_REJECTED: 'İmzan Doğrulanamadı\nLütfen tekrar dene',
     },
-    successTitle: 'Dijital Sözleşmeni Başarıyla Yükledin',
+    successTitle: 'Dijital sözleşmeni başarıyla yükledin.',
     successDescription: '',
-    errorTitle: 'Sözleşmeni yüklerken bir hata oluştu',
+    errorTitle: 'Sözleşmeni yüklerken bir hata oluştu.',
     errorDescription: 'Lütfen tekrar dene.',
   },
   {
@@ -316,11 +316,11 @@ export const initialDocuments = [
       AUTOMATICALLY_REJECTED:
         'Fiziksel Sözleşmen Doğrulanamadı\nLütfen tekrar dene',
     },
-    successTitle: 'Fiziksel Sözleşmeni Başarıyla Yükledin',
+    successTitle: 'Fiziksel sözleşmeni başarıyla yükledin.',
     successDescription:
-      'Tüm adımları tamamladın\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız.',
-    errorTitle: 'Sözleşmeni yüklerken bir hata oluştu',
-    errorDescription: 'Lütfen tekrar dene',
+      'Tüm adımları tamamladın.\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız.',
+    errorTitle: 'Sözleşmeni yüklerken bir hata oluştu.',
+    errorDescription: 'Lütfen tekrar dene.',
   },
 ];
 
