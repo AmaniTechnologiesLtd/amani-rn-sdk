@@ -57,6 +57,7 @@ const ContractScreen = (props) => {
     district: null,
     address: null,
   });
+  const [formErrors, setFormErrors] = useState(false);
 
   const jobList = [
     { name: 'Öğrenci' },
@@ -142,11 +143,12 @@ const ContractScreen = (props) => {
       data.job = otherJob;
     }
 
+    setFormErrors(true);
     for (const key in data) {
-      if (data[key] === null) {
+      if (!data[key]) {
         Alert.alert(
           '',
-          'Devam etmek için lütfen formu doldur.',
+          'Lütfen devam etmeden önce gerekli alanları doldur.',
           [
             {
               text: 'Anladım',
@@ -170,8 +172,16 @@ const ContractScreen = (props) => {
       disabled={disabled}
       onPress={showModal}
       style={{ width: '100%' }}>
-      <View style={styles.contactFormInput}>
-        <Text style={{ color: formData.job ? 'white' : '#CAE0F5' }}>
+      <View
+        style={[
+          styles.contactFormInput,
+          formErrors && !formData.job ? styles.inputError : {},
+        ]}>
+        <Text
+          style={[
+            { color: formData.job ? 'white' : '#CAE0F5' },
+            formErrors && !formData.job ? styles.inputError : {},
+          ]}>
           {formData.job || 'Meslek'}
         </Text>
       </View>
@@ -183,8 +193,16 @@ const ContractScreen = (props) => {
       disabled={disabled}
       onPress={showModal}
       style={{ width: '100%' }}>
-      <View style={styles.contactFormInput}>
-        <Text style={{ color: formData.city ? 'white' : '#CAE0F5' }}>
+      <View
+        style={[
+          styles.contactFormInput,
+          formErrors && !formData.city ? styles.inputError : {},
+        ]}>
+        <Text
+          style={[
+            { color: formData.city ? 'white' : '#CAE0F5' },
+            formErrors && !formData.city ? styles.inputError : {},
+          ]}>
           {formData.city || 'İl'}
         </Text>
       </View>
@@ -196,11 +214,18 @@ const ContractScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View style={styles.contactFormInput}>
+      <View
+        style={[
+          styles.contactFormInput,
+          formErrors && !formData.district ? styles.inputError : {},
+        ]}>
         <Text
-          style={{
-            color: formData.district ? 'white' : '#CAE0F5',
-          }}>
+          style={[
+            {
+              color: formData.district ? 'white' : '#CAE0F5',
+            },
+            formErrors && !formData.district ? styles.inputError : {},
+          ]}>
           {formData.district || 'İlçe'}
         </Text>
       </View>
@@ -261,10 +286,13 @@ const ContractScreen = (props) => {
                   style={[
                     styles.contactFormInput,
                     { color: otherJob ? 'white' : '#CAE0F5', marginTop: 10 },
+                    formErrors && !otherJob ? styles.inputError : {},
                   ]}
                   onChangeText={setOtherJob}
                   placeholder="Mesleğinizi yazın"
-                  placeholderTextColor="#CAE0F5"
+                  placeholderTextColor={
+                    formErrors && !otherJob ? '#FF5C65' : '#CAE0F5'
+                  }
                   value={otherJob}
                 />
               )}
@@ -312,7 +340,11 @@ const ContractScreen = (props) => {
 
             <View style={styles.contactFormView}>
               <TextInput
-                style={[styles.multilineFormInput, { height: addressHeight }]}
+                style={[
+                  styles.multilineFormInput,
+                  { height: addressHeight },
+                  formErrors && !formData.address ? styles.inputError : {},
+                ]}
                 onChangeText={(val) =>
                   setFormData({ ...formData, address: val })
                 }
@@ -323,7 +355,9 @@ const ContractScreen = (props) => {
                   setAddressHeight(textAreaHeight);
                 }}
                 placeholder="Açık Adres"
-                placeholderTextColor="#CAE0F5"
+                placeholderTextColor={
+                  formErrors && !formData.address ? '#FF5C65' : '#CAE0F5'
+                }
                 multiline
                 maxLength={150}
                 value={formData.address}
@@ -426,6 +460,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'rgba(255, 255, 255, .3)',
     color: '#FFFFFF',
+  },
+  inputError: {
+    borderColor: '#FF5C65',
+    color: '#FF5C65',
   },
   multilineFormInput: {
     width: '100%',
