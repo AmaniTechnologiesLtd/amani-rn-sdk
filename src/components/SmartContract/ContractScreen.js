@@ -316,9 +316,12 @@ const ContractScreen = (props) => {
                 onChangeText={(val) =>
                   setFormData({ ...formData, address: val })
                 }
-                onContentSizeChange={(e) =>
-                  setAddressHeight(e.nativeEvent.contentSize.height + 10)
-                }
+                onContentSizeChange={(e) => {
+                  const textAreaHeight =
+                    e.nativeEvent.contentSize.height +
+                    (Platform.OS === 'ios' ? 10 : 0);
+                  setAddressHeight(textAreaHeight);
+                }}
                 placeholder="Açık Adres"
                 placeholderTextColor="#CAE0F5"
                 multiline
