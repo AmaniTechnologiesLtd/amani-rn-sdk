@@ -48,7 +48,7 @@ const ContractScreen = (props) => {
   const [showContract, setShowContract] = useState(false);
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
-  const [addressHeight, setAddressHeight] = useState(50);
+  const [addressHeight, setAddressHeight] = useState(0);
   const [otherJob, setOtherJob] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
   const [formData, setFormData] = useState({
@@ -207,10 +207,6 @@ const ContractScreen = (props) => {
     </TouchableOpacity>
   );
 
-  const updateSize = (newHeight) => {
-    setAddressHeight(newHeight);
-  };
-
   if (isLoading) {
     return <Loading />;
   }
@@ -321,7 +317,7 @@ const ContractScreen = (props) => {
                   setFormData({ ...formData, address: val })
                 }
                 onContentSizeChange={(e) =>
-                  updateSize(e.nativeEvent.contentSize.height)
+                  setAddressHeight(e.nativeEvent.contentSize.height + 10)
                 }
                 placeholder="Açık Adres"
                 placeholderTextColor="#CAE0F5"
@@ -434,7 +430,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     borderColor: 'rgba(255, 255, 255, .3)',
     color: '#FFFFFF',
-    minHeight: 65,
   },
   charCount: {
     color: '#76889B',
