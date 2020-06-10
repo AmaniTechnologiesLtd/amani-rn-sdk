@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
-  ScrollView,
   Image,
   Text,
   TextInput,
@@ -18,7 +17,6 @@ import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
 import Button from './Button';
 import mainBackground from '../../assets/main-bg.png';
-import blueBackground from '../../assets/btn-blue.png';
 import successIcon from '../../assets/success-icon.png';
 
 const { height } = Dimensions.get('window');
@@ -30,8 +28,8 @@ const SendEmailContent = (props) => {
 
   const sendContractEmail = async () => {
     try {
-      const response = await api.sendContractEmail(customer.id, { email });
-      console.log(response);
+      await api.sendContractEmail(customer.id, { email });
+      // console.log(response);
       // if (response.data.document_url) {
       //   Linking.openURL(response.data.document_url);
       // }
@@ -101,6 +99,7 @@ const AppliedScreen = (props) => {
   const { customer, goBack, takePhoto, onActivity } = props;
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
+  const [showTakePhotoButton, setShowTakePhotoButton] = useState(false);
 
   useEffect(() => {
     getCustomerData();
@@ -137,81 +136,164 @@ const AppliedScreen = (props) => {
     );
   }
 
+  if (showTakePhotoButton) {
+    return (
+      <ImageBackground
+        source={mainBackground}
+        style={[styles.container, { paddingTop: 0 }]}>
+        <View style={{ flex: 1 }} onTouchStart={onActivity}>
+          <TopBar
+            onLeftButtonPressed={goBack}
+            leftButtonIcon={backArrow}
+            style={{ paddingHorizontal: 20 }}
+            title="Fiziksel Sözleşmeni Yükle"
+          />
+          <View
+            style={[
+              styles.messageContainer,
+              { justifyContent: 'flex-start', alignItems: 'baseline' },
+            ]}>
+            <Text
+              style={[styles.message, { textAlign: 'left', marginTop: 20 }]}>
+              Limit artışının kalıcı olması için aşağıda yer alan ininal
+              kullanıcı sözleşmesini yazdırıp. İmzalayıp, fotoğrafını yüklemen
+              gerekiyor.
+            </Text>
+
+            <Text style={[styles.message, { textAlign: 'left' }]}>
+              En geç
+              <Text style={{ fontWeight: 'bold' }}>
+                {customer.status === 'Temporarily Approved'
+                  ? ` ${dateParse(
+                      customer.approval_expiration,
+                    )} tarihine kadar `
+                  : ` iki hafta içinde `}
+              </Text>
+              fiziksel sözleşmeni yüklemezsen, limitin tekrar{' '}
+              <Text style={{ fontWeight: 'bold' }}>750 TL</Text>'ye düşecek.
+            </Text>
+          </View>
+
+          <View style={{ marginBottom: 10 }}>
+            <Button
+              onPress={getContractURL}
+              text="Sözleşmeyi İndir"
+              style={styles.buttonStyle}
+              noBackground
+            />
+            <Button
+              onPress={() =>
+                setShowPopup(<SendEmailContent customer={customerData} />)
+              }
+              text="Sözleşmeni E-posta ile Gönder"
+              style={styles.buttonStyle}
+              noBackground
+            />
+            {takePhoto && (
+              <Button
+                onPress={takePhoto}
+                text="Sözleşmenin Fotoğrafını Çek"
+                style={styles.buttonStyle}
+              />
+            )}
+          </View>
+        </View>
+      </ImageBackground>
+    );
+  }
+
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{
-          minHeight: '100%',
-        }}
-        onTouchStart={onActivity}>
+      <View style={{ flex: 1 }} onTouchStart={onActivity}>
         <TopBar
           onLeftButtonPressed={goBack}
           leftButtonIcon={backArrow}
           style={{ paddingHorizontal: 20 }}
           noBackground
         />
-        <View style={styles.messageContainer}>
-          <Image
-            resizeMode="contain"
-            style={styles.successIcon}
-            source={successIcon}
-          />
-          {customer.status === 'Temporarily Approved' ? (
-            <>
+
+        {customer.status === 'Temporarily Approved' ? (
+          <>
+            <View style={styles.messageContainer}>
+              <Image
+                resizeMode="contain"
+                style={styles.successIcon}
+                source={successIcon}
+              />
               <Text style={[styles.header, { marginBottom: 0 }]}>
-                Tebrikler! Başvurun Onaylandı
+                Başvurun onaylandı.
               </Text>
               <Text style={[styles.header, { marginTop: 0 }]}>
-                Limitin artık 20.000 TL
+                Limitin artık 50.000 TL.
               </Text>
-            </>
-          ) : (
-            <>
-              <Text style={styles.header}>Tebrikler! Başvurun Alındı</Text>
               <Text style={styles.message}>
-                Belgelerini kontrol edip limitini en geç 48 saat içinde
-                artıracağız.
+                Limit artışının kalıcı olması için en geç
+                <Text style={{ fontWeight: 'bold' }}>
+                  {customer.status === 'Temporarily Approved'
+                    ? ` ${dateParse(
+                        customer.approval_expiration,
+                      )} tarihine kadar `
+                    : ` iki hafta içinde `}
+                </Text>
+                aşağıda yer alan ininal kullanıcı sözleşmesini yazdırıp,
+                imzalayıp fotoğrafını yüklemen gerekiyor. Eğer imzalı sözleşmen
+                bize ulaşmazsa limitin tekrar 750 TL'ye düşecek.
               </Text>
-            </>
-          )}
-
-          <Text style={styles.message}>
-            Limit artışının kalıcı olması için en geç
-            <Text style={{ fontWeight: 'bold' }}>
-              {customer.status === 'Temporarily Approved'
-                ? ` ${dateParse(customer.approval_expiration)} tarihine kadar `
-                : ` iki hafta içinde `}
-            </Text>
-            aşağıda yer alan ininal kullanıcı sözleşmesini yazdırıp, imzalayıp
-            fotoğrafını yüklemen gerekiyor. Aksi durumda ininal plus hesabın
-            ayrıcalıklarını kaybedeceksin ve limitin tekrar 750 TL'ye düşecek.
-          </Text>
-        </View>
-
-        <View>
-          <Button
-            onPress={getContractURL}
-            text="Sözleşmeyi İndir"
-            style={styles.buttonStyle}
-            backgroundImage={blueBackground}
-          />
-          <Button
-            onPress={() =>
-              setShowPopup(<SendEmailContent customer={customerData} />)
-            }
-            text="Sözleşmeni E-posta ile Gönder"
-            style={styles.buttonStyle}
-            backgroundImage={blueBackground}
-          />
-          {takePhoto && (
-            <Button
-              onPress={takePhoto}
-              text="Sözleşmenin Fotoğrafını Çek"
-              style={styles.buttonStyle}
-            />
-          )}
-        </View>
-      </ScrollView>
+            </View>
+            <View style={{ marginBottom: 10 }}>
+              <Button
+                onPress={getContractURL}
+                text="Sözleşmeyi İndir"
+                style={styles.buttonStyle}
+                noBackground
+              />
+              <Button
+                onPress={() =>
+                  setShowPopup(<SendEmailContent customer={customerData} />)
+                }
+                text="Sözleşmeni E-posta ile Gönder"
+                style={styles.buttonStyle}
+                noBackground
+              />
+              {takePhoto && (
+                <Button
+                  onPress={takePhoto}
+                  text="Sözleşmenin Fotoğrafını Çek"
+                  style={styles.buttonStyle}
+                />
+              )}
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.messageContainer}>
+              <Image
+                resizeMode="contain"
+                style={styles.successIcon}
+                source={successIcon}
+              />
+              <Text style={styles.header}>Tebrikler!</Text>
+              <Text style={styles.message}>
+                Tüm dijital adımları başarıyla tamamladın.
+              </Text>
+              <Text style={styles.message}>
+                Yüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat
+                içinde artıracağız.
+              </Text>
+              <Text style={styles.message}>
+                Fiziksel sözleşme ile devam et.
+              </Text>
+            </View>
+            <View style={{ marginBottom: 10 }}>
+              <Button
+                onPress={() => setShowTakePhotoButton(true)}
+                text="DEVAM ET"
+                style={styles.buttonStyle}
+              />
+            </View>
+          </>
+        )}
+      </View>
     </ImageBackground>
   );
 };
