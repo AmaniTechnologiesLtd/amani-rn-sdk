@@ -10,6 +10,7 @@ import {
   BackHandler,
   Platform,
   ImageBackground,
+  Alert,
 } from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
@@ -34,12 +35,11 @@ import TopBar from './components/TopBar';
 import AppliedScreen from './components/AppliedScreen';
 import mainBackground from '../assets/main-bg.png';
 import backArrow from '../assets/back-arrow.png';
+import forwardArrowDark from '../assets/forward-arrow-dark.png';
 import stepWarning from '../assets/step-warning-icon.png';
-import stepWarningDark from '../assets/step-warning-dark-icon.png';
-import lockIcon from '../assets/locked-dark-icon.png';
-import successIcon from '../assets/success-icon.png';
-import approvedIcon from '../assets/approved-icon.png';
+import successIconDark from '../assets/success-icon-dark.png';
 import seperatorIcon from '../assets/seperator-icon.png';
+import { eventDescriptions } from './constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -453,16 +453,17 @@ const MainScreen = (props) => {
     });
   };
 
-  const checkIsNextStepDisabled = (document, index) => {
+  const checkIsNextStepDisabled = (document) => {
+    const index = documents.findIndex((doc) => doc.id === document.id);
+
     // Accessibility check for only physical contract
     return Boolean(
-      (document.id === 'CO' &&
+      document.id === 'CO' &&
         checkPreviousSteps(index, [
           'NOT_UPLOADED',
           'REJECTED',
           'AUTOMATICALLY_REJECTED',
-        ])) ||
-        ['APPROVED'].includes(documentStatus(document)),
+        ]),
     );
 
     // Accessibility check for all documents
@@ -473,12 +474,24 @@ const MainScreen = (props) => {
     // );
   };
 
-  const moduleStatusBackground = (document) => {
+  const moduleStatusBackground = (document, index) => {
     const status = documentStatus(document);
-    if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
-      return { backgroundColor: '#FF5C65', paddingVertical: 5 };
-    } else if (status === 'NOT_UPLOADED') {
+    if (
+      document.id === 'CO' && // Opacity for only physical contract
+      !['APPROVED', 'PENDING_REVIEW'].includes(status) &&
+      checkPreviousSteps(index, [
+        'NOT_UPLOADED',
+        'REJECTED',
+        'AUTOMATICALLY_REJECTED',
+      ])
+    ) {
+      return { backgroundColor: 'rgba(255, 255, 255, 0.5)' };
+    } else if (status === 'APPROVED') {
       return { backgroundColor: '#00FFD1' };
+    } else if (status === 'NOT_UPLOADED') {
+      return { backgroundColor: 'white' };
+    } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
+      return { backgroundColor: '#FF5C65', paddingVertical: 5 };
     }
   };
 
@@ -486,19 +499,13 @@ const MainScreen = (props) => {
     const status = documentStatus(document);
 
     if (status === 'APPROVED') {
-      return {
-        color: '#CAE0F5',
-        fontSize: width * 0.035,
-        fontWeight: 'normal',
-      };
-    } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
-      return {
-        color: '#FFFFFF',
-      };
+      return { color: '#13283D' };
     } else if (status === 'PROCESSING') {
       return { color: '#FFFFFF' };
     } else if (status === 'PENDING_REVIEW') {
       return { color: '#CAE0F5' };
+    } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
+      return { color: '#FFFFFF' };
     }
   };
 
@@ -508,6 +515,7 @@ const MainScreen = (props) => {
     if (!customer.rules) {
       return;
     }
+
     const rule = customer.rules.find((customerRule) =>
       customerRule.document_classes.includes(document.id),
     );
@@ -523,37 +531,12 @@ const MainScreen = (props) => {
   const moduleStatusIcon = (document, index) => {
     const status = documentStatus(document);
 
-    if (
-      document.id === 'CO' && // Show lock icon for only physical contract
-      !['APPROVED', 'PENDING_REVIEW'].includes(status) &&
-      index !== 0 &&
-      checkPreviousSteps(index, [
-        'NOT_UPLOADED',
-        'REJECTED',
-        'AUTOMATICALLY_REJECTED',
-      ])
-    ) {
+    if (status === 'NOT_UPLOADED') {
       return (
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={lockIcon}
-        />
-      );
-    } else if (status === 'NOT_UPLOADED') {
-      return (
-        <Image
-          resizeMode="contain"
-          style={styles.moduleStatusIcon}
-          source={stepWarningDark}
-        />
-      );
-    } else if (status === 'PENDING_REVIEW') {
-      return (
-        <Image
-          resizeMode="contain"
-          style={styles.moduleStatusIcon}
-          source={successIcon}
+          source={forwardArrowDark}
         />
       );
     } else if (status === 'APPROVED') {
@@ -561,7 +544,7 @@ const MainScreen = (props) => {
         <Image
           resizeMode="contain"
           style={styles.moduleStatusIcon}
-          source={approvedIcon}
+          source={successIconDark}
         />
       );
     } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
@@ -572,15 +555,27 @@ const MainScreen = (props) => {
           source={stepWarning}
         />
       );
+    } else if (status === 'PROCESSING') {
+      return (
+        <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
+      );
     }
-
-    return (
-      <ActivityIndicator style={{ marginLeft: width * 0.06 }} color="white" />
-    );
   };
 
   const selectDocument = (document) => {
-    console.log(document);
+    const disabled = checkIsNextStepDisabled(document);
+    if (disabled) {
+      Alert.alert(
+        '',
+        'Bu adıma geçebilmek için önce üstteki adımları tamamlamalısın',
+        [{ text: 'Devam' }],
+        {
+          cancelable: false,
+        },
+      );
+      return;
+    }
+
     // First check if have any rejection message from studio
     if (customer && customer.rules) {
       const rule = customer.rules.find((step) =>
@@ -607,6 +602,10 @@ const MainScreen = (props) => {
   };
 
   const goToDocument = (document) => {
+    if (document.id === 'ID') {
+      sendEvent('IDSelection');
+    }
+
     setMessage({
       ...initialMessage,
     });
@@ -655,6 +654,12 @@ const MainScreen = (props) => {
     }
   };
 
+  const sendEvent = (event, value = '') => {
+    if (eventDescriptions[event]) {
+      onActivity({ event, definition: eventDescriptions[event], value });
+    }
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -673,7 +678,7 @@ const MainScreen = (props) => {
         }
         onClick={newMessage.buttonClick}
         popup={newMessage.popup}
-        onActivity={onActivity}
+        onActivity={sendEvent}
       />
     );
   }
@@ -707,7 +712,7 @@ const MainScreen = (props) => {
         takePhoto={() => {
           goToDocument(contract);
         }}
-        onActivity={onActivity}
+        onActivity={sendEvent}
       />
     );
   }
@@ -733,7 +738,7 @@ const MainScreen = (props) => {
           clearSelectedDocument();
         }}
         onSkipDocument={skipDocument}
-        onActivity={onActivity}
+        onActivity={sendEvent}
       />
     );
   }
@@ -748,7 +753,7 @@ const MainScreen = (props) => {
         dispatch={dispatch}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
-        onActivity={onActivity}
+        onActivity={sendEvent}
       />
     );
   }
@@ -757,20 +762,26 @@ const MainScreen = (props) => {
     <ImageBackground
       source={mainBackground}
       style={styles.container}
-      onTouchStart={onActivity}>
+      onTouchStart={() => sendEvent('TouchEvent')}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
         noBackground
       />
       <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
-      <View style={styles.modulesContainer} onTouchStart={onActivity}>
+      <View
+        style={styles.modulesContainer}
+        onTouchStart={() => sendEvent('TouchEvent')}>
         {documents.map((document, index) => {
           return (
             <Fragment key={document.id}>
               <TouchableOpacity
-                disabled={checkIsNextStepDisabled(document, index)}
-                style={[styles.moduleButton, moduleStatusBackground(document)]}
+                disabled={document.status === 'APPROVED'}
+                style={[
+                  styles.moduleButton,
+                  moduleStatusBackground(document, index),
+                ]}
+                activeOpacity={0.8}
                 onPress={() => selectDocument(document)}>
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>

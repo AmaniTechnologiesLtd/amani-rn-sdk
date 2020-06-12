@@ -17,3 +17,16 @@ export const errorMessages = {
   5001: 'Attığın imza kimliğindeki imza ile uyuşmuyor.\n\nLütfen tekrar dene',
   6001: 'Sözleşmedeki imzan kimliğindeki imza ile uyuşmuyor.\n\nLütfen tekrar dene',
 };
+
+export const eventDescriptions = {
+  TouchEvent: 'kullanici ekrana dokundu',
+  IDSelection: 'kimlik tipi secme',
+  IDSelection_YeniTC: 'yeni tc kimlik tiklama',
+  IDSelection_EskiTC: 'eski tc kimlik tiklama',
+  IDSelection_YeniE: 'yeni ehliyet tiklama',
+  ID_On_Cek: 'kimlik on yuz fotosu icin deklansor butonuna tiklama',
+
+  Adres_Ftr: 'fatura kurum secme',
+  Adres_Ikm: 'ikametgah belgesi secme',
+  Adres_Atla: 'adres adimini atla butonuna tiklama',
+};

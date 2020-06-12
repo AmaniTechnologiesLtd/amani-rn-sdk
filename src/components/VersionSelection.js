@@ -39,6 +39,10 @@ const VersionSelection = (props) => {
   }, []);
 
   const handleVersionChoice = (group, versionKey) => {
+    onActivity(
+      document.versions[group][versionKey].eventName,
+      document.versions[group][versionKey].title,
+    );
     groupIndex(versionKey);
     versionGroup(group);
     closeVersionSelected();
@@ -75,7 +79,9 @@ const VersionSelection = (props) => {
         noBackground
       />
 
-      <ScrollView style={styles.childContainer} onTouchStart={onActivity}>
+      <ScrollView
+        style={styles.childContainer}
+        onTouchStart={() => onActivity('TouchEvent')}>
         <Text style={styles.childContainerTitle}>{document.versionTitle}</Text>
 
         {['UB', 'IB'].includes(document.id) ? (
@@ -135,7 +141,10 @@ const VersionSelection = (props) => {
           <Button
             text="Şimdilik Atla"
             noBackground
-            onPress={onSkipDocument}
+            onPress={() => {
+              onActivity('Adres_Atla');
+              onSkipDocument();
+            }}
             style={{ marginBottom: 20 }}
           />
         )}

@@ -369,7 +369,9 @@ const CaptureDocument = (props) => {
   }
 
   return (
-    <View style={styles.container} onTouchStart={onActivity}>
+    <View
+      style={styles.container}
+      onTouchStart={() => onActivity('TouchEvent')}>
       <RNCamera
         ref={camera}
         style={styles.preview}

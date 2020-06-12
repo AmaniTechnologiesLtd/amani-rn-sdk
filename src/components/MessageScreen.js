@@ -93,7 +93,9 @@ const MessageScreen = (props) => {
       />
 
       {popup ? (
-        <View style={styles.messagePopup} onTouchStart={onActivity}>
+        <View
+          style={styles.messagePopup}
+          onTouchStart={() => onActivity('TouchEvent')}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Image style={styles.closeIcon} source={closeIcon} />
           </TouchableOpacity>

@@ -29,7 +29,7 @@ const Popup = (props) => {
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <TopBar noBackground />
-      <View style={styles.popup} onTouchStart={onActivity}>
+      <View style={styles.popup} onTouchStart={() => onActivity('TouchEvent')}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Image style={styles.closeIcon} source={closeIcon} />
         </TouchableOpacity>

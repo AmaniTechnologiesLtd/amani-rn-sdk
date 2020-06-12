@@ -141,7 +141,7 @@ const AppliedScreen = (props) => {
       <ImageBackground
         source={mainBackground}
         style={[styles.container, { paddingTop: 0 }]}>
-        <View style={{ flex: 1 }} onTouchStart={onActivity}>
+        <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
           <TopBar
             onLeftButtonPressed={goBack}
             leftButtonIcon={backArrow}
@@ -204,7 +204,7 @@ const AppliedScreen = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <View style={{ flex: 1 }} onTouchStart={onActivity}>
+      <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
         <TopBar
           onLeftButtonPressed={goBack}
           leftButtonIcon={backArrow}

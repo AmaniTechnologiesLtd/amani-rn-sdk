@@ -149,11 +149,7 @@ const ContractScreen = (props) => {
         Alert.alert(
           '',
           'Lütfen devam etmeden önce gerekli alanları doldur.',
-          [
-            {
-              text: 'Anladım',
-            },
-          ],
+          [{ text: 'Anladım' }],
           { cancelable: false },
         );
         return;
@@ -260,7 +256,9 @@ const ContractScreen = (props) => {
           leftButtonIcon={backArrow}
           title={currentDocument.title}
         />
-        <ScrollView style={styles.contactForm} onTouchStart={onActivity}>
+        <ScrollView
+          style={styles.contactForm}
+          onTouchStart={() => onActivity('TouchEvent')}>
           <Text style={styles.contactFormTitle}>
             Sözleşmeni hazırlayabilmemiz için lütfen gerekli alanları doldur
           </Text>
@@ -388,7 +386,9 @@ const ContractScreen = (props) => {
   }
 
   return (
-    <View style={styles.container} onTouchStart={onActivity}>
+    <View
+      style={styles.container}
+      onTouchStart={() => onActivity('TouchEvent')}>
       <TopBar
         onLeftButtonPressed={() => setShowContract(false)}
         leftButtonIcon={backArrow}

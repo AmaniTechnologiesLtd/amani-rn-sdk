@@ -188,7 +188,9 @@ const SignatureDraw = (props) => {
   }
 
   return (
-    <View style={styles.container} onTouchStart={onActivity}>
+    <View
+      style={styles.container}
+      onTouchStart={() => onActivity('TouchEvent')}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}

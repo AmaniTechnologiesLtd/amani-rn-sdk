@@ -38,7 +38,9 @@ const ImageCropper = (props) => {
   }, [onCancel]);
 
   return (
-    <View style={styles.container} onTouchStart={onActivity}>
+    <View
+      style={styles.container}
+      onTouchStart={() => onActivity('TouchEvent')}>
       <TopBar
         onLeftButtonPressed={onCancel}
         leftButtonIcon={backArrow}

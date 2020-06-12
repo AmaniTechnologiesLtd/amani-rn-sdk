@@ -43,7 +43,7 @@ const DocumentConfirmation = (props) => {
       />
       <ScrollView
         contentContainerStyle={styles.childContainer}
-        onTouchStart={onActivity}>
+        onTouchStart={() => onActivity('TouchEvent')}>
         <Text style={styles.confirmationTitle}>
           {document.steps.length > 0 && document.steps[step].confirmationTitle}
         </Text>

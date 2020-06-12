@@ -46,7 +46,7 @@ const EDevlet = (props) => {
       />
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
-        onTouchStart={onActivity}>
+        onTouchStart={() => onActivity('TouchEvent')}>
         <Text style={styles.header}>
           İkametgah Belgesini E-devlet’ten Almak İçin;
         </Text>
