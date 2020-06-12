@@ -55,7 +55,7 @@ const EDevlet = (props) => {
           <TouchableOpacity onPress={() => Linking.openURL(eDevletURL)}>
             <Text style={styles.bulletText}>
               <Text style={{ textDecorationLine: 'underline' }}>
-                {eDevletURL}
+                https://www.turkiye.gov.tr
               </Text>
               <Text> adresine git</Text>
             </Text>

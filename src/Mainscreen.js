@@ -500,9 +500,7 @@ const MainScreen = (props) => {
 
     if (status === 'APPROVED') {
       return { color: '#13283D' };
-    } else if (status === 'PROCESSING') {
-      return { color: '#FFFFFF' };
-    } else if (status === 'PENDING_REVIEW') {
+    } else if (status === 'PENDING_REVIEW' || status === 'PROCESSING') {
       return { color: '#CAE0F5' };
     } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
       return { color: '#FFFFFF' };
@@ -570,7 +568,7 @@ const MainScreen = (props) => {
         'Bu adıma geçebilmek için önce üstteki adımları tamamlamalısın',
         [{ text: 'Devam' }],
         {
-          cancelable: false,
+          cancelable: true,
         },
       );
       return;

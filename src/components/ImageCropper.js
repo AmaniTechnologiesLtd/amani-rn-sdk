@@ -61,7 +61,7 @@ const ImageCropper = (props) => {
         handlerColor="#00FFD1"
       />
       <View style={styles.bottomBar}>
-        <Button onPress={getCropData} text="FOTOĞRAFI KIRP" />
+        <Button onPress={getCropData} text="KIRP VE YÜKLE" />
         <PoweredBy />
       </View>
     </View>

@@ -153,7 +153,7 @@ return (
     customerData={customer}
     onError={(error) => console.log(error)}
     onExit={(values) => console.log(values)}
-    onActivity={(event) => console.log(event)} // Fired on every screen touch events
+    onActivity={(event) => console.log(event)} // Fired on every screen touch and other specific events
     sendEvent={sendEvent} // Optional for analytics event firing
   />
 );
