@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Button from './Button';
 import blueBackground from '../../assets/btn-blue.png';
-import darkBlueBackground from '../../assets/btn-dark-blue.png';
+import darkTransparentBackground from '../../assets/btn-dark-transparent.png';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import forwardArrow from '../../assets/forward-arrow.png';
@@ -50,23 +50,31 @@ const VersionSelection = (props) => {
 
   const showAddressDescription = () => {
     return (
-      <>
-        <Text style={styles.childContainerDescription}>
-          Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir
-          <Text style={{ fontWeight: 'bold', color: 'white' }}> fatura</Text> ya
-          da{' '}
-          <Text style={{ fontWeight: 'bold', color: 'white' }}>
-            ikametgah belgeni{' '}
+      <View
+        style={{ marginVertical: 10, borderRadius: 20, overflow: 'hidden' }}>
+        <ImageBackground
+          source={blueBackground}
+          style={{ padding: 15, paddingBottom: 5 }}>
+          <Text style={styles.childContainerDescription}>
+            Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir
+            <Text style={{ fontWeight: 'bold', color: 'white' }}>
+              {' '}
+              fatura
+            </Text>{' '}
+            ya da{' '}
+            <Text style={{ fontWeight: 'bold', color: 'white' }}>
+              ikametgah belgeni{' '}
+            </Text>
+            yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf)
+            olarak yükleyebilirsin.
           </Text>
-          yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf)
-          olarak yükleyebilirsin.
-        </Text>
-        <Text style={styles.childContainerDescription}>
-          Eğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da
-          hemen e-devletten ikametgah belgeni pdf olarak indirip
-          yükleyebilirsin.'
-        </Text>
-      </>
+          <Text style={styles.childContainerDescription}>
+            Eğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da
+            hemen e-devletten ikametgah belgeni pdf olarak indirip
+            yükleyebilirsin.'
+          </Text>
+        </ImageBackground>
+      </View>
     );
   };
 
@@ -109,7 +117,7 @@ const VersionSelection = (props) => {
                       onPress={() => handleVersionChoice(group, versionKey)}
                       backgroundImage={
                         menuMode === 'horizontal'
-                          ? darkBlueBackground
+                          ? darkTransparentBackground
                           : blueBackground
                       }
                       style={
@@ -173,7 +181,7 @@ const styles = StyleSheet.create({
   },
   childContainerDescription: {
     marginBottom: 10,
-    fontSize: height * 0.022,
+    fontSize: height * 0.021,
     color: '#CAE0F5',
   },
   horizontalGroupViewContainer: {
@@ -192,6 +200,7 @@ const styles = StyleSheet.create({
   },
   groupTitle: {
     fontSize: width * 0.05,
+    fontWeight: 'bold',
     margin: 3,
     color: 'white',
     textAlign: 'left',
