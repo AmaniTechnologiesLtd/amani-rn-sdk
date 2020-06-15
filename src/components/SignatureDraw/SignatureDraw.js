@@ -161,6 +161,7 @@ const SignatureDraw = (props) => {
 
   const handleSignature = async (drawnSignature) => {
     setIsProcessStarted(true);
+    onActivity(`Imza${signature.length + 1}_Onay`);
     setSignature([...signature, drawnSignature]);
     calculateNextStep();
   };

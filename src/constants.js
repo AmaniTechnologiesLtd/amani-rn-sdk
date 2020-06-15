@@ -26,7 +26,32 @@ export const eventDescriptions = {
   IDSelection_YeniE: 'yeni ehliyet tiklama',
   ID_On_Cek: 'kimlik on yuz fotosu icin deklansor butonuna tiklama',
 
+  ID_On_Onay: 'kimlik on yuz fotosu "onayla" butonuna tiklama',
+
+  ID_Arka_Cek: 'kimlik arka yuz fotosu icin deklansor butonuna tiklama',
+  ID_Arka_Onay: 'kimlik arka yuz fotosu "onayla" butonuna tiklama',
+
+  Selfie_Cek: 'selfie fotosu için deklansor butonuna tiklama',
+  Selfie_Onay: 'selfie "onayla" butonuna tiklama',
+
+  Fatura_Cek: 'fatura fotosu icin deklansor butonuna tiklama',
+  Fatura_Pdf: 'fatura pdf yukle butonuna tiklama',
+  Fatura_Onay: 'fatura fotosu "onayla" butonuna tiklama',
+  Ikm_Cek: 'ikamet yukle sayfasinda fotosu icin deklansor butonuna tiklama',
+  Ikm_Pdf: 'ikamet yukle sayfasinda pdf butonuna tiklama',
+  Ikm_Edev: 'ikamet yukle sayfasinda edevlet butonuna tiklama',
+  Ikm_Edev_Al: 'ikamet e-devletten al butonuna tiklama',
+  Ikm_Onay: 'ikamet fotosu "onayla" butonuna tiklama',
+
   Adres_Ftr: 'fatura kurum secme',
   Adres_Ikm: 'ikametgah belgesi secme',
   Adres_Atla: 'adres adimini atla butonuna tiklama',
+
+  Dijital_Onay: 'dijital sozlesme onayla butonuna tiklama',
+  Imza1_Onay: '1. imza onayla butonuna tiklama',
+  Imza2_Onay: '2. imza onayla butonuna tiklama',
+
+  Fzk_Cek: 'fiziksel sozlesme fotosu icin deklansor butonuna tiklama',
+  Fzk_Pdf: 'fiziksel sozlesme pdf yukle butonuna tiklama',
+  Fzk_Onay: 'fiziksel sozlesme fotosu "onayla" butonuna tiklama',
 };

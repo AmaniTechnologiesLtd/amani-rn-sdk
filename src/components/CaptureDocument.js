@@ -93,8 +93,36 @@ const CaptureDocument = (props) => {
     return () => BackHandler.removeEventListener('hardwareBackPress');
   }, []);
 
+  const sendEvent = (type = 'Cek') => {
+    let event;
+    switch (document.id) {
+      case 'ID':
+        event = currentStep === 0 ? `ID_On_${type}` : `ID_On_${type}`;
+        break;
+      case 'SE':
+        event = `Selfie_${type}`;
+        break;
+      case 'UB':
+      case 'IB':
+        event =
+          document.versions[versionGroup][groupIndex].eventName === 'Adres_Ikm'
+            ? `Ikm_${type}`
+            : `Fatura_${type}`;
+        break;
+      case 'CO':
+        event = `Fzk_${type}`;
+        break;
+      default:
+        break;
+    }
+
+    onActivity(event);
+  };
+
   const takePicture = async () => {
     setButtonDisabled(true);
+    sendEvent('Cek');
+
     let image = await camera.current
       .takePictureAsync({
         quality: 0.8,
@@ -123,6 +151,18 @@ const CaptureDocument = (props) => {
 
   const pickAndTransformPdf = () => {
     setIsProcessStarted(true);
+
+    let event;
+    if (document.id === 'CO') {
+      event = 'Fzk_Pdf';
+    } else if (document.id === 'UB') {
+      event =
+        document.versions[versionGroup][groupIndex].eventName === 'Adres_Ikm'
+          ? 'Ikm_Pdf'
+          : 'Fatura_Pdf';
+    }
+    onActivity(event);
+
     DocumentPicker.pick({
       type: [DocumentPicker.types.pdf],
     })
@@ -320,6 +360,7 @@ const CaptureDocument = (props) => {
         versionGroup={versionGroup}
         groupIndex={groupIndex}
         continueProcess={(image) => {
+          sendEvent('Onay');
           onCapture(image);
           calculateNextStep();
         }}
@@ -473,7 +514,10 @@ const CaptureDocument = (props) => {
                 {document.versions[versionGroup][groupIndex].edevlet && (
                   <Button
                     text="E-Devletten al"
-                    onPress={() => setShowEDevlet(true)}
+                    onPress={() => {
+                      onActivity('Ikm_Edev');
+                      setShowEDevlet(true);
+                    }}
                     style={styles.fileUpload}
                     backgroundStyle={styles.buttonBackground}
                     backgroundImage={darkBlueBackground}

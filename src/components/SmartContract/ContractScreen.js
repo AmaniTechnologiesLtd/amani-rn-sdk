@@ -399,7 +399,10 @@ const ContractScreen = (props) => {
             />
           )}
           <TouchableOpacity
-            onPress={() => setIsContractApproved(!isContractApproved)}>
+            onPress={() => {
+              onActivity('Dijital_Onay');
+              setIsContractApproved(!isContractApproved);
+            }}>
             <Text style={styles.approveButtonText}>
               Sözleşmeyi okudum, anladım ve doğruluğunu teyit ediyorum
             </Text>

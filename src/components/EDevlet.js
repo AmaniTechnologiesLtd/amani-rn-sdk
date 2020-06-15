@@ -103,7 +103,10 @@ const EDevlet = (props) => {
         </View>
         <Button
           text="E-DEVLET'TEN AL"
-          onPress={() => Linking.openURL(eDevletURL)}
+          onPress={() => {
+            onActivity('Ikm_Edev_Al');
+            Linking.openURL(eDevletURL);
+          }}
           style={{ marginVertical: 20 }}
         />
       </ScrollView>
