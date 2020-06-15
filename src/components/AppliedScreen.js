@@ -99,7 +99,9 @@ const AppliedScreen = (props) => {
   const { customer, goBack, takePhoto, onActivity } = props;
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
-  const [showTakePhotoButton, setShowTakePhotoButton] = useState(false);
+  const [showTakePhoto, setShowTakePhoto] = useState(
+    customer.status === 'Pending Review' ? true : false,
+  );
 
   useEffect(() => {
     getCustomerData();
@@ -136,7 +138,7 @@ const AppliedScreen = (props) => {
     );
   }
 
-  if (showTakePhotoButton) {
+  if (showTakePhoto) {
     return (
       <ImageBackground
         source={mainBackground}
@@ -286,7 +288,7 @@ const AppliedScreen = (props) => {
             </View>
             <View style={{ marginBottom: 10 }}>
               <Button
-                onPress={() => setShowTakePhotoButton(true)}
+                onPress={() => setShowTakePhoto(true)}
                 text="DEVAM ET"
                 style={styles.buttonStyle}
               />

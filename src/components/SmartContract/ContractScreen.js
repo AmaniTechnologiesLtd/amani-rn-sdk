@@ -168,11 +168,7 @@ const ContractScreen = (props) => {
       disabled={disabled}
       onPress={showModal}
       style={{ width: '100%' }}>
-      <View
-        style={[
-          styles.contactFormInput,
-          formErrors && !formData.job ? styles.inputError : {},
-        ]}>
+      <View style={styles.contactFormInput}>
         <Text
           style={[
             { color: formData.job ? 'white' : '#CAE0F5' },
@@ -189,11 +185,7 @@ const ContractScreen = (props) => {
       disabled={disabled}
       onPress={showModal}
       style={{ width: '100%' }}>
-      <View
-        style={[
-          styles.contactFormInput,
-          formErrors && !formData.city ? styles.inputError : {},
-        ]}>
+      <View style={styles.contactFormInput}>
         <Text
           style={[
             { color: formData.city ? 'white' : '#CAE0F5' },
@@ -210,11 +202,7 @@ const ContractScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View
-        style={[
-          styles.contactFormInput,
-          formErrors && !formData.district ? styles.inputError : {},
-        ]}>
+      <View style={styles.contactFormInput}>
         <Text
           style={[
             {
@@ -284,7 +272,6 @@ const ContractScreen = (props) => {
                   style={[
                     styles.contactFormInput,
                     { color: otherJob ? 'white' : '#CAE0F5', marginTop: 10 },
-                    formErrors && !otherJob ? styles.inputError : {},
                   ]}
                   onChangeText={setOtherJob}
                   placeholder="Mesleğinizi yazın"
@@ -338,11 +325,7 @@ const ContractScreen = (props) => {
 
             <View style={styles.contactFormView}>
               <TextInput
-                style={[
-                  styles.multilineFormInput,
-                  { height: addressHeight },
-                  formErrors && !formData.address ? styles.inputError : {},
-                ]}
+                style={[styles.multilineFormInput, { height: addressHeight }]}
                 onChangeText={(val) =>
                   setFormData({ ...formData, address: val })
                 }
@@ -462,7 +445,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   inputError: {
-    borderColor: '#FF5C65',
     color: '#FF5C65',
   },
   multilineFormInput: {

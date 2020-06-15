@@ -113,8 +113,8 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Selfie Doğrula',
-      PENDING_REVIEW: 'Selfie Kontrol Ediliyor...',
-      PROCESSING: 'Selfie Kontrol Ediliyor...',
+      PENDING_REVIEW: "Selfie'n Kontrol Ediliyor...",
+      PROCESSING: "Selfie'n Kontrol Ediliyor...",
       APPROVED: 'Selfie Onaylandı',
       REJECTED: `Selfie onaylanmadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Selfie onaylanmadı\nLütfen tekrar dene`,
@@ -144,9 +144,9 @@ export const initialDocuments = [
     versionDescription:
       'Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir fatura ya da ikametgah belgeni yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf) olarak yükleyebilirsin.\n\nEğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da hemen e-devletten ikametgah belgeni pdf olarak indirip yükleyebilirsin.',
     versions: {
-      Devlet: [
+      'Resmi Belge': [
         {
-          title: 'E-Devlet İkametgah Belgesi',
+          title: 'İkametgah Belgesi',
           captureTopBar: 'İkametgah Belgeni Yükle',
           confirmationTopBar: 'İkametgah Belgeni Kontrol Et',
           crop: true,
@@ -156,7 +156,7 @@ export const initialDocuments = [
           eventName: 'Adres_Ikm',
         },
       ],
-      GSM: [
+      'GSM Faturası': [
         {
           title: 'Türk Telekom',
           captureTopBar: 'Faturanı Yükle',
@@ -185,7 +185,7 @@ export const initialDocuments = [
           eventName: 'Adres_Ftr',
         },
       ],
-      Su: [
+      'Su Faturası': [
         {
           title: 'İski',
           captureTopBar: 'Faturanı Yükle',
@@ -196,7 +196,7 @@ export const initialDocuments = [
           eventName: 'Adres_Ftr',
         },
       ],
-      Doğalgaz: [
+      'Doğalgaz Faturası': [
         {
           title: 'İgdaş',
           captureTopBar: 'Faturanı Yükle',
@@ -207,7 +207,7 @@ export const initialDocuments = [
           eventName: 'Adres_Ftr',
         },
       ],
-      Elektrik: [
+      'Elektrik Faturası': [
         {
           title: 'Boğaziçi Elektrik',
           captureTopBar: 'Faturanı Yükle',

@@ -840,6 +840,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     borderRadius: 10,
+    height: height * 0.08,
   },
   moduleSeperator: {
     width: '100%',
