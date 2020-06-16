@@ -721,16 +721,22 @@ const MainScreen = (props) => {
     selectedDocument === null
   ) {
     const contract = documents.find((doc) => doc.id === 'CO');
-    return (
-      <AppliedScreen
-        customer={customer}
-        goBack={goBack}
-        takePhoto={() => {
-          goToDocument(contract);
-        }}
-        onActivity={sendEvent}
-      />
-    );
+    if (
+      ['APPROVED', 'PENDING_REVIEW'].includes(contract.status) ||
+      (contract.status === 'AUTOMATICALLY_REJECTED' &&
+        contract.attempt >= contract.maxAttempt)
+    ) {
+      return (
+        <AppliedScreen
+          customer={customer}
+          goBack={goBack}
+          takePhoto={() => {
+            goToDocument(contract);
+          }}
+          onActivity={sendEvent}
+        />
+      );
+    }
   }
 
   if (selectedDocument) {
