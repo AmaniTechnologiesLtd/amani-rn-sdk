@@ -79,6 +79,7 @@ const CaptureDocument = (props) => {
       setTrialCount(1);
       setCurrentStep(0);
       setAutoCapturedImage(null);
+      setAutoCaptureError(null);
       setShowVersionSelection(true);
     } else {
       onClearDocument();
@@ -94,29 +95,13 @@ const CaptureDocument = (props) => {
   }, []);
 
   const sendEvent = (type = 'Cek') => {
-    let event;
-    switch (document.id) {
-      case 'ID':
-        event = currentStep === 0 ? `ID_On_${type}` : `ID_On_${type}`;
-        break;
-      case 'SE':
-        event = `Selfie_${type}`;
-        break;
-      case 'UB':
-      case 'IB':
-        event =
-          document.versions[versionGroup][groupIndex].eventName === 'Adres_Ikm'
-            ? `Ikm_${type}`
-            : `Fatura_${type}`;
-        break;
-      case 'CO':
-        event = `Fzk_${type}`;
-        break;
-      default:
-        break;
-    }
+    // Change event name if UB version is ikametgah
+    const event =
+      document.versions[versionGroup][groupIndex].eventName === 'Adres_Ikm'
+        ? 'Ikm'
+        : document.events.capture[currentStep];
 
-    onActivity(event);
+    onActivity(`${event}_${type}`);
   };
 
   const takePicture = async () => {
@@ -243,6 +228,33 @@ const CaptureDocument = (props) => {
       .autoCapture(requestData)
       .then((res) => {
         if (res.data.errors.length) {
+          if (document.id === 'ID' && currentStep === 0) {
+            let event;
+            switch (res.data.errors[0].error_code) {
+              case 1002:
+                event = 'ID_On_Err_Blur';
+                break;
+              case 1003:
+                event = 'ID_On_Err_Glare';
+                break;
+              case 1004:
+                event = 'ID_On_Err_BG';
+                break;
+              case 1005:
+                event = 'ID_On_Err_InvalidType';
+                break;
+              default:
+                break;
+            }
+            onActivity(event);
+          } else if (
+            document.id === 'ID' &&
+            currentStep === 1 &&
+            res.data.errors[0].error_code === 1008
+          ) {
+            onActivity('ID_On_Err_TCKN');
+          }
+
           setAutoCaptureError({
             code: res.data.errors[0].error_code,
             message: errorMessages[res.data.errors[0].error_code],

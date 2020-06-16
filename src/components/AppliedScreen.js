@@ -22,7 +22,7 @@ import successIcon from '../../assets/success-icon.png';
 const { height } = Dimensions.get('window');
 
 const SendEmailContent = (props) => {
-  const { customer } = props;
+  const { customer, onActivity } = props;
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(false);
 
@@ -82,6 +82,7 @@ const SendEmailContent = (props) => {
         text="GÖNDER"
         style={{ marginVertical: 10 }}
         onPress={() => {
+          onActivity('Fzk_Eposta_Gnd');
           sendContractEmail();
           setMessage(true);
         }}
@@ -100,7 +101,9 @@ const AppliedScreen = (props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
   const [showTakePhoto, setShowTakePhoto] = useState(
-    customer.status === 'Pending Review' ? true : false,
+    ['Temporarily Approved', 'Pending Review'].includes(customer.status)
+      ? true
+      : false,
   );
 
   useEffect(() => {
@@ -122,6 +125,7 @@ const AppliedScreen = (props) => {
   };
 
   const getContractURL = async () => {
+    onActivity('Fzk_Ind');
     try {
       const response = await api.getContractURL(customer.id);
       if (response.data.document_url) {
@@ -184,16 +188,25 @@ const AppliedScreen = (props) => {
               noBackground
             />
             <Button
-              onPress={() =>
-                setShowPopup(<SendEmailContent customer={customerData} />)
-              }
+              onPress={() => {
+                onActivity('Fzk_Eposta');
+                setShowPopup(
+                  <SendEmailContent
+                    customer={customerData}
+                    onActivity={onActivity}
+                  />,
+                );
+              }}
               text="Sözleşmeni E-posta ile Gönder"
               style={styles.buttonStyle}
               noBackground
             />
             {takePhoto && (
               <Button
-                onPress={takePhoto}
+                onPress={() => {
+                  onActivity('Fzk_FotoCek');
+                  takePhoto();
+                }}
                 text="Sözleşmenin Fotoğrafını Çek"
                 style={styles.buttonStyle}
               />
@@ -214,87 +227,29 @@ const AppliedScreen = (props) => {
           noBackground
         />
 
-        {customer.status === 'Temporarily Approved' ? (
-          <>
-            <View style={styles.messageContainer}>
-              <Image
-                resizeMode="contain"
-                style={styles.successIcon}
-                source={successIcon}
-              />
-              <Text style={[styles.header, { marginBottom: 0 }]}>
-                Başvurun onaylandı.
-              </Text>
-              <Text style={[styles.header, { marginTop: 0 }]}>
-                Limitin artık 50.000 TL.
-              </Text>
-              <Text style={styles.message}>
-                Limit artışının kalıcı olması için en geç
-                <Text style={{ fontWeight: 'bold' }}>
-                  {customer.status === 'Temporarily Approved'
-                    ? ` ${dateParse(
-                        customer.approval_expiration,
-                      )} tarihine kadar `
-                    : ` iki hafta içinde `}
-                </Text>
-                aşağıda yer alan ininal kullanıcı sözleşmesini yazdırıp,
-                imzalayıp fotoğrafını yüklemen gerekiyor. Eğer imzalı sözleşmen
-                bize ulaşmazsa limitin tekrar 750 TL'ye düşecek.
-              </Text>
-            </View>
-            <View style={{ marginBottom: 10 }}>
-              <Button
-                onPress={getContractURL}
-                text="Sözleşmeyi İndir"
-                style={styles.buttonStyle}
-                noBackground
-              />
-              <Button
-                onPress={() =>
-                  setShowPopup(<SendEmailContent customer={customerData} />)
-                }
-                text="Sözleşmeni E-posta ile Gönder"
-                style={styles.buttonStyle}
-                noBackground
-              />
-              {takePhoto && (
-                <Button
-                  onPress={takePhoto}
-                  text="Sözleşmenin Fotoğrafını Çek"
-                  style={styles.buttonStyle}
-                />
-              )}
-            </View>
-          </>
-        ) : (
-          <>
-            <View style={styles.messageContainer}>
-              <Image
-                resizeMode="contain"
-                style={styles.successIcon}
-                source={successIcon}
-              />
-              <Text style={styles.header}>Tebrikler!</Text>
-              <Text style={styles.message}>
-                Tüm dijital adımları başarıyla tamamladın.
-              </Text>
-              <Text style={styles.message}>
-                Yüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat
-                içinde artıracağız.
-              </Text>
-              <Text style={styles.message}>
-                Fiziksel sözleşme ile devam et.
-              </Text>
-            </View>
-            <View style={{ marginBottom: 10 }}>
-              <Button
-                onPress={() => setShowTakePhoto(true)}
-                text="DEVAM ET"
-                style={styles.buttonStyle}
-              />
-            </View>
-          </>
-        )}
+        <View style={styles.messageContainer}>
+          <Image
+            resizeMode="contain"
+            style={styles.successIcon}
+            source={successIcon}
+          />
+          <Text style={styles.header}>Tebrikler!</Text>
+          <Text style={styles.message}>
+            Tüm dijital adımları başarıyla tamamladın.
+          </Text>
+          <Text style={styles.message}>
+            Yüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içinde
+            artıracağız.
+          </Text>
+          <Text style={styles.message}>Fiziksel sözleşme ile devam et.</Text>
+        </View>
+        <View style={{ marginBottom: 10 }}>
+          <Button
+            onPress={() => setShowTakePhoto(true)}
+            text="DEVAM ET"
+            style={styles.buttonStyle}
+          />
+        </View>
       </View>
     </ImageBackground>
   );

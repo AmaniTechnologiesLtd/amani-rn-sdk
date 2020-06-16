@@ -328,6 +328,21 @@ const MainScreen = (props) => {
 
         updateCustomerRules(selectedDocument.id, 'AUTOMATICALLY_REJECTED');
 
+        if (res.data.errors[0]) {
+          switch (res.data.errors[0].error_code) {
+            case 3001:
+              sendEvent('ID_Err_Liveness');
+              break;
+
+            case 3002:
+              sendEvent('ID_Err_Expiry');
+              break;
+
+            default:
+              break;
+          }
+        }
+
         if (!selectedDocument.options.includes('async')) {
           showErrorMessage(res.data.errors);
         }
@@ -385,7 +400,10 @@ const MainScreen = (props) => {
         title: messageDocument.successTitle,
         message: messageDocument.successDescription,
         buttonText: 'DEVAM',
-        buttonClick: () => findIncompleteDocument(customer),
+        buttonClick: () => {
+          sendEvent(messageDocument.events.success);
+          findIncompleteDocument(customer);
+        },
         popup: false,
       });
     }
@@ -653,7 +671,7 @@ const MainScreen = (props) => {
   };
 
   const sendEvent = (event, value = '') => {
-    if (eventDescriptions[event]) {
+    if (event && eventDescriptions[event]) {
       onActivity({ event, definition: eventDescriptions[event], value });
     }
   };
@@ -756,6 +774,8 @@ const MainScreen = (props) => {
     );
   }
 
+  sendEvent('Eksik_Adim_VIEW');
+
   return (
     <ImageBackground
       source={mainBackground}
@@ -780,7 +800,10 @@ const MainScreen = (props) => {
                   moduleStatusBackground(document, index),
                 ]}
                 activeOpacity={0.8}
-                onPress={() => selectDocument(document)}>
+                onPress={() => {
+                  sendEvent('Eksik_Adim_CLICK', document.events.clickName);
+                  selectDocument(document);
+                }}>
                 <View style={styles.moduleContainer}>
                   <View style={styles.moduleTitleContainer}>
                     <Text

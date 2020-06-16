@@ -1,7 +1,7 @@
 export const initialDocuments = [
   {
     id: 'ID',
-    secondary_id: 'DL',
+    secondary_id: ['DL'],
     title: 'Kimliğini Yükle',
     status: 'NOT_UPLOADED',
     steps: [
@@ -72,6 +72,11 @@ export const initialDocuments = [
       REJECTED: `Kimliğin onaylanmadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Kimliğin onaylanmadı\nLütfen tekrar dene`,
     },
+    events: {
+      clickName: 'ID',
+      success: 'ID_Success_Dvm',
+      capture: ['ID_On', 'ID_Arka'],
+    },
     successTitle: 'Kimliğini başarıyla yükledin.',
     successDescription: '',
     errorTitle: 'Kimliğni yüklerken bir hata oluştu.',
@@ -118,6 +123,11 @@ export const initialDocuments = [
       APPROVED: 'Selfie Onaylandı',
       REJECTED: `Selfie onaylanmadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Selfie onaylanmadı\nLütfen tekrar dene`,
+    },
+    events: {
+      clickName: 'Selfie',
+      success: 'Selfie_Success_Dvm',
+      capture: ['Selfie'],
     },
     successTitle: "Selfie'ni başarıyla yükledin.",
     successDescription: '',
@@ -238,6 +248,11 @@ export const initialDocuments = [
       REJECTED: `Adres Belgen Onaylanmadı\nLütfen tekrar dene`,
       AUTOMATICALLY_REJECTED: `Adres Belgen Onaylanmadı\nLütfen tekrar dene`,
     },
+    events: {
+      clickName: 'Adres',
+      success: 'Adres_Dvm',
+      capture: ['Fatura'],
+    },
     successTitle: 'Adres belgeni başarıyla yükledin.',
     successDescription: '',
     errorTitle: 'Adres belgeni yüklerken bir hata oluştu.',
@@ -284,6 +299,11 @@ export const initialDocuments = [
       REJECTED: 'İmzan Onaylanmadı\nLütfen tekrar dene',
       AUTOMATICALLY_REJECTED: 'İmzan Onaylanmadı\nLütfen tekrar dene',
     },
+    events: {
+      clickName: 'Dijital',
+      success: 'Dijital_Dvm',
+      capture: ['Dijital'],
+    },
     successTitle: 'Dijital sözleşmeni başarıyla yükledin.',
     successDescription: '',
     errorTitle: 'Sözleşmeni yüklerken bir hata oluştu.',
@@ -327,6 +347,11 @@ export const initialDocuments = [
       REJECTED: 'Fiziksel Sözleşmen Onaylanmadı\nLütfen tekrar dene',
       AUTOMATICALLY_REJECTED:
         'Fiziksel Sözleşmen Onaylanmadı\nLütfen tekrar dene',
+    },
+    events: {
+      clickName: 'Fiziksel',
+      success: 'Fzk_Dvm',
+      capture: ['Fzk'],
     },
     successTitle: 'Fiziksel sözleşmeni başarıyla yükledin.',
     successDescription:
