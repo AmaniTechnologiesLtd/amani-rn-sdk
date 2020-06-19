@@ -121,6 +121,7 @@ const MainScreen = (props) => {
             handlePermissions();
           } else {
             openSettings();
+            onExit();
           }
         },
         popup: true,

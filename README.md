@@ -125,7 +125,6 @@ cd ios && pod install
 | onError         | false    | callback function | -       |
 | onExit          | false    | callback function | -       |
 | onActivity      | false    | callback function | -       |
-| sendEvent       | false    | callback function | -       |
 
 ```js
 import AmaniAi from 'amani-rn-sdk';
@@ -154,7 +153,6 @@ return (
     onError={(error) => console.log(error)}
     onExit={(values) => console.log(values)}
     onActivity={(event) => console.log(event)} // Fired on every screen touch and other specific events
-    sendEvent={sendEvent} // Optional for analytics event firing
   />
 );
 ```
