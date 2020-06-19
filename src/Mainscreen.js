@@ -15,7 +15,13 @@ import {
 
 import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from 'react-native-device-info';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import {
+  check,
+  request,
+  openSettings,
+  PERMISSIONS,
+  RESULTS,
+} from 'react-native-permissions';
 
 // Local files
 import CaptureDocument from './components/CaptureDocument';
@@ -99,7 +105,7 @@ const MainScreen = (props) => {
         header: 'Gerekli İzinler Eksik',
         title: title,
         message: '',
-        buttonText: 'İzin Ver',
+        buttonText: Platform.OS === 'android' ? 'İzin Ver' : 'Ayarlara Git',
         onClose: () => {
           onError({
             status: 'ERROR',
@@ -111,7 +117,11 @@ const MainScreen = (props) => {
           });
         },
         buttonClick: () => {
-          handlePermissions();
+          if (Platform.OS === 'android') {
+            handlePermissions();
+          } else {
+            openSettings();
+          }
         },
         popup: true,
       });
