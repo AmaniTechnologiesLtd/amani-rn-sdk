@@ -7,6 +7,7 @@ export const errorMessages = {
   1004: 'Belgeyi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar dene',
   1005: 'Bu belge tipi desteklenmiyor.\n\nLütfen tekrar dene',
   1008: 'Bu kimlik sana ait değil.\n\nLütfen kendine ait bir kimlik kullan',
+  1009: '*** Bu hata kodu checker mesajı için ayrıldı ***',
   2001: 'Selfie kimlik belgendeki fotoğrafla uyuşmuyor.\n\nLütfen tekrar dene',
   2002: 'Lütfen gerçek bir selfie çek',
   2003: 'Lütfen selfie çekerken doğrudan kameraya bak',

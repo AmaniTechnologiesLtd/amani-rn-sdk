@@ -261,7 +261,7 @@ const CaptureDocument = (props) => {
           });
         }
 
-        if (trialCount < 2) {
+        if (trialCount < 3) {
           setAutoCapturedImage(res.data.image);
         } else {
           onCapture(res.data.image);
@@ -314,6 +314,7 @@ const CaptureDocument = (props) => {
 
     let previewRatio = 0.85;
 
+    // Old Turkish ID creates a problem so we made it smaller
     if (
       document.versions[versionGroup][groupIndex].aspectRatio > 1 &&
       height < 600

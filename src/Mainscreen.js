@@ -15,13 +15,7 @@ import {
 
 import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from 'react-native-device-info';
-import {
-  check,
-  request,
-  openSettings,
-  PERMISSIONS,
-  RESULTS,
-} from 'react-native-permissions';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 // Local files
 import CaptureDocument from './components/CaptureDocument';
@@ -39,7 +33,7 @@ import forwardArrowDark from '../assets/forward-arrow-dark.png';
 import stepWarning from '../assets/step-warning-icon.png';
 import successIconDark from '../assets/success-icon-dark.png';
 import seperatorIcon from '../assets/seperator-icon.png';
-import { eventDescriptions } from './constants';
+import { errorMessages, eventDescriptions } from './constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -105,15 +99,19 @@ const MainScreen = (props) => {
         header: 'Gerekli İzinler Eksik',
         title: title,
         message: '',
-        buttonText: 'Ayarlara Git',
+        buttonText: 'İzin Ver',
         onClose: () => {
           onError({
             status: 'ERROR',
             message: 'Kamera ve konum izni kullanılamıyor.',
           });
+          onExit({
+            status: 'ERROR',
+            message: 'Kamera ve konum izni kullanılamıyor.',
+          });
         },
         buttonClick: () => {
-          openSettings();
+          handlePermissions();
         },
         popup: true,
       });
@@ -326,7 +324,11 @@ const MainScreen = (props) => {
           status: 'AUTOMATICALLY_REJECTED',
         });
 
-        updateCustomerRules(selectedDocument.id, 'AUTOMATICALLY_REJECTED');
+        updateCustomerRules(
+          selectedDocument.id,
+          'AUTOMATICALLY_REJECTED',
+          res.data.errors,
+        );
 
         if (res.data.errors[0]) {
           switch (res.data.errors[0].error_code) {
@@ -354,11 +356,7 @@ const MainScreen = (props) => {
           status: 'AUTOMATICALLY_REJECTED',
         });
 
-        updateCustomerRules(
-          selectedDocument.id,
-          'AUTOMATICALLY_REJECTED',
-          'Belge doğrulanamadı',
-        );
+        updateCustomerRules(selectedDocument.id, 'AUTOMATICALLY_REJECTED');
 
         if (!selectedDocument.options.includes('async')) {
           showErrorMessage();
@@ -381,11 +379,16 @@ const MainScreen = (props) => {
       header: 'Bir hata oluştu!',
       title: errorMessage,
       buttonText: 'GERİ DÖN',
-      buttonClick: () =>
+      buttonClick: () => {
         onError({
           status: 'ERROR',
           message: errorMessage,
-        }),
+        });
+        onExit({
+          status: 'ERROR',
+          message: errorMessage,
+        });
+      },
     });
   };
 
@@ -429,15 +432,16 @@ const MainScreen = (props) => {
     }
   };
 
-  const updateCustomerRules = (documentID, status, statusMessage = null) => {
+  const updateCustomerRules = (documentID, status, errors = null) => {
     const rules = customer.rules.map((rule) => {
       if (rule.document_classes.includes(documentID)) {
         rule.status = status;
-
-        if (statusMessage) {
-          rule.status_message = statusMessage;
-        }
       }
+
+      if (errors) {
+        rule.errors = errors;
+      }
+
       return rule;
     });
     setCustomer({ ...customer, rules });
@@ -598,13 +602,22 @@ const MainScreen = (props) => {
         step.document_classes.includes(document.id),
       );
 
-      if (rule && rule.status_message) {
+      if (rule && rule.errors && rule.errors.length) {
+        let error_message;
+        if (rule.errors[0].error_code === 1009) {
+          error_message = rule.errors[0].error_message;
+        } else {
+          if (errorMessages[rule.errors[0].error_code]) {
+            error_message = errorMessages[rule.errors[0].error_code];
+          }
+        }
+
         setMessage({
           ...initialMessage,
           show: true,
           type: 'error',
           header: 'Belge Onaylanmadı',
-          title: rule.status_message,
+          title: error_message,
           buttonText: 'DEVAM',
           buttonClick: () => goToDocument(document),
           popup: true,

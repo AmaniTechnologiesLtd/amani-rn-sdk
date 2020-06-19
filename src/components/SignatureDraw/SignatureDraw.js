@@ -109,6 +109,12 @@ const SignatureDraw = (props) => {
             status: 'AUTOMATICALLY_REJECTED',
           });
 
+          updateCustomerRules(
+            document.id,
+            'AUTOMATICALLY_REJECTED',
+            res.data.errors,
+          );
+
           return;
         }
 
