@@ -41,8 +41,10 @@ const CaptureDocument = (props) => {
     onClearDocument,
     onSkipDocument,
     onActivity,
+    onResetCapture,
     setSelectedDocumentVersion,
     customer,
+    dispatch,
   } = props;
 
   const [cameraType] = useState(
@@ -81,6 +83,7 @@ const CaptureDocument = (props) => {
       setAutoCapturedImage(null);
       setAutoCaptureError(null);
       setShowVersionSelection(true);
+      onResetCapture();
     } else {
       onClearDocument();
     }
@@ -127,8 +130,6 @@ const CaptureDocument = (props) => {
 
           setCapturedImageUrl(image);
           await handleAutoCapture(image);
-
-          // setIsProcessStarted(false);
         }
         setButtonDisabled(false);
       });
@@ -155,7 +156,6 @@ const CaptureDocument = (props) => {
         RNFS.readFile(file.uri, 'base64').then((source) => {
           onCapture(`data:application/pdf;base64,${source}`);
           calculateNextStep();
-          // setIsProcessStarted(false);
         });
       })
       .catch((error) => setIsProcessStarted(false));
@@ -165,7 +165,7 @@ const CaptureDocument = (props) => {
     setAutoCapturedImage(null);
     setTrialCount(1);
     if (currentStep < document.steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(() => currentStep + 1);
       setImageCrop(null);
       return;
     }
@@ -177,9 +177,22 @@ const CaptureDocument = (props) => {
     onStepsFinished(true);
   };
 
-  const handleDocumentRetake = (forced) => {
+  const handleDocumentRetake = async (forced) => {
+    // If customer ID does not match
+    if (autoCaptureError && autoCaptureError.code === 1008) {
+      await dispatch({
+        type: 'INCREMENT_ATTEMPT',
+        document_id: document.id,
+      });
+
+      document.attempt = document.attempt + 1;
+
+      goBack();
+      return;
+    }
+
     if (forced) {
-      setTrialCount(trialCount + 1);
+      setTrialCount(() => trialCount + 1);
     }
     setAutoCaptureError(null);
     setAutoCapturedImage(null);
@@ -261,11 +274,17 @@ const CaptureDocument = (props) => {
           });
         }
 
-        if (trialCount < 3) {
-          setAutoCapturedImage(res.data.image);
-        } else {
+        console.log(trialCount, document.maxAttempt, document.attempt);
+
+        if (
+          trialCount >= document.maxAttempt ||
+          (currentStep === document.steps.length - 1 &&
+            document.attempt >= document.maxAttempt)
+        ) {
           onCapture(res.data.image);
           calculateNextStep();
+        } else {
+          setAutoCapturedImage(res.data.image);
         }
       })
       .catch(() => {
@@ -377,11 +396,7 @@ const CaptureDocument = (props) => {
           onCapture(image);
           calculateNextStep();
         }}
-        onTryAgain={
-          autoCaptureError && autoCaptureError.code === 1008
-            ? goBack
-            : handleDocumentRetake
-        }
+        onTryAgain={handleDocumentRetake}
         onActivity={onActivity}
         errorMessage={autoCaptureError && autoCaptureError.message}
       />

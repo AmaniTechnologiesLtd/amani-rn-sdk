@@ -71,7 +71,7 @@ const DocumentConfirmation = (props) => {
         <View style={styles.bottomBar}>
           <Button
             text="Tekrar Dene"
-            noBackground
+            noBackground={!errorMessage}
             onPress={() => onTryAgain(!!errorMessage)}
             style={styles.bottomButtons}
           />

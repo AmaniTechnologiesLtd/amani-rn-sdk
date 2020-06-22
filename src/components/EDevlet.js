@@ -95,10 +95,7 @@ const EDevlet = (props) => {
             <Text style={{ textDecorationLine: 'underline', color: 'white' }}>
               kimlik@ininal.com{' '}
             </Text>
-            <Text>
-              adresine e-posta gönderebilirsin. E-posta gönderdiğin takdirde
-              belgenin onaylanması 15 dakika sürebilir.
-            </Text>
+            <Text>adresine e-posta gönderebilirsin.</Text>
           </Text>
         </View>
         <Button

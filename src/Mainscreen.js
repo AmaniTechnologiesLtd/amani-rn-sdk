@@ -594,16 +594,7 @@ const MainScreen = (props) => {
   };
 
   const selectDocument = (document) => {
-    const disabled = checkIsNextStepDisabled(document);
-    if (disabled) {
-      Alert.alert(
-        '',
-        'Bu adıma geçebilmek için önce üstteki adımları tamamlamalısın',
-        [{ text: 'Devam' }],
-        {
-          cancelable: true,
-        },
-      );
+    if (checkIsNextStepDisabled(document)) {
       return;
     }
 
@@ -784,7 +775,11 @@ const MainScreen = (props) => {
           clearSelectedDocument();
         }}
         onSkipDocument={skipDocument}
+        onResetCapture={() => {
+          setFiles([]);
+        }}
         onActivity={sendEvent}
+        dispatch={dispatch}
       />
     );
   }
@@ -832,6 +827,17 @@ const MainScreen = (props) => {
                 activeOpacity={0.8}
                 onPress={() => {
                   sendEvent('Eksik_Adim_CLICK', document.events.clickName);
+                  if (checkIsNextStepDisabled(document)) {
+                    Alert.alert(
+                      '',
+                      'Bu adıma geçebilmek için önce üstteki adımları tamamlamalısın',
+                      [{ text: 'Devam' }],
+                      {
+                        cancelable: true,
+                      },
+                    );
+                    return;
+                  }
                   selectDocument(document);
                 }}>
                 <View style={styles.moduleContainer}>
