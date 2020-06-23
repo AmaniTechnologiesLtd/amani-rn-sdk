@@ -293,8 +293,8 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Dijital Sözleşmeni İmzala',
-      PENDING_REVIEW: 'İmzan kontrol ediliyor...',
-      PROCESSING: 'İmzan kontrol ediliyor...',
+      PENDING_REVIEW: 'İmzan Kontrol Ediliyor...',
+      PROCESSING: 'İmzan Kontrol Ediliyor...',
       APPROVED: 'Dijital Sözleşme İmzalandı',
       REJECTED: 'İmzan Onaylanmadı\nLütfen tekrar dene',
       AUTOMATICALLY_REJECTED: 'İmzan Onaylanmadı\nLütfen tekrar dene',

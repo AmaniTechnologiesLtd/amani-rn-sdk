@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Linking,
   BackHandler,
+  TouchableOpacity,
 } from 'react-native';
 
 import api from '../services/api';
@@ -18,8 +19,9 @@ import backArrow from '../../assets/back-arrow.png';
 import Button from './Button';
 import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
+import closeIcon from '../../assets/close-icon.png';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const SendEmailContent = (props) => {
   const { customer, onActivity } = props;
@@ -100,7 +102,11 @@ const AppliedScreen = (props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [customerData, setCustomerData] = useState({});
   const [showTakePhoto, setShowTakePhoto] = useState(
-    ['Temporarily Approved', 'Pending Review'].includes(customer.status)
+    [
+      'Temporarily Approved',
+      'Temporary Approval Expired',
+      'Pending Review',
+    ].includes(customer.status)
       ? true
       : false,
   );
@@ -141,43 +147,115 @@ const AppliedScreen = (props) => {
     );
   }
 
+  // This will be shown for returning customers
+  // and who clicked continue on previous screen
   if (showTakePhoto) {
     return (
       <ImageBackground
         source={mainBackground}
         style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
-          <TopBar
-            onLeftButtonPressed={goBack}
-            leftButtonIcon={backArrow}
-            style={{ paddingHorizontal: 20 }}
-            title="Fiziksel Sözleşmeni Yükle"
-          />
-          <View
-            style={[
-              styles.messageContainer,
-              { justifyContent: 'flex-start', alignItems: 'baseline' },
-            ]}>
-            <Text
-              style={[styles.message, { textAlign: 'left', marginTop: 20 }]}>
-              Limit artışının kalıcı olması için aşağıda yer alan ininal
-              kullanıcı sözleşmesini yazdırıp. İmzalayıp, fotoğrafını yüklemen
-              gerekiyor.
-            </Text>
+          {(function () {
+            if (customer.status === 'Temporarily Approved') {
+              return (
+                <>
+                  <TouchableOpacity style={styles.closeButton} onPress={goBack}>
+                    <Image style={styles.closeIcon} source={closeIcon} />
+                  </TouchableOpacity>
+                  <View style={styles.messageContainer}>
+                    <Image
+                      resizeMode="contain"
+                      style={styles.successIcon}
+                      source={successIcon}
+                    />
+                    <Text style={styles.header}>Başvurun onaylandı.</Text>
+                    <Text style={styles.header}>Limitin artık 50.000 TL.</Text>
+                    <Text style={styles.message}>
+                      Limit artışının kalıcı olması için ininal kullanıcı
+                      sözleşmesini yazdırıp, imzalayıp
+                      <Text style={{ fontWeight: 'bold' }}>
+                        {` ${dateParse(
+                          customer.approval_expiration,
+                        )} tarihine kadar `}
+                      </Text>
+                      fotoğrafını yüklemen gerekiyor. Eğer imzalı sözleşmeni
+                      yüklemezsen, limitin tekrar{' '}
+                      <Text style={{ fontWeight: 'bold' }}>750 TL</Text>'ye
+                      düşecek.
+                    </Text>
+                  </View>
+                </>
+              );
+            }
 
-            <Text style={[styles.message, { textAlign: 'left' }]}>
-              En geç
-              <Text style={{ fontWeight: 'bold' }}>
-                {customer.status === 'Temporarily Approved'
-                  ? ` ${dateParse(
-                      customer.approval_expiration,
-                    )} tarihine kadar `
-                  : ` iki hafta içinde `}
-              </Text>
-              fiziksel sözleşmeni yüklemezsen, limitin tekrar{' '}
-              <Text style={{ fontWeight: 'bold' }}>750 TL</Text>'ye düşecek.
-            </Text>
-          </View>
+            if (customer.status === 'Temporary Approval Expired') {
+              return (
+                <>
+                  <TopBar
+                    onLeftButtonPressed={goBack}
+                    leftButtonIcon={backArrow}
+                    style={{ paddingHorizontal: 20 }}
+                    title="Fiziksel Sözleşmeni Yükle"
+                  />
+                  <View
+                    style={[
+                      styles.messageContainer,
+                      { justifyContent: 'flex-start', alignItems: 'baseline' },
+                    ]}>
+                    <Text
+                      style={[
+                        styles.message,
+                        { textAlign: 'left', marginTop: 20 },
+                      ]}>
+                      Limitini tekrar yükseltmek ve ininal Plus Hesap sahibi
+                      olmak için fiziksel sözleşmenin fotoğrafını en kısa sürede
+                      yüklemen gerekiyor.
+                    </Text>
+                  </View>
+                </>
+              );
+            }
+
+            return (
+              <>
+                <TopBar
+                  onLeftButtonPressed={goBack}
+                  leftButtonIcon={backArrow}
+                  style={{ paddingHorizontal: 20 }}
+                  title="Fiziksel Sözleşmeni Yükle"
+                />
+                <View
+                  style={[
+                    styles.messageContainer,
+                    { justifyContent: 'flex-start', alignItems: 'baseline' },
+                  ]}>
+                  <Text
+                    style={[
+                      styles.message,
+                      { textAlign: 'left', marginTop: 20 },
+                    ]}>
+                    Limit artışının kalıcı olması için aşağıda yer alan ininal
+                    kullanıcı sözleşmesini yazdırıp. İmzalayıp, fotoğrafını
+                    yüklemen gerekiyor.
+                  </Text>
+
+                  <Text style={[styles.message, { textAlign: 'left' }]}>
+                    En geç
+                    <Text style={{ fontWeight: 'bold' }}>
+                      {customer.status === 'Temporarily Approved'
+                        ? ` ${dateParse(
+                            customer.approval_expiration,
+                          )} tarihine kadar `
+                        : ` iki hafta içinde `}
+                    </Text>
+                    fiziksel sözleşmeni yüklemezsen, limitin tekrar{' '}
+                    <Text style={{ fontWeight: 'bold' }}>750 TL</Text>'ye
+                    düşecek.
+                  </Text>
+                </View>
+              </>
+            );
+          })()}
 
           <View style={{ marginBottom: 10 }}>
             <Button
@@ -216,6 +294,8 @@ const AppliedScreen = (props) => {
     );
   }
 
+  // This will be shown as a success screen with a continue button
+  // in normal flow
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
       <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
@@ -316,5 +396,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'rgba(255, 255, 255, .3)',
     color: '#FFFFFF',
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    padding: 10,
+  },
+  closeIcon: {
+    resizeMode: 'contain',
+    width: width * 0.08,
+    height: width * 0.08,
   },
 });
