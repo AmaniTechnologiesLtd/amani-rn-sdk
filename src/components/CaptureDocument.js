@@ -274,8 +274,6 @@ const CaptureDocument = (props) => {
           });
         }
 
-        console.log(trialCount, document.maxAttempt, document.attempt);
-
         if (
           trialCount >= document.maxAttempt ||
           (currentStep === document.steps.length - 1 &&

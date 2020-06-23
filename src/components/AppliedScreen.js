@@ -29,7 +29,6 @@ const SendEmailContent = (props) => {
   const sendContractEmail = async () => {
     try {
       await api.sendContractEmail(customer.id, { email });
-      // console.log(response);
       // if (response.data.document_url) {
       //   Linking.openURL(response.data.document_url);
       // }
