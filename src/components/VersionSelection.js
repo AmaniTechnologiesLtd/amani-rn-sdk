@@ -41,7 +41,7 @@ const VersionSelection = (props) => {
   const handleVersionChoice = (group, versionKey) => {
     onActivity(
       document.versions[group][versionKey].eventName,
-      document.versions[group][versionKey].title,
+      document.id === 'UB' ? document.versions[group][versionKey].title : '', // Send value for only UB
     );
     groupIndex(versionKey);
     versionGroup(group);
