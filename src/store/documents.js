@@ -120,9 +120,9 @@ export const initialDocuments = [
       NOT_UPLOADED: 'Selfie Doğrula',
       PENDING_REVIEW: "Selfie'n Kontrol Ediliyor...",
       PROCESSING: "Selfie'n Kontrol Ediliyor...",
-      APPROVED: 'Selfie Onaylandı',
-      REJECTED: `Selfie onaylanmadı\nLütfen tekrar dene`,
-      AUTOMATICALLY_REJECTED: `Selfie onaylanmadı\nLütfen tekrar dene`,
+      APPROVED: "Selfie'n Onaylandı",
+      REJECTED: "Selfie'n onaylanmadı\nLütfen tekrar dene",
+      AUTOMATICALLY_REJECTED: "Selfie'n onaylanmadı\nLütfen tekrar dene",
     },
     events: {
       clickName: 'Selfie',

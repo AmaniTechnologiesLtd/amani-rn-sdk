@@ -618,17 +618,19 @@ const MainScreen = (props) => {
           }
         }
 
-        setMessage({
-          ...initialMessage,
-          show: true,
-          type: 'error',
-          header: 'Belge Onaylanmadı',
-          title: error_message,
-          buttonText: 'DEVAM',
-          buttonClick: () => goToDocument(document),
-          popup: true,
-        });
-        return;
+        if (error_message) {
+          setMessage({
+            ...initialMessage,
+            show: true,
+            type: 'error',
+            header: 'Belge Onaylanmadı',
+            title: error_message,
+            buttonText: 'DEVAM',
+            buttonClick: () => goToDocument(document),
+            popup: true,
+          });
+          return;
+        }
       }
     }
 
