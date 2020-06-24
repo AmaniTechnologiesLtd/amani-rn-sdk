@@ -451,10 +451,9 @@ const MainScreen = (props) => {
     const rules = customer.rules.map((rule) => {
       if (rule.document_classes.includes(documentID)) {
         rule.status = status;
-      }
-
-      if (errors) {
-        rule.errors = errors;
+        if (errors) {
+          rule.errors = errors;
+        }
       }
 
       return rule;
@@ -665,10 +664,11 @@ const MainScreen = (props) => {
       return;
     }
 
+    clearSelectedDocument();
+
     // If not first time customer do not go to document automatically
     // go to document selection screen
     if (currentCustomer.status !== 'Created') {
-      clearSelectedDocument();
       return;
     }
 
@@ -677,8 +677,6 @@ const MainScreen = (props) => {
         doc.status,
       ),
     );
-
-    clearSelectedDocument();
 
     if (incompleteRules.length) {
       const startDoc = documents.find((doc) =>
