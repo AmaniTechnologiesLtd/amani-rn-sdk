@@ -107,10 +107,12 @@ const MainScreen = (props) => {
         message: '',
         buttonText: Platform.OS === 'android' ? 'İzin Ver' : 'Ayarlara Git',
         onClose: () => {
-          onError({
-            status: 'ERROR',
-            message: 'Kamera ve konum izni kullanılamıyor.',
-          });
+          if (onError) {
+            onError({
+              status: 'ERROR',
+              message: 'Kamera ve konum izni kullanılamıyor.',
+            });
+          }
           onExit({
             status: 'ERROR',
             message: 'Kamera ve konum izni kullanılamıyor.',
@@ -391,10 +393,12 @@ const MainScreen = (props) => {
       title: errorMessage,
       buttonText: 'GERİ DÖN',
       buttonClick: () => {
-        onError({
-          status: 'ERROR',
-          message: errorMessage,
-        });
+        if (onError) {
+          onError({
+            status: 'ERROR',
+            message: errorMessage,
+          });
+        }
         onExit({
           status: 'ERROR',
           message: errorMessage,
@@ -686,7 +690,7 @@ const MainScreen = (props) => {
   };
 
   const sendEvent = (event, value = '') => {
-    if (event && eventDescriptions[event]) {
+    if (onActivity && event && eventDescriptions[event]) {
       onActivity({ event, definition: eventDescriptions[event], value });
     }
   };

@@ -121,9 +121,9 @@ cd ios && pod install
 | --------------- | -------- | ----------------- | ------- |
 | authData        | true     | object            | -       |
 | customerData    | true     | object            | -       |
+| onExit          | true     | callback function | -       |
 | server          | false    | string            | tr      |
 | onError         | false    | callback function | -       |
-| onExit          | false    | callback function | -       |
 | onActivity      | false    | callback function | -       |
 
 ```js
