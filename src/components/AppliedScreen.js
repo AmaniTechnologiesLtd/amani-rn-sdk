@@ -106,6 +106,7 @@ const AppliedScreen = (props) => {
       'Temporarily Approved',
       'Temporary Approval Expired',
       'Pending Review',
+      'Pending Approval',
     ].includes(customer.status)
       ? true
       : false,
