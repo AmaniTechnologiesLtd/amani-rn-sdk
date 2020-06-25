@@ -33,6 +33,7 @@ const SignatureDraw = (props) => {
     dispatch,
     updateCustomerRules,
     onActivity,
+    location,
   } = props;
   const [signature, setSignature] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
@@ -79,8 +80,9 @@ const SignatureDraw = (props) => {
     const deviceData = {
       id: DeviceInfo.getUniqueId(),
       os: Platform.OS,
+      brand: DeviceInfo.getBrand(),
       model: DeviceInfo.getModel(),
-      gsm: await DeviceInfo.getCarrier(),
+      carrier: await DeviceInfo.getCarrier(),
     };
 
     const requestData = new FormData();
@@ -90,6 +92,10 @@ const SignatureDraw = (props) => {
     requestData.append('device_data', JSON.stringify(deviceData));
     requestData.append('attempt', document.attempt);
     signature.forEach((sign) => requestData.append('files[]', sign));
+
+    if (location) {
+      requestData.append('location', JSON.stringify(location));
+    }
 
     await api
       .sendDocument(requestData)
