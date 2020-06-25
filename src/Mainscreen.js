@@ -654,7 +654,6 @@ const MainScreen = (props) => {
       // If physical contract is rejected we do not show customer main screen
       // when customer clicks to the contact we show the applied screen
     } else if (document.id === 'CO' && document.status === 'REJECTED') {
-      console.log('test');
       setShowAppliedScreen(true);
       return;
     } else {
