@@ -64,6 +64,7 @@ const MainScreen = (props) => {
   const [message, setMessage] = useState({
     ...initialMessage,
   });
+  const [showAppliedScreen, setShowAppliedScreen] = useState(false);
 
   const initialMessage = {
     show: false,
@@ -645,9 +646,17 @@ const MainScreen = (props) => {
     setMessage({
       ...initialMessage,
     });
+
     // Go to document capture page
     if (document.id === 'SG') {
       setShowContract(true);
+
+      // If physical contract is rejected we do not show customer main screen
+      // when customer clicks to the contact we show the applied screen
+    } else if (document.id === 'CO' && document.status === 'REJECTED') {
+      console.log('test');
+      setShowAppliedScreen(true);
+      return;
     } else {
       setSelectedDocument(document);
     }
@@ -741,16 +750,26 @@ const MainScreen = (props) => {
   ) {
     const contract = documents.find((doc) => doc.id === 'CO');
 
-    return (
-      <AppliedScreen
-        customer={customer}
-        goBack={goBack}
-        takePhoto={() => {
-          goToDocument(contract);
-        }}
-        onActivity={sendEvent}
-      />
-    );
+    // If document is not rejected show applied screen
+    // If rejected first show main screen when clicked show applied screen
+    if (contract.status !== 'REJECTED' || showAppliedScreen) {
+      return (
+        <AppliedScreen
+          customer={customer}
+          goBack={() => {
+            if (contract.status === 'REJECTED') {
+              setShowAppliedScreen(false);
+            } else {
+              goBack();
+            }
+          }}
+          takePhoto={() => {
+            goToDocument(contract);
+          }}
+          onActivity={sendEvent}
+        />
+      );
+    }
   }
 
   if (selectedDocument) {
