@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Text,
-  StatusBar,
   Dimensions,
   StyleSheet,
   ImageBackground,
@@ -86,12 +85,6 @@ const MessageScreen = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-
       {popup ? (
         <View
           style={styles.messagePopup}

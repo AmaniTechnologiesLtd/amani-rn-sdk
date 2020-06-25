@@ -876,7 +876,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     paddingHorizontal: 20,
-    paddingTop: 25,
+    paddingTop: 10,
   },
   containerHeaderText: {
     color: 'white',

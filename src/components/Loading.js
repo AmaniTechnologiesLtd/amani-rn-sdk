@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  StatusBar,
-  ImageBackground,
-} from 'react-native';
+import { ActivityIndicator, StyleSheet, ImageBackground } from 'react-native';
 import LottieView from 'lottie-react-native';
 
 import mainBackground from '../../assets/main-bg.png';
@@ -27,11 +22,6 @@ const Loading = (props) => {
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
       {animationType()}
     </ImageBackground>
   );

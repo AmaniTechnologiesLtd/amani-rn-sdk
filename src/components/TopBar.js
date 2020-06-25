@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
-  StatusBar,
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
@@ -28,11 +27,6 @@ const TopBar = (props) => {
 
   const topbarContent = (
     <Fragment>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
       {onLeftButtonPressed && leftButtonIcon && (
         <TouchableOpacity
           style={[styles.topBarLeft, styles.topBarIcon]}
@@ -98,8 +92,8 @@ const styles = StyleSheet.create({
   },
   withBackground: {
     paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   topBarIcon: {
     width: width * 0.055,

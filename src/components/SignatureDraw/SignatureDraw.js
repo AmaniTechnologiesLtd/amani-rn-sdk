@@ -210,11 +210,7 @@ const SignatureDraw = (props) => {
         title={document.steps[currentStep].title}
       />
 
-      <Modal
-        transparent
-        statusBarTranslucent
-        animationType="none"
-        visible={showAnimation}>
+      <Modal transparent animationType="none" visible={showAnimation}>
         <LottieView
           style={[height < 600 ? { height: height * 0.78 } : {}]}
           source={animationSignature}

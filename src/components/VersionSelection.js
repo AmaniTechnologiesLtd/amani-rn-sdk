@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 25,
+    paddingTop: 10,
   },
   childContainer: {
     paddingHorizontal: 20,

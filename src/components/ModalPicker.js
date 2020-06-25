@@ -67,7 +67,6 @@ const ModalPicker = (props) => {
     <Fragment>
       <Modal
         transparent
-        statusBarTranslucent
         animationType={animation}
         visible={show}
         onRequestClose={closeModal}
