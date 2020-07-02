@@ -6,7 +6,6 @@ import {
   TextInput,
   Dimensions,
   StyleSheet,
-  ImageBackground,
   Linking,
   BackHandler,
   TouchableOpacity,
@@ -17,7 +16,6 @@ import TopBar from './TopBar';
 import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
 import Button from './Button';
-import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import closeIcon from '../../assets/close-icon.png';
 
@@ -152,9 +150,7 @@ const AppliedScreen = (props) => {
   // and who clicked continue on previous screen
   if (showTakePhoto) {
     return (
-      <ImageBackground
-        source={mainBackground}
-        style={[styles.container, { paddingTop: 0 }]}>
+      <View style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
           {(function () {
             if (customer.status === 'Temporarily Approved') {
@@ -291,14 +287,14 @@ const AppliedScreen = (props) => {
             )}
           </View>
         </View>
-      </ImageBackground>
+      </View>
     );
   }
 
   // This will be shown as a success screen with a continue button
   // in normal flow
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
         <TopBar
           onLeftButtonPressed={goBack}
@@ -318,20 +314,20 @@ const AppliedScreen = (props) => {
             Tüm dijital adımları başarıyla tamamladın.
           </Text>
           <Text style={styles.message}>
-            Yüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içinde
-            artıracağız.
+            We will check the documents you uploaded and increase your limit in
+            48 hours.
           </Text>
           <Text style={styles.message}>Fiziksel sözleşme ile devam et.</Text>
         </View>
         <View style={{ marginBottom: 10 }}>
           <Button
             onPress={() => setShowTakePhoto(true)}
-            text="DEVAM ET"
+            text="CONTINUE"
             style={styles.buttonStyle}
           />
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -341,6 +337,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
+    backgroundColor: '#263B5B',
   },
   messageContainer: {
     flex: 1,

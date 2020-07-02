@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  ImageBackground,
   TouchableOpacity,
   BackHandler,
   Modal,
@@ -14,10 +13,8 @@ import {
 
 import { strNormalize } from '../helpers';
 import TopBar from './TopBar';
-import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import searchIcon from '../../assets/search-icon.png';
-import itemBackground from '../../assets/select-bg.png';
 import forwardArrrow from '../../assets/forward-arrow.png';
 
 const ModalPicker = (props) => {
@@ -71,7 +68,7 @@ const ModalPicker = (props) => {
         visible={show}
         onRequestClose={closeModal}
         onDismiss={closeModal}>
-        <ImageBackground source={mainBackground} style={styles.container}>
+        <View style={styles.container}>
           <TopBar
             onLeftButtonPressed={closeModal}
             leftButtonIcon={backArrow}
@@ -86,7 +83,7 @@ const ModalPicker = (props) => {
                 onChangeText={(value) =>
                   setFilter(strNormalize(value.toLowerCase('tr')))
                 }
-                placeholder="Ara"
+                placeholder="Search"
                 placeholderTextColor="#CAE0F5"
               />
               <Image
@@ -115,7 +112,7 @@ const ModalPicker = (props) => {
                 );
               })}
           </ScrollView>
-        </ImageBackground>
+        </View>
       </Modal>
 
       {selectView(disabled, selected, showModal)}
@@ -141,11 +138,12 @@ ModalPicker.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#13283d',
   },
   topbar: {
     paddingVertical: 20,
     paddingHorizontal: 20,
-    backgroundColor: 'red',
+    backgroundColor: '#13283d',
     marginBottom: 10,
   },
   item: {

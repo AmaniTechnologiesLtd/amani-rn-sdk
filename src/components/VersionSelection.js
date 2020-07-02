@@ -7,12 +7,10 @@ import {
   BackHandler,
   Dimensions,
   StyleSheet,
-  ImageBackground,
 } from 'react-native';
 import Button from './Button';
 import blueBackground from '../../assets/btn-blue.png';
 import darkTransparentBackground from '../../assets/btn-dark-transparent.png';
-import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import forwardArrow from '../../assets/forward-arrow.png';
 import TopBar from './TopBar';
@@ -27,7 +25,6 @@ const VersionSelection = (props) => {
     closeVersionSelected,
     menuMode,
     goBack,
-    onSkipDocument,
     onActivity,
   } = props;
 
@@ -48,38 +45,8 @@ const VersionSelection = (props) => {
     closeVersionSelected();
   };
 
-  const showAddressDescription = () => {
-    return (
-      <View
-        style={{ marginVertical: 10, borderRadius: 20, overflow: 'hidden' }}>
-        <ImageBackground
-          source={blueBackground}
-          style={{ padding: 15, paddingBottom: 5 }}>
-          <Text style={styles.childContainerDescription}>
-            Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir
-            <Text style={{ fontWeight: 'bold', color: 'white' }}>
-              {' '}
-              fatura
-            </Text>{' '}
-            ya da{' '}
-            <Text style={{ fontWeight: 'bold', color: 'white' }}>
-              ikametgah belgeni{' '}
-            </Text>
-            yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf)
-            olarak yükleyebilirsin.
-          </Text>
-          <Text style={styles.childContainerDescription}>
-            Eğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da
-            hemen e-devletten ikametgah belgeni pdf olarak indirip
-            yükleyebilirsin.'
-          </Text>
-        </ImageBackground>
-      </View>
-    );
-  };
-
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
@@ -92,13 +59,9 @@ const VersionSelection = (props) => {
         onTouchStart={() => onActivity('TouchEvent')}>
         <Text style={styles.childContainerTitle}>{document.versionTitle}</Text>
 
-        {['UB', 'IB'].includes(document.id) ? (
-          showAddressDescription()
-        ) : (
-          <Text style={styles.childContainerDescription}>
-            {document.versionDescription}
-          </Text>
-        )}
+        <Text style={styles.childContainerDescription}>
+          {document.versionDescription}
+        </Text>
 
         {Object.keys(document.versions).map((group, groupKey) => {
           return (
@@ -145,19 +108,8 @@ const VersionSelection = (props) => {
             </View>
           );
         })}
-        {document.options.includes('skipDocument') && (
-          <Button
-            text="Şimdilik Atla"
-            noBackground
-            onPress={() => {
-              onActivity('Adres_Atla');
-              onSkipDocument();
-            }}
-            style={{ marginBottom: 20 }}
-          />
-        )}
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -166,6 +118,7 @@ export default VersionSelection;
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
+    backgroundColor: '#263B5B',
   },
   container: {
     flex: 1,

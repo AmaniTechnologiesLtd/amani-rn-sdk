@@ -1,22 +1,22 @@
 export const backdropColor = 'rgba(38, 59, 91, 0.8)';
 
 export const errorMessages = {
-  1001: 'Fotoğrafta yüz bulunamadı',
-  1002: 'Fotoğrafta bulanıklık tespit edildi.\n\nLütfen daha iyi aydınlatılmış bir ortamda tekrar dene',
-  1003: 'Fotoğrafta parlama tespit edildi.\n\nLütfen belgenin üstüne doğrudan ışık gelmemesine dikkat et',
-  1004: 'Belgeyi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar dene',
-  1005: 'Bu belge tipi desteklenmiyor.\n\nLütfen tekrar dene',
-  1008: 'Bu kimlik sana ait değil.\n\nLütfen kendine ait bir kimlik kullan',
-  1009: '*** Bu hata kodu checker mesajı için ayrıldı ***',
-  2001: 'Selfie kimlik belgendeki fotoğrafla uyuşmuyor.\n\nLütfen tekrar dene',
-  2002: 'Lütfen gerçek bir selfie çek',
-  2003: 'Lütfen selfie çekerken doğrudan kameraya bak',
-  3001: 'Belge geçerli değil.\n\nLütfen tekrar dene',
-  3002: 'Kimliğin süresi geçmiş.\n\nBu belge ile işlem yapılamaz',
-  4001: 'Belgenin süresi geçmiş.\n\nLütfen başka bir belge dene',
-  4002: 'Belgedeki isim kimlikteki isimle uyuşmuyor.\n\nLütfen tekrar dene',
-  5001: 'Attığın imza kimliğindeki imza ile uyuşmuyor.\n\nLütfen tekrar dene',
-  6001: 'Sözleşmedeki imzan kimliğindeki imza ile uyuşmuyor.\n\nLütfen tekrar dene',
+  1001: "Couldn't find a face on the photo",
+  1002: 'Blue is detected on the photo.\n\nPlease try again on a well lit environment',
+  1003: 'Glare is detected on the photo.\n\nPlease check the ligting conditions while taking photo',
+  1004: "We couldn't crop the document.\n\nPlease try again on a less colored surface",
+  1005: 'This document is not supported.\n\nPlease try again',
+  1008: 'This document does not belong to your profile.\n\nPlease a document that belongs to you',
+  1009: '*** This is for checker message from studio will not shown to user ***',
+  2001: 'Your Selfie not matching with your identification document.\n\nPlease try again',
+  2002: 'This selfie is not live',
+  2003: 'Please look at the kamera while taking selfie',
+  3001: 'This document is not live.\n\nPlease try again',
+  3002: 'This document is expired.\n\nYou can not use this document',
+  4001: 'This document is expired.\n\nPlease try again with another document',
+  4002: 'The name on the document is not matching with the ID.\n\nPlease try again',
+  5001: 'The signature is not matching with the one in your ID.\n\nPlease try again',
+  6001: 'The signature in your contract is not matching with the one in your ID.\n\nPlease try again',
 };
 
 export const eventDescriptions = {

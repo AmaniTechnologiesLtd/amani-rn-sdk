@@ -5,13 +5,11 @@ import {
   Text,
   Dimensions,
   StyleSheet,
-  ImageBackground,
   TouchableOpacity,
 } from 'react-native';
 
 import { errorMessages } from '../constants';
 import Button from './Button';
-import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import failedIcon from '../../assets/failed-icon.png';
 import warningIcon from '../../assets/warning-icon.png';
@@ -84,7 +82,7 @@ const MessageScreen = (props) => {
   };
 
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       {popup ? (
         <View
           style={styles.messagePopup}
@@ -97,7 +95,7 @@ const MessageScreen = (props) => {
       ) : (
         messageContent()
       )}
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -106,7 +104,7 @@ export default MessageScreen;
 MessageScreen.defaultProps = {
   title: null,
   type: 'success',
-  buttonText: 'DEVAM',
+  buttonText: 'CONTINUE',
   popup: false,
 };
 
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#263B5B',
     padding: 20,
   },
   messagePopup: {

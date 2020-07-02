@@ -4,12 +4,9 @@ import {
   Text,
   StyleSheet,
   Image,
-  ImageBackground,
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-
-import topbarBackground from '../../assets/topbar-bg.png';
 
 const { width, height } = Dimensions.get('window');
 
@@ -68,11 +65,9 @@ const TopBar = (props) => {
   }
 
   return (
-    <ImageBackground
-      source={topbarBackground}
-      style={[styles.container, styles.withBackground, style]}>
+    <View style={[styles.container, styles.withBackground, style]}>
       {topbarContent}
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -94,6 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 20,
+    backgroundColor: '#13283d',
   },
   topBarIcon: {
     width: width * 0.055,

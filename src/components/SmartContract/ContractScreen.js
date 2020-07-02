@@ -19,7 +19,6 @@ import { WebView } from 'react-native-webview';
 // Local files
 import api from '../../services/api';
 import TopBar from '../TopBar';
-import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
 import checkboxEmpty from '../../../assets/checkbox_empty.png';
@@ -174,7 +173,7 @@ const ContractScreen = (props) => {
             { color: formData.job ? 'white' : '#CAE0F5' },
             formErrors && !formData.job ? styles.inputError : {},
           ]}>
-          {formData.job || 'Meslek'}
+          {formData.job || 'Occupation'}
         </Text>
       </View>
     </TouchableOpacity>
@@ -191,7 +190,7 @@ const ContractScreen = (props) => {
             { color: formData.city ? 'white' : '#CAE0F5' },
             formErrors && !formData.city ? styles.inputError : {},
           ]}>
-          {formData.city || 'İl'}
+          {formData.city || 'City'}
         </Text>
       </View>
     </TouchableOpacity>
@@ -210,7 +209,7 @@ const ContractScreen = (props) => {
             },
             formErrors && !formData.district ? styles.inputError : {},
           ]}>
-          {formData.district || 'İlçe'}
+          {formData.district || 'Province'}
         </Text>
       </View>
     </TouchableOpacity>
@@ -238,7 +237,7 @@ const ContractScreen = (props) => {
 
   if (!showContract) {
     return (
-      <ImageBackground source={mainBackground} style={styles.container}>
+      <View style={styles.container}>
         <TopBar
           onLeftButtonPressed={onContractDecline}
           leftButtonIcon={backArrow}
@@ -248,7 +247,7 @@ const ContractScreen = (props) => {
           style={styles.contactForm}
           onTouchStart={() => onActivity('TouchEvent')}>
           <Text style={styles.contactFormTitle}>
-            Sözleşmeni hazırlayabilmemiz için lütfen gerekli alanları doldur
+            Please fill the required fields for digital contract
           </Text>
 
           <View>
@@ -256,7 +255,7 @@ const ContractScreen = (props) => {
               <ModalPicker
                 selectView={selectJobView}
                 items={jobList}
-                title="Meslek Seç"
+                title="Select Occupation"
                 searchable={false}
                 onSelected={(val) => {
                   setFormData({
@@ -267,14 +266,14 @@ const ContractScreen = (props) => {
                 }}
               />
 
-              {formData.job === 'Diğer' && (
+              {formData.job === 'Other' && (
                 <TextInput
                   style={[
                     styles.contactFormInput,
                     { color: otherJob ? 'white' : '#CAE0F5', marginTop: 10 },
                   ]}
                   onChangeText={setOtherJob}
-                  placeholder="Mesleğinizi yazın"
+                  placeholder="Write your occupation"
                   placeholderTextColor={
                     formErrors && !otherJob ? '#FF5C65' : '#CAE0F5'
                   }
@@ -287,7 +286,7 @@ const ContractScreen = (props) => {
               <ModalPicker
                 selectView={selectCityView}
                 items={sortCities(cities)}
-                title="İl Seç"
+                title="Select City"
                 onSelected={(val) =>
                   setFormData({
                     ...formData,
@@ -302,7 +301,7 @@ const ContractScreen = (props) => {
               <ModalPicker
                 disabled={!formData.city}
                 selectView={selectProvinceView}
-                title="İlçe Seç"
+                title="Select Province"
                 items={
                   cities.find(
                     (city) => city.name === (formData.city || 'Adana'),
@@ -335,7 +334,7 @@ const ContractScreen = (props) => {
                     (Platform.OS === 'ios' ? 10 : 0);
                   setAddressHeight(textAreaHeight);
                 }}
-                placeholder="Açık Adres"
+                placeholder="Address"
                 placeholderTextColor={
                   formErrors && !formData.address ? '#FF5C65' : '#CAE0F5'
                 }
@@ -351,20 +350,20 @@ const ContractScreen = (props) => {
                 source={blueBackground}
                 style={styles.addresNoteBackground}>
                 <Text style={styles.addressNote}>
-                  Adres bilgisini yüklediğin belgeden aldık. Eksik veya yanlış
-                  kısımlar varsa tıklayıp düzenleyebilirsin.
+                  We populated your address from the utility bill. If wrong
+                  please enter your correct address.
                 </Text>
               </ImageBackground>
             )}
 
             <Button
               onPress={handleFormSubmit}
-              text="DEVAM"
+              text="CONTINUE"
               style={{ marginHorizontal: 20, marginBottom: 10 }}
             />
           </View>
         </ScrollView>
-      </ImageBackground>
+      </View>
     );
   }
 
@@ -404,14 +403,14 @@ const ContractScreen = (props) => {
               setIsContractApproved(!isContractApproved);
             }}>
             <Text style={styles.approveButtonText}>
-              Sözleşmeyi okudum, anladım ve doğruluğunu teyit ediyorum
+              I have read, understood and confirm the agreement
             </Text>
           </TouchableOpacity>
         </View>
         <Button
           onPress={() => setShowSignatureScreen(true)}
           disabled={!isContractApproved}
-          text="İMZALA"
+          text="SIGN"
         />
       </View>
     </View>
@@ -423,6 +422,7 @@ export default ContractScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#263B5B',
   },
   contactForm: {
     flex: 1,

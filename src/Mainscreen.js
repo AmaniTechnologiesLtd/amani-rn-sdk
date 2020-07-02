@@ -9,7 +9,6 @@ import {
   Image,
   BackHandler,
   Platform,
-  ImageBackground,
   Alert,
 } from 'react-native';
 
@@ -33,7 +32,6 @@ import { initialDocuments, documentsReducer } from './store/documents';
 import api from './services/api';
 import TopBar from './components/TopBar';
 import AppliedScreen from './components/AppliedScreen';
-import mainBackground from '../assets/main-bg.png';
 import backArrow from '../assets/back-arrow.png';
 import forwardArrowDark from '../assets/forward-arrow-dark.png';
 import stepWarning from '../assets/step-warning-icon.png';
@@ -194,7 +192,8 @@ const MainScreen = (props) => {
               }
             });
 
-            findIncompleteDocument(customerResponse.data);
+            // We don't want customer directly go to selection screen
+            // findIncompleteDocument(customerResponse.data);
           } catch (error) {
             handleError(error);
           }
@@ -379,7 +378,7 @@ const MainScreen = (props) => {
   };
 
   const handleError = (error) => {
-    let errorMessage = 'Lütfen daha sonra tekrar dene.';
+    let errorMessage = 'Please try again later.';
 
     // if (error.message) {
     //   errorMessage = error.message;
@@ -415,13 +414,13 @@ const MainScreen = (props) => {
         ...initialMessage,
         show: true,
         type: 'success',
-        header: 'Tebrikler!',
+        header: 'Congratulations!',
         title: messageDocument.successTitle,
         message: messageDocument.successDescription,
-        buttonText: 'DEVAM',
+        buttonText: 'CONTINUE',
         buttonClick: () => {
           sendEvent(messageDocument.events.success);
-          findIncompleteDocument(customer);
+          clearSelectedDocument();
         },
         popup: false,
       });
@@ -437,7 +436,7 @@ const MainScreen = (props) => {
         header: 'Dikkat!',
         title: selectedDocument.errorTitle,
         message: errors || selectedDocument.errorDescription,
-        buttonText: 'DEVAM',
+        buttonText: 'CONTINUE',
         buttonClick: () => {
           setFiles([]);
           setCorners([]);
@@ -460,17 +459,6 @@ const MainScreen = (props) => {
       return rule;
     });
     setCustomer({ ...customer, rules });
-  };
-
-  const skipDocument = () => {
-    const rules = customer.rules.map((rule) => {
-      if (rule.document_classes.includes(selectedDocument.id)) {
-        rule.status = 'SKIPPED';
-      }
-      return rule;
-    });
-    setCustomer({ ...customer, rules });
-    findIncompleteDocument(customer);
   };
 
   const clearSelectedDocument = () => {
@@ -623,9 +611,9 @@ const MainScreen = (props) => {
             ...initialMessage,
             show: true,
             type: 'error',
-            header: 'Belge Onaylanmadı',
+            header: 'Not Approved',
             title: error_message,
-            buttonText: 'DEVAM',
+            buttonText: 'CONTINUE',
             buttonClick: () => goToDocument(document),
             popup: true,
           });
@@ -674,12 +662,6 @@ const MainScreen = (props) => {
     }
 
     clearSelectedDocument();
-
-    // If not first time customer do not go to document automatically
-    // go to document selection screen
-    if (currentCustomer.status !== 'Created') {
-      return;
-    }
 
     const incompleteRules = currentCustomer.rules.filter((doc) =>
       ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
@@ -781,18 +763,7 @@ const MainScreen = (props) => {
         onCapture={(capture) => setFiles([...files, capture])}
         onManualCropCorners={(cropData) => setCorners([...corners, cropData])}
         onStepsFinished={setIsStepsFinished}
-        onClearDocument={() => {
-          // If customer directly go to ID validation (new customer)
-          // when pressed go back button exit to Ininal App
-          if (customer.status === 'Created') {
-            goBack();
-            return;
-          }
-
-          // Otherwise exit to main screen
-          clearSelectedDocument();
-        }}
-        onSkipDocument={skipDocument}
+        onClearDocument={clearSelectedDocument}
         onResetCapture={() => {
           setFiles([]);
         }}
@@ -820,16 +791,13 @@ const MainScreen = (props) => {
   sendEvent('Eksik_Adim_VIEW');
 
   return (
-    <ImageBackground
-      source={mainBackground}
-      style={styles.container}
-      onTouchStart={() => sendEvent('TouchEvent')}>
+    <View style={styles.container} onTouchStart={() => sendEvent('TouchEvent')}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
         noBackground
       />
-      <Text style={styles.containerHeaderText}>Eksik Adımları Tamamla</Text>
+      <Text style={styles.containerHeaderText}>Complete The Steps</Text>
       <View
         style={styles.modulesContainer}
         onTouchStart={() => sendEvent('TouchEvent')}>
@@ -849,7 +817,7 @@ const MainScreen = (props) => {
                     Alert.alert(
                       '',
                       'Bu adıma geçebilmek için önce üstteki adımları tamamlamalısın',
-                      [{ text: 'Devam' }],
+                      [{ text: 'Continue' }],
                       {
                         cancelable: true,
                       },
@@ -884,7 +852,7 @@ const MainScreen = (props) => {
         })}
       </View>
       <PoweredBy />
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -896,6 +864,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     paddingHorizontal: 20,
     paddingTop: 10,
+    backgroundColor: '#263B5B',
   },
   containerHeaderText: {
     color: 'white',

@@ -194,7 +194,7 @@ const SignatureDraw = (props) => {
         type="error"
         header="Dikkat!"
         title={notMatched}
-        buttonText="DEVAM"
+        buttonText="CONTINUE"
         onClick={() => setNotMatched(null)}
       />
     );

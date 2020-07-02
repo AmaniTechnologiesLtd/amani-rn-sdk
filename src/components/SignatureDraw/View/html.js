@@ -163,10 +163,10 @@ export const content = (script) =>
     </div>
     <div class="m-signature-pad--footer">
       <div class="m-signature-pad--footer-text-bg">
-        <p class="m-signature-pad--footer-text">Atacağın imza kimliğindeki imzaya benzemeli</p>
+        <p class="m-signature-pad--footer-text">Signature should match with the one on your ID</p>
       </div>
-      <button id="clear" type="button" class="button clear" data-action="clear">Temizle</button>
-      <button id="onayla" type="button" class="button save" data-action="save">ONAYLA</button>
+      <button id="clear" type="button" class="button clear" data-action="clear">Clear</button>
+      <button id="approve" type="button" class="button save" data-action="save">APPROVE</button>
     </div>
   </div>
 

@@ -39,7 +39,6 @@ const CaptureDocument = (props) => {
     onManualCropCorners,
     onStepsFinished,
     onClearDocument,
-    onSkipDocument,
     onActivity,
     onResetCapture,
     setSelectedDocumentVersion,
@@ -288,7 +287,7 @@ const CaptureDocument = (props) => {
       .catch(() => {
         setAutoCaptureError({
           code: 1000,
-          message: 'Teknik bir hata oldu. Lütfen tekrar dene.',
+          message: 'An error occured. Please try again later.',
         });
 
         setAutoCapturedImage(image);
@@ -414,7 +413,6 @@ const CaptureDocument = (props) => {
         versionGroup={setVersionGroup}
         groupIndex={setGroupIndex}
         closeVersionSelected={() => setShowVersionSelection(false)}
-        onSkipDocument={onSkipDocument}
         onActivity={onActivity}
       />
     );
@@ -573,7 +571,7 @@ const CaptureDocument = (props) => {
               <View style={{ flex: 1 }}>
                 {document.options.includes('fileUpload') && (
                   <Button
-                    text="PDF Yükle"
+                    text="Upload PDF"
                     onPress={pickAndTransformPdf}
                     style={styles.fileUpload}
                     backgroundStyle={styles.buttonBackground}
