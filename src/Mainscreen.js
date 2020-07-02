@@ -67,10 +67,10 @@ const MainScreen = (props) => {
   const initialMessage = {
     show: false,
     type: 'error',
-    header: 'Bir hata oluştu!',
+    header: 'An error occured!',
     title: null,
     message: null,
-    buttonText: 'TAMAM',
+    buttonText: 'CONTINUE',
     buttonClick: () =>
       setMessage({
         ...initialMessage,
@@ -91,30 +91,27 @@ const MainScreen = (props) => {
   // If camera and location permissions not granted show error screen
   useEffect(() => {
     if (!permissions.camera || !permissions.location) {
-      let title = !permissions.camera
-        ? 'Doğrulamaların çalışabilmesi için kamera izni vermen gerekiyor.\n\n'
-        : '';
-      title += !permissions.location
-        ? 'Doğrulamaların çalışabilmesi için konum izni vermen gerekiyor.'
-        : '';
+      let title = !permissions.camera ? 'We need camera permission.\n\n' : '';
+      title += !permissions.location ? 'We need location permission.' : '';
 
       setPermissionMessage({
         show: true,
         type: 'error',
-        header: 'Gerekli İzinler Eksik',
+        header: 'Missing Permissions',
         title: title,
         message: '',
-        buttonText: Platform.OS === 'android' ? 'İzin Ver' : 'Ayarlara Git',
+        buttonText:
+          Platform.OS === 'android' ? 'Give Permission' : 'Go to Settings',
         onClose: () => {
           if (onError) {
             onError({
               status: 'ERROR',
-              message: 'Kamera ve konum izni kullanılamıyor.',
+              message: 'Camera and location permissions are missing.',
             });
           }
           onExit({
             status: 'ERROR',
-            message: 'Kamera ve konum izni kullanılamıyor.',
+            message: 'Camera and location permissions are missing.',
           });
         },
         buttonClick: () => {
@@ -254,13 +251,13 @@ const MainScreen = (props) => {
 
   const handleSendDocumentsRequest = async () => {
     setIsStepsFinished(false);
-    await dispatch({
+    dispatch({
       type: 'CHANGE_STATUS',
       document_id: selectedDocument.id,
       status: 'PROCESSING',
     });
 
-    await dispatch({
+    dispatch({
       type: 'INCREMENT_ATTEMPT',
       document_id: selectedDocument.id,
     });
@@ -391,7 +388,7 @@ const MainScreen = (props) => {
       show: true,
       header: 'Bir hata oluştu!',
       title: errorMessage,
-      buttonText: 'GERİ DÖN',
+      buttonText: 'GO BACK',
       buttonClick: () => {
         if (onError) {
           onError({
