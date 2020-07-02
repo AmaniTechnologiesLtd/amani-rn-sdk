@@ -8,14 +8,14 @@ export const initialDocuments = [
       {
         title: 'Front Side',
         description:
-          'Take the photo in well lit place.\nMake sure that your document fits in the area correctly.',
+          'Take the photo in well a lit place.\nMake sure that your document fits in the area correctly.',
         confirmationTitle: 'Front Side',
         confirmationDescription: 'Make sure that your document is readable.',
       },
       {
         title: 'Back Side',
         description:
-          'Take the photo in well lit place.\nMake sure that your document fits in the area correctly.',
+          'Take the photo in well a lit place.\nMake sure that your document fits in the area correctly.',
         confirmationTitle: 'Back Side',
         confirmationDescription: 'Make sure that your document is readable.',
       },
@@ -67,7 +67,7 @@ export const initialDocuments = [
       {
         title: '',
         description:
-          'Take the photo in well lit place.\nMake sure that your document fits in the area correctly.',
+          'Take the photo in a well lit place.\nMake sure that your document fits in the area correctly.',
       },
     ],
     options: ['takePicture', 'async'],
@@ -216,11 +216,11 @@ export const initialDocuments = [
     status: 'NOT_UPLOADED',
     steps: [
       {
-        title: 'First Signature',
+        title: 'Signature 1 / 2',
         description: '',
       },
       {
-        title: 'Second Signature',
+        title: 'Signature 2 / 2',
         description: '',
       },
     ],

@@ -91,8 +91,8 @@ const MainScreen = (props) => {
   // If camera and location permissions not granted show error screen
   useEffect(() => {
     if (!permissions.camera || !permissions.location) {
-      let title = !permissions.camera ? 'We need camera permission.\n\n' : '';
-      title += !permissions.location ? 'We need location permission.' : '';
+      let title = !permissions.camera ? 'Please give camera access.\n\n' : '';
+      title += !permissions.location ? 'Please give location access.' : '';
 
       setPermissionMessage({
         show: true,
@@ -101,7 +101,7 @@ const MainScreen = (props) => {
         title: title,
         message: '',
         buttonText:
-          Platform.OS === 'android' ? 'Give Permission' : 'Go to Settings',
+          Platform.OS === 'android' ? 'Give Permissions' : 'Go to Settings',
         onClose: () => {
           if (onError) {
             onError({

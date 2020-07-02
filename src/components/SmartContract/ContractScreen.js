@@ -147,8 +147,8 @@ const ContractScreen = (props) => {
       if (!data[key]) {
         Alert.alert(
           '',
-          'Lütfen devam etmeden önce gerekli alanları doldur.',
-          [{ text: 'Anladım' }],
+          'Please fill required fields before next step',
+          [{ text: 'Ok' }],
           { cancelable: false },
         );
         return;
