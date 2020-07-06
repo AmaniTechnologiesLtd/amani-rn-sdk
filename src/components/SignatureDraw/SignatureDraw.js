@@ -139,7 +139,7 @@ const SignatureDraw = (props) => {
         setSignature([]);
         Alert.alert(
           '',
-          'Bir hata oluştu.',
+          'An error occured.',
           [
             {
               text: 'Tamam',

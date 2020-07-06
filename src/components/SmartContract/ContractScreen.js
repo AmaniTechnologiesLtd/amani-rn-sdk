@@ -59,13 +59,11 @@ const ContractScreen = (props) => {
   const [formErrors, setFormErrors] = useState(false);
 
   const jobList = [
-    { name: 'Öğrenci' },
-    { name: 'Kamu Çalışanı' },
-    { name: 'Özel Sektör Çalışanı' },
-    { name: 'Serbest Meslek' },
-    { name: 'Ev Hanımı' },
-    { name: 'İşsiz' },
-    { name: 'Diğer' },
+    { name: 'Student' },
+    { name: 'Public Sector Employee' },
+    { name: 'Private Sector Employee' },
+    { name: 'Self Employed' },
+    { name: 'Other' },
   ];
 
   const sortCities = (toBeSorted) => {
@@ -97,10 +95,12 @@ const ContractScreen = (props) => {
       BackHandler.removeEventListener('hardwareBackPressContractScreen');
   }, []);
 
-  // Wait for address document to be processed on the server
+  // Wait for address document to be processed on the server for auto fill
   useEffect(() => {
-    if (addressDocument.status !== 'PROCESSING') {
+    if (addressDocument && addressDocument.status !== 'PROCESSING') {
       getCustomerData();
+    } else {
+      setIsLoading(false);
     }
   }, [addressDocument]);
 
@@ -283,42 +283,39 @@ const ContractScreen = (props) => {
             </View>
 
             <View style={styles.contactFormView}>
-              <ModalPicker
-                selectView={selectCityView}
-                items={sortCities(cities)}
-                title="Select City"
-                onSelected={(val) =>
-                  setFormData({
-                    ...formData,
-                    city: (val && val.name) || null,
-                    district: null,
-                  })
+              <TextInput
+                style={[
+                  styles.contactFormInput,
+                  { color: formData.city ? 'white' : '#CAE0F5', marginTop: 10 },
+                ]}
+                onChangeText={(value) =>
+                  setFormData({ ...formData, city: value })
                 }
+                placeholder="City"
+                placeholderTextColor={
+                  formErrors && !formData.city ? '#FF5C65' : '#CAE0F5'
+                }
+                value={formData.city}
               />
             </View>
 
             <View style={styles.contactFormView}>
-              <ModalPicker
-                disabled={!formData.city}
-                selectView={selectProvinceView}
-                title="Select Province"
-                items={
-                  cities.find(
-                    (city) => city.name === (formData.city || 'Adana'),
-                  )
-                    ? sortProvinces(
-                        cities.find(
-                          (city) => city.name === (formData.city || 'Adana'),
-                        ).district,
-                      )
-                    : []
+              <TextInput
+                style={[
+                  styles.contactFormInput,
+                  {
+                    color: formData.district ? 'white' : '#CAE0F5',
+                    marginTop: 10,
+                  },
+                ]}
+                onChangeText={(value) =>
+                  setFormData({ ...formData, district: value })
                 }
-                onSelected={(val) =>
-                  setFormData({
-                    ...formData,
-                    district: (val && val.name) || null,
-                  })
+                placeholder="District"
+                placeholderTextColor={
+                  formErrors && !formData.district ? '#FF5C65' : '#CAE0F5'
                 }
+                value={formData.district}
               />
             </View>
 

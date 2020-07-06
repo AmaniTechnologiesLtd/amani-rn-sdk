@@ -386,7 +386,7 @@ const MainScreen = (props) => {
     setMessage({
       ...initialMessage,
       show: true,
-      header: 'Bir hata oluştu!',
+      header: 'An error occured!',
       title: errorMessage,
       buttonText: 'GO BACK',
       buttonClick: () => {

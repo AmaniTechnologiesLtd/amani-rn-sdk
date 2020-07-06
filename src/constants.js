@@ -2,7 +2,7 @@ export const backdropColor = 'rgba(38, 59, 91, 0.8)';
 
 export const errorMessages = {
   1001: "Couldn't find a face on the photo",
-  1002: 'Blue is detected on the photo.\n\nPlease try again on a well lit environment',
+  1002: 'Blur is detected on the photo.\n\nPlease try again on a well lit environment',
   1003: 'Glare is detected on the photo.\n\nPlease check the ligting conditions while taking photo',
   1004: "We couldn't crop the document.\n\nPlease try again on a less colored surface",
   1005: 'This document is not supported.\n\nPlease try again',
