@@ -647,35 +647,35 @@ const MainScreen = (props) => {
     }
   };
 
-  const findIncompleteDocument = (currentCustomer) => {
-    // If last step physical contract is done return to main application
-    if (
-      documents.every((document) =>
-        ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
-      )
-    ) {
-      goBack();
-      return;
-    }
+  // const findIncompleteDocument = (currentCustomer) => {
+  //   // If last step physical contract is done return to main application
+  //   if (
+  //     documents.every((document) =>
+  //       ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
+  //     )
+  //   ) {
+  //     goBack();
+  //     return;
+  //   }
 
-    clearSelectedDocument();
+  //   clearSelectedDocument();
 
-    const incompleteRules = currentCustomer.rules.filter((doc) =>
-      ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
-        doc.status,
-      ),
-    );
+  //   const incompleteRules = currentCustomer.rules.filter((doc) =>
+  //     ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
+  //       doc.status,
+  //     ),
+  //   );
 
-    if (incompleteRules.length) {
-      const startDoc = documents.find((doc) =>
-        incompleteRules[0].document_classes.includes(doc.id),
-      );
+  //   if (incompleteRules.length) {
+  //     const startDoc = documents.find((doc) =>
+  //       incompleteRules[0].document_classes.includes(doc.id),
+  //     );
 
-      if (startDoc) {
-        selectDocument(startDoc);
-      }
-    }
-  };
+  //     if (startDoc) {
+  //       selectDocument(startDoc);
+  //     }
+  //   }
+  // };
 
   const sendEvent = (event, value = '') => {
     if (onActivity && event && eventDescriptions[event]) {

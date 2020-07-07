@@ -28,8 +28,9 @@ import Loading from '../Loading';
 import ModalPicker from '../ModalPicker';
 import { content } from './View/html';
 import SignatureDraw from '../SignatureDraw/SignatureDraw';
-import cities from '../../store/cities.json';
-import { trCompare, capitalizeFirstLetters } from '../../helpers';
+// import cities from '../../store/cities.json';
+// import { trCompare, capitalizeFirstLetters } from '../../helpers';
+import { capitalizeFirstLetters } from '../../helpers';
 const { height } = Dimensions.get('window');
 
 const ContractScreen = (props) => {
@@ -66,25 +67,25 @@ const ContractScreen = (props) => {
     { name: 'Other' },
   ];
 
-  const sortCities = (toBeSorted) => {
-    return toBeSorted.sort((a, b) => {
-      const topCities = ['İstanbul', 'Ankara', 'İzmir'];
+  // const sortCities = (toBeSorted) => {
+  //   return toBeSorted.sort((a, b) => {
+  //     const topCities = ['İstanbul', 'Ankara', 'İzmir'];
 
-      if (topCities.includes(a.name) && topCities.includes(b.name)) {
-        return topCities.indexOf(a.name) - topCities.indexOf(b.name);
-      } else if (topCities.includes(a.name)) {
-        return -1;
-      } else if (topCities.includes(b.name)) {
-        return 1;
-      } else {
-        return trCompare(a.name, b.name);
-      }
-    });
-  };
+  //     if (topCities.includes(a.name) && topCities.includes(b.name)) {
+  //       return topCities.indexOf(a.name) - topCities.indexOf(b.name);
+  //     } else if (topCities.includes(a.name)) {
+  //       return -1;
+  //     } else if (topCities.includes(b.name)) {
+  //       return 1;
+  //     } else {
+  //       return trCompare(a.name, b.name);
+  //     }
+  //   });
+  // };
 
-  const sortProvinces = (provinces) => {
-    return provinces.sort((a, b) => trCompare(a.name, b.name));
-  };
+  // const sortProvinces = (provinces) => {
+  //   return provinces.sort((a, b) => trCompare(a.name, b.name));
+  // };
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
@@ -179,41 +180,41 @@ const ContractScreen = (props) => {
     </TouchableOpacity>
   );
 
-  const selectCityView = (disabled, selected, showModal) => (
-    <TouchableOpacity
-      disabled={disabled}
-      onPress={showModal}
-      style={{ width: '100%' }}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            { color: formData.city ? 'white' : '#CAE0F5' },
-            formErrors && !formData.city ? styles.inputError : {},
-          ]}>
-          {formData.city || 'City'}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // const selectCityView = (disabled, selected, showModal) => (
+  //   <TouchableOpacity
+  //     disabled={disabled}
+  //     onPress={showModal}
+  //     style={{ width: '100%' }}>
+  //     <View style={styles.contactFormInput}>
+  //       <Text
+  //         style={[
+  //           { color: formData.city ? 'white' : '#CAE0F5' },
+  //           formErrors && !formData.city ? styles.inputError : {},
+  //         ]}>
+  //         {formData.city || 'City'}
+  //       </Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
-  const selectProvinceView = (disabled, selected, showModal) => (
-    <TouchableOpacity
-      style={{ width: '100%' }}
-      disabled={disabled}
-      onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            {
-              color: formData.district ? 'white' : '#CAE0F5',
-            },
-            formErrors && !formData.district ? styles.inputError : {},
-          ]}>
-          {formData.district || 'Province'}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // const selectProvinceView = (disabled, selected, showModal) => (
+  //   <TouchableOpacity
+  //     style={{ width: '100%' }}
+  //     disabled={disabled}
+  //     onPress={showModal}>
+  //     <View style={styles.contactFormInput}>
+  //       <Text
+  //         style={[
+  //           {
+  //             color: formData.district ? 'white' : '#CAE0F5',
+  //           },
+  //           formErrors && !formData.district ? styles.inputError : {},
+  //         ]}>
+  //         {formData.district || 'Province'}
+  //       </Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
   if (isLoading) {
     return <Loading />;

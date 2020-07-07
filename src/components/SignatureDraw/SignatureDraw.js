@@ -102,7 +102,7 @@ const SignatureDraw = (props) => {
       .then(async (res) => {
         if (
           res.data.status !== 'OK' &&
-          document.attempt <= document.maxAttempt
+          document.attempt <= document.maxAttempt * 2
         ) {
           setNotMatched(errorMessages[res.data.errors[0].error_code]);
           setCurrentStep(0);

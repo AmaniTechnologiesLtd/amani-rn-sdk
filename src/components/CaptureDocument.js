@@ -274,7 +274,7 @@ const CaptureDocument = (props) => {
         }
 
         if (
-          trialCount >= document.maxAttempt ||
+          trialCount >= document.maxAttempt * 2 ||
           (currentStep === document.steps.length - 1 &&
             document.attempt >= document.maxAttempt)
         ) {
