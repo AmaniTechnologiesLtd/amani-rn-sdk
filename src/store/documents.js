@@ -70,6 +70,8 @@ export const initialDocuments = [
           'Take the photo in a well lit place.\nMake sure that your document fits in the area correctly.',
       },
     ],
+    attempt: 1,
+    maxAttempt: 1,
     options: ['takePicture', 'async'],
     type: 'image',
     captureVideo: false,

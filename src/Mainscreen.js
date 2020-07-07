@@ -706,50 +706,61 @@ const MainScreen = (props) => {
     );
   }
 
-  //If contract is already uploaded show message screen and return to main app
+  // If every document is already uploaded show message screen and return to main app
   if (
     documents.every((document) =>
       ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
     )
   ) {
-    const contract = documents.find((doc) => doc.id === 'CO');
-    selectDocument(contract);
-    showSuccessMessage();
+    setMessage({
+      ...initialMessage,
+      show: true,
+      type: 'success',
+      header: 'Congratulations!',
+      title: 'You have uploaded all the documents.',
+      message: 'We will process your documents and contact you if necessary',
+      buttonText: 'CONTINUE',
+      buttonClick: () => {
+        goBack();
+      },
+      popup: false,
+    });
   }
 
+  // Pysical contract functions are diabled for demo
   // All documents approved or pending review except physical contract
   // show applied screen and upload physical contract if needed
-  if (
-    documents
-      .filter((document) => document.id !== 'CO')
-      .every((document) =>
-        ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
-      ) &&
-    selectedDocument === null
-  ) {
-    const contract = documents.find((doc) => doc.id === 'CO');
+  // if (
+  //   documents
+  //     .filter((document) => document.id !== 'CO')
+  //     .every((document) =>
+  //       ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
+  //     ) &&
+  //   selectedDocument === null
+  // ) {
+  //   const contract = documents.find((doc) => doc.id === 'CO');
 
-    // If document is not rejected show applied screen
-    // If rejected first show main screen when clicked show applied screen
-    if (contract.status !== 'REJECTED' || showAppliedScreen) {
-      return (
-        <AppliedScreen
-          customer={customer}
-          goBack={() => {
-            if (contract.status === 'REJECTED') {
-              setShowAppliedScreen(false);
-            } else {
-              goBack();
-            }
-          }}
-          takePhoto={() => {
-            goToDocument(contract);
-          }}
-          onActivity={sendEvent}
-        />
-      );
-    }
-  }
+  //   // If document is not rejected show applied screen
+  //   // If rejected first show main screen when clicked show applied screen
+  //   if (contract.status !== 'REJECTED' || showAppliedScreen) {
+  //     return (
+  //       <AppliedScreen
+  //         customer={customer}
+  //         goBack={() => {
+  //           if (contract.status === 'REJECTED') {
+  //             setShowAppliedScreen(false);
+  //           } else {
+  //             goBack();
+  //           }
+  //         }}
+  //         takePhoto={() => {
+  //           goToDocument(contract);
+  //         }}
+  //         onActivity={sendEvent}
+  //       />
+  //     );
+  //   }
+  // }
 
   if (selectedDocument) {
     return (
