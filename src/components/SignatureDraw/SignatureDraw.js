@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  SafeAreaView,
   Alert,
   StyleSheet,
   BackHandler,
@@ -219,8 +220,13 @@ const SignatureDraw = (props) => {
           onAnimationFinish={() => setShowAnimation(false)}
         />
       </Modal>
-
-      <SignatureScreen onOK={handleSignature} onEmpty={handleEmptySignature} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <SignatureScreen
+          onOK={handleSignature}
+          onEmpty={handleEmptySignature}
+        />
+      </SafeAreaView>
+      <SafeAreaView style={{ flex: 0, backgroundColor: '#263B5B' }} />
     </View>
   );
 };

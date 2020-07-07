@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topbar: {
-    paddingVertical: 20,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: 'red',
     marginBottom: 10,

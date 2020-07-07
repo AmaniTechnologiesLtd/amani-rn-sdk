@@ -83,7 +83,7 @@ const VersionSelection = (props) => {
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
-        style={{ paddingHorizontal: 20 }}
+        style={{ marginHorizontal: 20, marginBottom: 10 }}
         noBackground
       />
 
