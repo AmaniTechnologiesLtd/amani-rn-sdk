@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#13283d',
   },
   topbar: {
-    paddingVertical: 20,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: '#13283d',
     marginBottom: 10,

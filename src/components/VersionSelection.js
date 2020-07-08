@@ -50,7 +50,7 @@ const VersionSelection = (props) => {
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
-        style={{ paddingHorizontal: 20 }}
+        style={{ marginHorizontal: 20, marginBottom: 10 }}
         noBackground
       />
 
@@ -116,13 +116,10 @@ const VersionSelection = (props) => {
 export default VersionSelection;
 
 const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-    backgroundColor: '#263B5B',
-  },
   container: {
     flex: 1,
     paddingTop: 10,
+    backgroundColor: '#263B5B',
   },
   childContainer: {
     paddingHorizontal: 20,

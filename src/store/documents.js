@@ -30,7 +30,7 @@ export const initialDocuments = [
     versions: {
       '': [
         {
-          title: 'ID Card',
+          title: 'Turkish ID (New)',
           captureTopBar: 'Upload Your ID',
           confirmationTopBar: 'Check Your ID',
           aspectRatio: 0.63,
@@ -38,6 +38,26 @@ export const initialDocuments = [
           autoCrop: true,
           autoCapture: true,
           eventName: 'IDSelection_YeniTC',
+        },
+        {
+          title: 'Turkish ID (Old)',
+          captureTopBar: 'Upload Your ID',
+          confirmationTopBar: 'Check Your ID',
+          aspectRatio: 1.2,
+          crop: false,
+          autoCrop: true,
+          autoCapture: true,
+          eventName: 'IDSelection_EskiTC',
+        },
+        {
+          title: 'Driving License',
+          captureTopBar: 'Upload Your Driving License',
+          confirmationTopBar: 'Check Your Driving License',
+          aspectRatio: 0.63,
+          crop: false,
+          autoCrop: true,
+          autoCapture: true,
+          eventName: 'IDSelection_YeniE',
         },
       ],
     },

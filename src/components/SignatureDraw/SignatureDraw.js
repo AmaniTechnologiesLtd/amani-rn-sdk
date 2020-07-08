@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  SafeAreaView,
   Alert,
   StyleSheet,
   BackHandler,
@@ -102,7 +103,7 @@ const SignatureDraw = (props) => {
       .then(async (res) => {
         if (
           res.data.status !== 'OK' &&
-          document.attempt <= document.maxAttempt * 2
+          document.attempt <= document.maxAttempt
         ) {
           setNotMatched(errorMessages[res.data.errors[0].error_code]);
           setCurrentStep(0);
@@ -220,7 +221,13 @@ const SignatureDraw = (props) => {
         />
       </Modal>
 
-      <SignatureScreen onOK={handleSignature} onEmpty={handleEmptySignature} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <SignatureScreen
+          onOK={handleSignature}
+          onEmpty={handleEmptySignature}
+        />
+      </SafeAreaView>
+      <SafeAreaView style={{ flex: 0, backgroundColor: '#263B5B' }} />
     </View>
   );
 };
