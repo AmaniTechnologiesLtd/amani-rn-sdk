@@ -70,9 +70,9 @@ const TopBar = (props) => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, styles.withBackground, style]}>
-      {topbarContent}
-    </SafeAreaView>
+    <View style={[styles.container, styles.withBackground, style]}>
+      <SafeAreaView style={styles.container}>{topbarContent}</SafeAreaView>
+    </View>
   );
 };
 
@@ -87,12 +87,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    marginTop: 20,
     width: '100%',
   },
   withBackground: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    marginTop: 0,
+    paddingTop: 10,
+    paddingBottom: 15,
     backgroundColor: '#13283d',
   },
   topBarIcon: {
