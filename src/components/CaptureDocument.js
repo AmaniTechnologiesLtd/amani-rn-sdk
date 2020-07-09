@@ -274,11 +274,11 @@ const CaptureDocument = (props) => {
         }
 
         if (
-          trialCount >= document.maxAttempt ||
+          trialCount >= document.maxAttempt * 2 ||
           (currentStep === document.steps.length - 1 &&
-            document.attempt >= document.maxAttempt)
+            document.attempt >= document.maxAttempt * 2)
         ) {
-          onCapture(res.data.image);
+          onCapture(document.id === 'SE' ? image : res.data.image);
           calculateNextStep();
         } else {
           setAutoCapturedImage(res.data.image);
