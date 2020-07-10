@@ -30,7 +30,7 @@ export const initialDocuments = [
     versions: {
       '': [
         {
-          title: 'Turkish ID (New)',
+          title: 'Upload Your ID',
           captureTopBar: 'Upload Your ID',
           confirmationTopBar: 'Check Your ID',
           aspectRatio: 0.63,
@@ -38,26 +38,6 @@ export const initialDocuments = [
           autoCrop: true,
           autoCapture: true,
           eventName: 'IDSelection_YeniTC',
-        },
-        {
-          title: 'Turkish ID (Old)',
-          captureTopBar: 'Upload Your ID',
-          confirmationTopBar: 'Check Your ID',
-          aspectRatio: 1.2,
-          crop: false,
-          autoCrop: true,
-          autoCapture: true,
-          eventName: 'IDSelection_EskiTC',
-        },
-        {
-          title: 'Driving License',
-          captureTopBar: 'Upload Your Driving License',
-          confirmationTopBar: 'Check Your Driving License',
-          aspectRatio: 0.63,
-          crop: false,
-          autoCrop: true,
-          autoCapture: true,
-          eventName: 'IDSelection_YeniE',
         },
       ],
     },
@@ -81,7 +61,7 @@ export const initialDocuments = [
   },
   {
     id: 'PA',
-    title: 'Upload Your Pasaport',
+    title: 'Upload Your Pasaport / Visa',
     status: 'NOT_UPLOADED',
     steps: [
       {
@@ -102,8 +82,8 @@ export const initialDocuments = [
       '': [
         {
           title: 'Pasaport',
-          captureTopBar: 'Upload Your Passport',
-          confirmationTopBar: 'Check Your Passport',
+          captureTopBar: 'Upload Your Passport / Visa',
+          confirmationTopBar: 'Check Your Passport / Visa',
           aspectRatio: 0.7042,
           crop: true,
           autoCrop: false,
@@ -113,21 +93,21 @@ export const initialDocuments = [
       ],
     },
     messages: {
-      NOT_UPLOADED: 'Upload Your Passport',
-      PENDING_REVIEW: 'Your Passport is pending verification',
-      PROCESSING: 'Processing Your Passport...',
-      APPROVED: 'Your Passport is Approved',
-      REJECTED: `Your Passport is Rejected\nPlease try again`,
-      AUTOMATICALLY_REJECTED: `Your Passport is Rejected\nPlease try again`,
+      NOT_UPLOADED: 'Upload Your Passport / Visa',
+      PENDING_REVIEW: 'Your Passport / Visa is pending verification',
+      PROCESSING: 'Processing Your Passport / Visa...',
+      APPROVED: 'Your Passport / Visa is Approved',
+      REJECTED: `Your Passport / Visa is Rejected\nPlease try again`,
+      AUTOMATICALLY_REJECTED: `Your Passport / Visa is Rejected\nPlease try again`,
     },
     events: {
       clickName: 'PA',
       success: 'PA_Success_Dvm',
       capture: ['PA_On'],
     },
-    successTitle: 'Your passport is uploaded successfully.',
+    successTitle: 'Your passport / visa is uploaded successfully.',
     successDescription: '',
-    errorTitle: 'An error occured while uploading your passport.',
+    errorTitle: 'An error occured while uploading your passport / visa.',
     errorDescription: 'Please try again.',
   },
   {
