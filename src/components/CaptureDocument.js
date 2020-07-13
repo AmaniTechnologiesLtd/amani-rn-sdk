@@ -274,9 +274,9 @@ const CaptureDocument = (props) => {
         }
 
         if (
-          trialCount >= document.maxAttempt * 2 ||
+          trialCount >= document.maxAttempt ||
           (currentStep === document.steps.length - 1 &&
-            document.attempt >= document.maxAttempt * 2)
+            document.attempt >= document.maxAttempt)
         ) {
           onCapture(document.id === 'SE' ? image : res.data.image);
           calculateNextStep();
