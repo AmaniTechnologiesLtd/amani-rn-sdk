@@ -31,7 +31,7 @@ import PoweredBy from './components/PoweredBy';
 import { initialDocuments, documentsReducer } from './store/documents';
 import api from './services/api';
 import TopBar from './components/TopBar';
-import AppliedScreen from './components/AppliedScreen';
+// import AppliedScreen from './components/AppliedScreen';
 import backArrow from '../assets/back-arrow.png';
 import forwardArrowDark from '../assets/forward-arrow-dark.png';
 import stepWarning from '../assets/step-warning-icon.png';
@@ -784,17 +784,7 @@ const MainScreen = (props) => {
         onCapture={(capture) => setFiles([...files, capture])}
         onManualCropCorners={(cropData) => setCorners([...corners, cropData])}
         onStepsFinished={setIsStepsFinished}
-        onClearDocument={() => {
-          // If customer directly go to ID validation (new customer)
-          // when pressed go back button exit to App
-          if (customer.status === 'Created') {
-            goBack();
-            return;
-          }
-
-          // Otherwise exit to main screen
-          clearSelectedDocument();
-        }}
+        onClearDocument={clearSelectedDocument}
         onSkipDocument={skipDocument}
         onResetCapture={() => {
           setFiles([]);
