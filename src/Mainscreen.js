@@ -9,7 +9,6 @@ import {
   Image,
   BackHandler,
   Platform,
-  ImageBackground,
   Alert,
 } from 'react-native';
 
@@ -33,7 +32,6 @@ import { initialDocuments, documentsReducer } from './store/documents';
 import api from './services/api';
 import TopBar from './components/TopBar';
 import AppliedScreen from './components/AppliedScreen';
-import mainBackground from '../assets/main-bg.png';
 import backArrow from '../assets/back-arrow.png';
 import forwardArrowDark from '../assets/forward-arrow-dark.png';
 import stepWarning from '../assets/step-warning-icon.png';
@@ -675,27 +673,32 @@ const MainScreen = (props) => {
 
     clearSelectedDocument();
 
-    // If not first time customer do not go to document automatically
-    // go to document selection screen
-    if (currentCustomer.status !== 'Created') {
-      return;
-    }
+    // We disabled find incomplete document for now
+    // Customers do not start automatically uploading
+    // They see missing steps screen first
+    return;
 
-    const incompleteRules = currentCustomer.rules.filter((doc) =>
-      ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
-        doc.status,
-      ),
-    );
+    // // If not first time customer do not go to document automatically
+    // // go to document selection screen
+    // if (currentCustomer.status !== 'Created') {
+    //   return;
+    // }
 
-    if (incompleteRules.length) {
-      const startDoc = documents.find((doc) =>
-        incompleteRules[0].document_classes.includes(doc.id),
-      );
+    // const incompleteRules = currentCustomer.rules.filter((doc) =>
+    //   ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
+    //     doc.status,
+    //   ),
+    // );
 
-      if (startDoc) {
-        selectDocument(startDoc);
-      }
-    }
+    // if (incompleteRules.length) {
+    //   const startDoc = documents.find((doc) =>
+    //     incompleteRules[0].document_classes.includes(doc.id),
+    //   );
+
+    //   if (startDoc) {
+    //     selectDocument(startDoc);
+    //   }
+    // }
   };
 
   const sendEvent = (event, value = '') => {
@@ -783,7 +786,7 @@ const MainScreen = (props) => {
         onStepsFinished={setIsStepsFinished}
         onClearDocument={() => {
           // If customer directly go to ID validation (new customer)
-          // when pressed go back button exit to Ininal App
+          // when pressed go back button exit to App
           if (customer.status === 'Created') {
             goBack();
             return;
@@ -820,10 +823,7 @@ const MainScreen = (props) => {
   sendEvent('Eksik_Adim_VIEW');
 
   return (
-    <ImageBackground
-      source={mainBackground}
-      style={styles.container}
-      onTouchStart={() => sendEvent('TouchEvent')}>
+    <View style={styles.container} onTouchStart={() => sendEvent('TouchEvent')}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
@@ -884,7 +884,7 @@ const MainScreen = (props) => {
         })}
       </View>
       <PoweredBy />
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -896,6 +896,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     paddingHorizontal: 20,
     paddingTop: 10,
+    backgroundColor: '#263B5B',
   },
   containerHeaderText: {
     color: 'white',

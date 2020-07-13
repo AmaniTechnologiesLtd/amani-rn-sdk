@@ -19,7 +19,6 @@ import { WebView } from 'react-native-webview';
 // Local files
 import api from '../../services/api';
 import TopBar from '../TopBar';
-import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
 import blueBackground from '../../../assets/btn-blue.png';
 import checkboxEmpty from '../../../assets/checkbox_empty.png';
@@ -238,7 +237,7 @@ const ContractScreen = (props) => {
 
   if (!showContract) {
     return (
-      <ImageBackground source={mainBackground} style={styles.container}>
+      <View style={styles.container}>
         <TopBar
           onLeftButtonPressed={onContractDecline}
           leftButtonIcon={backArrow}
@@ -364,7 +363,7 @@ const ContractScreen = (props) => {
             />
           </View>
         </ScrollView>
-      </ImageBackground>
+      </View>
     );
   }
 
@@ -423,6 +422,7 @@ export default ContractScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#263B5B',
   },
   contactForm: {
     flex: 1,

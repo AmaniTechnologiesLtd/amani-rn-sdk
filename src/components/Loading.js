@@ -1,30 +1,25 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, ImageBackground } from 'react-native';
-import LottieView from 'lottie-react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+// import LottieView from 'lottie-react-native';
 
-import mainBackground from '../../assets/main-bg.png';
-import animationID from '../../assets/animation_id.json';
-import animationSE from '../../assets/animation_se.json';
+// import animationID from '../../assets/animation_id.json';
+// import animationSE from '../../assets/animation_se.json';
 
 const Loading = (props) => {
   const animationType = () => {
-    const { type } = props;
-    if (type === 'ID') {
-      return <LottieView source={animationID} autoPlay loop />;
-    }
+    // const { type } = props;
+    // if (type === 'ID') {
+    //   return <LottieView source={animationID} autoPlay loop />;
+    // }
 
-    if (type === 'SE') {
-      return <LottieView source={animationSE} autoPlay loop />;
-    }
+    // if (type === 'SE') {
+    //   return <LottieView source={animationSE} autoPlay loop />;
+    // }
 
     return <ActivityIndicator color="white" size="large" />;
   };
 
-  return (
-    <ImageBackground source={mainBackground} style={styles.container}>
-      {animationType()}
-    </ImageBackground>
-  );
+  return <View style={styles.container}>{animationType()}</View>;
 };
 
 export default Loading;
@@ -38,5 +33,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#263B5B',
   },
 });

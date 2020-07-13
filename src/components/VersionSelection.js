@@ -7,12 +7,10 @@ import {
   BackHandler,
   Dimensions,
   StyleSheet,
-  ImageBackground,
 } from 'react-native';
 import Button from './Button';
 import blueBackground from '../../assets/btn-blue.png';
 import darkTransparentBackground from '../../assets/btn-dark-transparent.png';
-import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import forwardArrow from '../../assets/forward-arrow.png';
 import TopBar from './TopBar';
@@ -27,7 +25,7 @@ const VersionSelection = (props) => {
     closeVersionSelected,
     menuMode,
     goBack,
-    onSkipDocument,
+    // onSkipDocument,
     onActivity,
   } = props;
 
@@ -52,9 +50,7 @@ const VersionSelection = (props) => {
     return (
       <View
         style={{ marginVertical: 10, borderRadius: 20, overflow: 'hidden' }}>
-        <ImageBackground
-          source={blueBackground}
-          style={{ padding: 15, paddingBottom: 5 }}>
+        <View style={{ paddingTop: 15, paddingBottom: 5 }}>
           <Text style={styles.childContainerDescription}>
             Adresini doğrulamak için kendi adına kesilmiş (son 3 aya ait) bir
             <Text style={{ fontWeight: 'bold', color: 'white' }}>
@@ -68,18 +64,18 @@ const VersionSelection = (props) => {
             yükle. İstediğin belgeyi fotoğrafını çekerek ya da dijital (pdf)
             olarak yükleyebilirsin.
           </Text>
-          <Text style={styles.childContainerDescription}>
+          {/* <Text style={styles.childContainerDescription}>
             Eğer yanında hiçbir belge yoksa bu adımı şimdilik atlayabilir ya da
             hemen e-devletten ikametgah belgeni pdf olarak indirip
             yükleyebilirsin.'
-          </Text>
-        </ImageBackground>
+          </Text> */}
+        </View>
       </View>
     );
   };
 
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <TopBar
         onLeftButtonPressed={goBack}
         leftButtonIcon={backArrow}
@@ -145,7 +141,7 @@ const VersionSelection = (props) => {
             </View>
           );
         })}
-        {document.options.includes('skipDocument') && (
+        {/* {document.options.includes('skipDocument') && (
           <Button
             text="Şimdilik Atla"
             noBackground
@@ -155,9 +151,9 @@ const VersionSelection = (props) => {
             }}
             style={{ marginBottom: 20 }}
           />
-        )}
+        )} */}
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -170,6 +166,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
+    backgroundColor: '#263B5B',
   },
   childContainer: {
     paddingHorizontal: 20,

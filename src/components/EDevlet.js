@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  ImageBackground,
   Dimensions,
   Linking,
   TouchableOpacity,
@@ -15,7 +14,6 @@ import {
 import TopBar from './TopBar';
 import Button from './Button';
 import backArrow from '../../assets/back-arrow.png';
-import mainBackground from '../../assets/main-bg.png';
 import Number1 from '../../assets/number-1-icon.png';
 import Number2 from '../../assets/number-2-icon.png';
 import Number3 from '../../assets/number-3-icon.png';
@@ -37,7 +35,7 @@ const EDevlet = (props) => {
   }, []);
 
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <TopBar
         onLeftButtonPressed={onGoBack}
         leftButtonIcon={backArrow}
@@ -78,7 +76,7 @@ const EDevlet = (props) => {
             </Text>
             <Text style={{ fontWeight: 'bold' }}>"Kuruma İbraz"</Text>
             <Text> seçeneğini seç. Kurum adı olarak </Text>
-            <Text style={{ fontWeight: 'bold' }}>"İninal"</Text>
+            <Text style={{ fontWeight: 'bold' }}>"Amani"</Text>
             <Text> yaz</Text>
           </Text>
         </View>
@@ -89,15 +87,7 @@ const EDevlet = (props) => {
             olarak indirebilirsin
           </Text>
         </View>
-        <View style={styles.darkBackground}>
-          <Text style={styles.bulletText}>
-            <Text>Ya da E-posta gönder seçeneğinden </Text>
-            <Text style={{ textDecorationLine: 'underline', color: 'white' }}>
-              kimlik@ininal.com{' '}
-            </Text>
-            <Text>adresine e-posta gönderebilirsin.</Text>
-          </Text>
-        </View>
+
         <Button
           text="E-DEVLET'TEN AL"
           onPress={() => {
@@ -107,7 +97,7 @@ const EDevlet = (props) => {
           style={{ marginVertical: 20 }}
         />
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -116,6 +106,7 @@ export default EDevlet;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#263B5B',
   },
   topBar: {
     paddingTop: height * 0.03,

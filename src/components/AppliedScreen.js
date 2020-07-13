@@ -6,7 +6,6 @@ import {
   TextInput,
   Dimensions,
   StyleSheet,
-  ImageBackground,
   Linking,
   BackHandler,
   TouchableOpacity,
@@ -17,7 +16,6 @@ import TopBar from './TopBar';
 import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
 import Button from './Button';
-import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import closeIcon from '../../assets/close-icon.png';
 
@@ -152,9 +150,7 @@ const AppliedScreen = (props) => {
   // and who clicked continue on previous screen
   if (showTakePhoto) {
     return (
-      <ImageBackground
-        source={mainBackground}
-        style={[styles.container, { paddingTop: 0 }]}>
+      <View style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
           {(function () {
             if (customer.status === 'Temporarily Approved') {
@@ -172,8 +168,8 @@ const AppliedScreen = (props) => {
                     <Text style={styles.header}>Başvurun onaylandı.</Text>
                     <Text style={styles.header}>Limitin artık 50.000 TL.</Text>
                     <Text style={styles.message}>
-                      Limit artışının kalıcı olması için ininal kullanıcı
-                      sözleşmesini yazdırıp, imzalayıp
+                      Limit artışının kalıcı olması için kullanıcı sözleşmesini
+                      yazdırıp, imzalayıp
                       <Text style={{ fontWeight: 'bold' }}>
                         {` ${dateParse(
                           customer.approval_expiration,
@@ -208,9 +204,9 @@ const AppliedScreen = (props) => {
                         styles.message,
                         { textAlign: 'left', marginTop: 20 },
                       ]}>
-                      Limitini tekrar yükseltmek ve ininal Plus Hesap sahibi
-                      olmak için fiziksel sözleşmenin fotoğrafını en kısa sürede
-                      yüklemen gerekiyor.
+                      Limitini tekrar yükseltmek ve Plus Hesap sahibi olmak için
+                      fiziksel sözleşmenin fotoğrafını en kısa sürede yüklemen
+                      gerekiyor.
                     </Text>
                   </View>
                 </>
@@ -235,7 +231,7 @@ const AppliedScreen = (props) => {
                       styles.message,
                       { textAlign: 'left', marginTop: 20 },
                     ]}>
-                    Limit artışının kalıcı olması için aşağıda yer alan ininal
+                    Limit artışının kalıcı olması için aşağıda yer alan
                     kullanıcı sözleşmesini yazdırıp. İmzalayıp, fotoğrafını
                     yüklemen gerekiyor.
                   </Text>
@@ -291,14 +287,14 @@ const AppliedScreen = (props) => {
             )}
           </View>
         </View>
-      </ImageBackground>
+      </View>
     );
   }
 
   // This will be shown as a success screen with a continue button
   // in normal flow
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
         <TopBar
           onLeftButtonPressed={goBack}
@@ -331,7 +327,7 @@ const AppliedScreen = (props) => {
           />
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -341,6 +337,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
+    backgroundColor: '#263B5B',
   },
   messageContainer: {
     flex: 1,

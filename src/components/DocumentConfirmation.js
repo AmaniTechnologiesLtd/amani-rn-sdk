@@ -13,7 +13,6 @@ import {
 
 import TopBar from './TopBar';
 import Button from './Button';
-import mainBackground from '../../assets/main-bg.png';
 import blueBackground from '../../assets/btn-blue.png';
 import backArrow from '../../assets/back-arrow.png';
 
@@ -35,7 +34,7 @@ const DocumentConfirmation = (props) => {
 
   // Ask user for confirmation or show error messages
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <TopBar
         onLeftButtonPressed={() => onTryAgain(false)}
         leftButtonIcon={backArrow}
@@ -87,7 +86,7 @@ const DocumentConfirmation = (props) => {
           )}
         </View>
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -96,6 +95,7 @@ export default DocumentConfirmation;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#263B5B',
   },
   childContainer: {
     alignItems: 'center',

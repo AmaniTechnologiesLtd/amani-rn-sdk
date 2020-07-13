@@ -3,14 +3,12 @@ import {
   View,
   StyleSheet,
   Image,
-  ImageBackground,
   Dimensions,
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
 
 import TopBar from './TopBar';
-import mainBackground from '../../assets/main-bg.png';
 import closeIcon from '../../assets/close-icon.png';
 
 const { width } = Dimensions.get('window');
@@ -27,7 +25,7 @@ const Popup = (props) => {
   }, []);
 
   return (
-    <ImageBackground source={mainBackground} style={styles.container}>
+    <View style={styles.container}>
       <TopBar noBackground />
       <View style={styles.popup} onTouchStart={() => onActivity('TouchEvent')}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
@@ -35,7 +33,7 @@ const Popup = (props) => {
         </TouchableOpacity>
         {children}
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -51,6 +49,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignContent: 'center',
+    backgroundColor: '#263B5B',
   },
   popup: {
     minHeight: 200,
