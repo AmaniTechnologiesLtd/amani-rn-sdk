@@ -62,7 +62,7 @@ const MainScreen = (props) => {
   const [message, setMessage] = useState({
     ...initialMessage,
   });
-  const [showAppliedScreen, setShowAppliedScreen] = useState(false);
+  // const [showAppliedScreen, setShowAppliedScreen] = useState(false);
 
   const initialMessage = {
     show: false,
@@ -632,12 +632,12 @@ const MainScreen = (props) => {
       }
     }
 
-    // If physical contract is rejected we do not show customer main screen
-    // when customer clicks to the contact we show the applied screen
-    if (document.id === 'CO' && document.status === 'REJECTED') {
-      setShowAppliedScreen(true);
-      return;
-    }
+    // // If physical contract is rejected we do not show customer main screen
+    // // when customer clicks to the contact we show the applied screen
+    // if (document.id === 'CO' && document.status === 'REJECTED') {
+    //   setShowAppliedScreen(true);
+    //   return;
+    // }
 
     // If no message directly go to document
     goToDocument(document);
@@ -743,37 +743,37 @@ const MainScreen = (props) => {
 
   // All documents approved or pending review except physical contract
   // show applied screen and upload physical contract if needed
-  if (
-    documents
-      .filter((document) => document.id !== 'CO')
-      .every((document) =>
-        ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
-      ) &&
-    selectedDocument === null
-  ) {
-    const contract = documents.find((doc) => doc.id === 'CO');
+  // if (
+  //   documents
+  //     .filter((document) => document.id !== 'CO')
+  //     .every((document) =>
+  //       ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
+  //     ) &&
+  //   selectedDocument === null
+  // ) {
+  //   const contract = documents.find((doc) => doc.id === 'CO');
 
-    // If document is not rejected show applied screen
-    // If rejected first show main screen when clicked show applied screen
-    if (contract.status !== 'REJECTED' || showAppliedScreen) {
-      return (
-        <AppliedScreen
-          customer={customer}
-          goBack={() => {
-            if (contract.status === 'REJECTED') {
-              setShowAppliedScreen(false);
-            } else {
-              goBack();
-            }
-          }}
-          takePhoto={() => {
-            goToDocument(contract);
-          }}
-          onActivity={sendEvent}
-        />
-      );
-    }
-  }
+  //   // If document is not rejected show applied screen
+  //   // If rejected first show main screen when clicked show applied screen
+  //   if (contract.status !== 'REJECTED' || showAppliedScreen) {
+  //     return (
+  //       <AppliedScreen
+  //         customer={customer}
+  //         goBack={() => {
+  //           if (contract.status === 'REJECTED') {
+  //             setShowAppliedScreen(false);
+  //           } else {
+  //             goBack();
+  //           }
+  //         }}
+  //         takePhoto={() => {
+  //           goToDocument(contract);
+  //         }}
+  //         onActivity={sendEvent}
+  //       />
+  //     );
+  //   }
+  // }
 
   if (selectedDocument) {
     return (

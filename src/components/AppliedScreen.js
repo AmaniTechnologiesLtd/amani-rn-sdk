@@ -3,7 +3,7 @@ import {
   View,
   Image,
   Text,
-  TextInput,
+  // TextInput,
   Dimensions,
   StyleSheet,
   Linking,
@@ -21,74 +21,74 @@ import closeIcon from '../../assets/close-icon.png';
 
 const { height, width } = Dimensions.get('window');
 
-const SendEmailContent = (props) => {
-  const { customer, onActivity } = props;
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState(false);
+// const SendEmailContent = (props) => {
+//   const { customer, onActivity } = props;
+//   const [email, setEmail] = useState('');
+//   const [message, setMessage] = useState(false);
 
-  const sendContractEmail = async () => {
-    try {
-      await api.sendContractEmail(customer.id, { email });
-      // if (response.data.document_url) {
-      //   Linking.openURL(response.data.document_url);
-      // }
-    } catch (error) {}
-  };
+//   const sendContractEmail = async () => {
+//     try {
+//       await api.sendContractEmail(customer.id, { email });
+//       // if (response.data.document_url) {
+//       //   Linking.openURL(response.data.document_url);
+//       // }
+//     } catch (error) {}
+//   };
 
-  if (message) {
-    return (
-      <View>
-        <Text
-          style={[
-            styles.popupHeaderWhite,
-            { textAlign: 'center', marginVertical: 20 },
-          ]}>
-          Sözleşmenin bir kopyası e-posta adresine gönderildi
-        </Text>
-      </View>
-    );
-  }
+//   if (message) {
+//     return (
+//       <View>
+//         <Text
+//           style={[
+//             styles.popupHeaderWhite,
+//             { textAlign: 'center', marginVertical: 20 },
+//           ]}>
+//           Sözleşmenin bir kopyası e-posta adresine gönderildi
+//         </Text>
+//       </View>
+//     );
+//   }
 
-  return (
-    <View>
-      <Text style={styles.popupHeaderWhite}>
-        Sözleşmeyi göndermek istediğin e-posta adresini gir
-      </Text>
-      <Text
-        style={[styles.message, { textAlign: 'left', marginHorizontal: 0 }]}>
-        Kayıtlı e-posta adresine sözleşmenin bir kopyasını gönderdik. Farklı bir
-        e-posta adresine yollamak istersen "e-posta ile gönder" seçeneğini
-        seçebilirsin.
-      </Text>
-      <TextInput
-        style={styles.textInput}
-        onChangeText={(val) => setEmail(val)}
-        placeholder="E-posta adresi"
-        placeholderTextColor="#CAE0F5"
-        autoCompleteType="email"
-        keyboardType="email-address"
-        returnKeyType="send"
-        onSubmitEditing={() => {
-          if (email) {
-            sendContractEmail();
-            setMessage(true);
-          }
-        }}
-        value={email}
-      />
-      <Button
-        disabled={!email}
-        text="GÖNDER"
-        style={{ marginVertical: 10 }}
-        onPress={() => {
-          onActivity('Fzk_Eposta_Gnd');
-          sendContractEmail();
-          setMessage(true);
-        }}
-      />
-    </View>
-  );
-};
+//   return (
+//     <View>
+//       <Text style={styles.popupHeaderWhite}>
+//         Sözleşmeyi göndermek istediğin e-posta adresini gir
+//       </Text>
+//       <Text
+//         style={[styles.message, { textAlign: 'left', marginHorizontal: 0 }]}>
+//         Kayıtlı e-posta adresine sözleşmenin bir kopyasını gönderdik. Farklı bir
+//         e-posta adresine yollamak istersen "e-posta ile gönder" seçeneğini
+//         seçebilirsin.
+//       </Text>
+//       <TextInput
+//         style={styles.textInput}
+//         onChangeText={(val) => setEmail(val)}
+//         placeholder="E-posta adresi"
+//         placeholderTextColor="#CAE0F5"
+//         autoCompleteType="email"
+//         keyboardType="email-address"
+//         returnKeyType="send"
+//         onSubmitEditing={() => {
+//           if (email) {
+//             sendContractEmail();
+//             setMessage(true);
+//           }
+//         }}
+//         value={email}
+//       />
+//       <Button
+//         disabled={!email}
+//         text="GÖNDER"
+//         style={{ marginVertical: 10 }}
+//         onPress={() => {
+//           onActivity('Fzk_Eposta_Gnd');
+//           sendContractEmail();
+//           setMessage(true);
+//         }}
+//       />
+//     </View>
+//   );
+// };
 
 const dateParse = (date) => {
   const expiration_date = new Date(date);
@@ -98,7 +98,7 @@ const dateParse = (date) => {
 const AppliedScreen = (props) => {
   const { customer, goBack, takePhoto, onActivity } = props;
   const [showPopup, setShowPopup] = useState(false);
-  const [customerData, setCustomerData] = useState({});
+  // const [customerData, setCustomerData] = useState({});
   const [showTakePhoto, setShowTakePhoto] = useState(
     [
       'Temporarily Approved',
@@ -111,7 +111,7 @@ const AppliedScreen = (props) => {
   );
 
   useEffect(() => {
-    getCustomerData();
+    // getCustomerData();
     BackHandler.addEventListener('hardwareBackPressAppliedScreen', () => {
       goBack();
       return true;
@@ -120,13 +120,13 @@ const AppliedScreen = (props) => {
       BackHandler.removeEventListener('hardwareBackPressAppliedScreen');
   }, []);
 
-  const getCustomerData = async () => {
-    try {
-      const response = await api.getCustomer(customer.id);
+  // const getCustomerData = async () => {
+  //   try {
+  //     const response = await api.getCustomer(customer.id);
 
-      setCustomerData(response.data);
-    } catch (error) {}
-  };
+  //     setCustomerData(response.data);
+  //   } catch (error) {}
+  // };
 
   const getContractURL = async () => {
     onActivity('Fzk_Ind');
@@ -261,7 +261,7 @@ const AppliedScreen = (props) => {
               style={styles.buttonStyle}
               noBackground
             />
-            <Button
+            {/* <Button
               onPress={() => {
                 onActivity('Fzk_Eposta');
                 setShowPopup(
@@ -274,7 +274,7 @@ const AppliedScreen = (props) => {
               text="Sözleşmeni E-posta ile Gönder"
               style={styles.buttonStyle}
               noBackground
-            />
+            /> */}
             {takePhoto && (
               <Button
                 onPress={() => {

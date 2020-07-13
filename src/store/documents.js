@@ -264,11 +264,7 @@ export const initialDocuments = [
     status: 'NOT_UPLOADED',
     steps: [
       {
-        title: 'İmzanı At (1. İmza)',
-        description: '',
-      },
-      {
-        title: 'İmzanı At (2. İmza)',
+        title: 'İmzanı At',
         description: '',
       },
     ],
