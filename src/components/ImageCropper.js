@@ -19,8 +19,8 @@ const ImageCropper = (props) => {
   const rectangleCoordinates = {
     topLeft: { x: width * 0.15 * ratioX, y: height * 0.2 * ratioY },
     topRight: { x: width * 0.85 * ratioX, y: height * 0.2 * ratioY },
-    bottomRight: { x: width * 0.85 * ratioX, y: height * 0.85 * ratioY },
-    bottomLeft: { x: width * 0.15 * ratioX, y: height * 0.85 * ratioY },
+    bottomRight: { x: width * 0.85 * ratioX, y: height * 0.75 * ratioY },
+    bottomLeft: { x: width * 0.15 * ratioX, y: height * 0.75 * ratioY },
   };
 
   const getCropData = () => {
