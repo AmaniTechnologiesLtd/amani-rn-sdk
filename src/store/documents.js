@@ -68,6 +68,7 @@ export const initialDocuments = [
         title: '',
         description:
           'Take the photo in a well lit place.\nMake sure that your document fits in the area correctly.',
+        confirmationDescription: 'Make sure that your document is readable.',
       },
     ],
     attempt: 1,

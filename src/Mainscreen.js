@@ -62,7 +62,7 @@ const MainScreen = (props) => {
   const [message, setMessage] = useState({
     ...initialMessage,
   });
-  const [showAppliedScreen, setShowAppliedScreen] = useState(false);
+  // const [showAppliedScreen, setShowAppliedScreen] = useState(false);
 
   const initialMessage = {
     show: false,
@@ -621,10 +621,10 @@ const MainScreen = (props) => {
 
     // If physical contract is rejected we do not show customer main screen
     // when customer clicks to the contact we show the applied screen
-    if (document.id === 'CO' && document.status === 'REJECTED') {
-      setShowAppliedScreen(true);
-      return;
-    }
+    // if (document.id === 'CO' && document.status === 'REJECTED') {
+    //   setShowAppliedScreen(true);
+    //   return;
+    // }
 
     // If no message directly go to document
     goToDocument(document);
