@@ -521,7 +521,7 @@ const MainScreen = (props) => {
       ])
     ) {
       return { backgroundColor: 'rgba(255, 255, 255, 0.5)' };
-    } else if (status === 'APPROVED') {
+    } else if (status === 'PENDING_REVIEW' || status === 'APPROVED') {
       return { backgroundColor: '#00FFD1' };
     } else if (status === 'NOT_UPLOADED') {
       return { backgroundColor: 'white' };
@@ -533,9 +533,9 @@ const MainScreen = (props) => {
   const moduleTitleStyle = (document) => {
     const status = documentStatus(document);
 
-    if (status === 'APPROVED') {
+    if (status === 'PENDING_REVIEW' || status === 'APPROVED') {
       return { color: '#13283D' };
-    } else if (status === 'PENDING_REVIEW' || status === 'PROCESSING') {
+    } else if (status === 'PROCESSING') {
       return { color: '#CAE0F5' };
     } else if (['REJECTED', 'AUTOMATICALLY_REJECTED'].includes(status)) {
       return { color: '#FFFFFF' };
@@ -545,17 +545,15 @@ const MainScreen = (props) => {
   const documentStatus = (document) => {
     let status = document.status;
 
-    if (!customer.rules) {
-      return;
-    }
+    if (customer.rules) {
+      const rule = customer.rules.find((customerRule) =>
+        customerRule.document_classes.includes(document.id),
+      );
 
-    const rule = customer.rules.find((customerRule) =>
-      customerRule.document_classes.includes(document.id),
-    );
-
-    if (document.status === 'AUTOMATICALLY_REJECTED') {
-      status =
-        rule.attempt >= document.maxAttempt ? 'PENDING_REVIEW' : 'REJECTED';
+      if (document.status === 'AUTOMATICALLY_REJECTED') {
+        status =
+          rule.attempt >= document.maxAttempt ? 'PENDING_REVIEW' : 'REJECTED';
+      }
     }
 
     return status;
@@ -736,9 +734,20 @@ const MainScreen = (props) => {
       ['APPROVED', 'PENDING_REVIEW'].includes(documentStatus(document)),
     )
   ) {
-    const contract = documents.find((doc) => doc.id === 'CO');
-    selectDocument(contract);
-    showSuccessMessage();
+    // const contract = documents.find((doc) => doc.id === 'CO');
+    // selectDocument(contract);
+    const document = {
+      id: 'SUCCESS',
+      events: {
+        clickName: 'Fiziksel',
+        success: 'Fzk_Dvm',
+        capture: ['Fzk'],
+      },
+      successTitle: 'Tüm adımları tamamladın.',
+      successDescription:
+        'Yüklediğin belgeleri kontrol edip gerekli durumda seninle bağlantıya geçeceğiz.',
+    };
+    showSuccessMessage(document);
   }
 
   // All documents approved or pending review except physical contract

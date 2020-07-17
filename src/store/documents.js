@@ -66,7 +66,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Kimliğini Doğrula',
-      PENDING_REVIEW: 'Kimliğin Kontrol Ediliyor...',
+      PENDING_REVIEW: 'Kimliğin Yüklendi Kontrol Ediliyor...',
       PROCESSING: 'Kimliğin Kontrol Ediliyor...',
       APPROVED: 'Kimliğin Onaylandı',
       REJECTED: `Kimliğin onaylanmadı\nLütfen tekrar dene`,
@@ -118,7 +118,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Selfie Doğrula',
-      PENDING_REVIEW: "Selfie'n Kontrol Ediliyor...",
+      PENDING_REVIEW: "Selfie'n Yüklendi Kontrol Ediliyor...",
       PROCESSING: "Selfie'n Kontrol Ediliyor...",
       APPROVED: "Selfie'n Onaylandı",
       REJECTED: "Selfie'n onaylanmadı\nLütfen tekrar dene",
@@ -242,7 +242,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Adres Belgeni Yükle',
-      PENDING_REVIEW: 'Adres Belgen Kontrol Ediliyor...',
+      PENDING_REVIEW: 'Adres Belgen Yüklendi Kontrol Ediliyor...',
       PROCESSING: 'Adres Belgen Kontrol Ediliyor...',
       APPROVED: 'Adres Belgen Onaylandı',
       REJECTED: `Adres Belgen Onaylanmadı\nLütfen tekrar dene`,
@@ -289,7 +289,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Dijital Sözleşmeni İmzala',
-      PENDING_REVIEW: 'İmzan Kontrol Ediliyor...',
+      PENDING_REVIEW: 'İmzan Yüklendi Kontrol Ediliyor...',
       PROCESSING: 'İmzan Kontrol Ediliyor...',
       APPROVED: 'Dijital Sözleşme İmzalandı',
       REJECTED: 'İmzan Onaylanmadı\nLütfen tekrar dene',
@@ -337,7 +337,7 @@ export const initialDocuments = [
     },
     messages: {
       NOT_UPLOADED: 'Fiziksel Sözleşmeni Yükle',
-      PENDING_REVIEW: 'Fiziksel Sözleşmen Kontrol Ediliyor...',
+      PENDING_REVIEW: 'Fiziksel Sözleşmen Yüklendi Kontrol Ediliyor...',
       PROCESSING: 'Fiziksel Sözleşmen Kontrol Ediliyor...',
       APPROVED: 'Fiziksel Sözleşme Onaylandı',
       REJECTED: 'Fiziksel Sözleşmen Onaylanmadı\nLütfen tekrar dene',
