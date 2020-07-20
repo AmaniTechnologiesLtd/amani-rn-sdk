@@ -93,7 +93,7 @@ const EDevlet = (props) => {
           <Text style={styles.bulletText}>
             <Text>Ya da E-posta gönder seçeneğinden </Text>
             <Text style={{ textDecorationLine: 'underline', color: 'white' }}>
-              kimlik@ininal.com{' '}
+              ikametgah@ininal.com{' '}
             </Text>
             <Text>adresine e-posta gönderebilirsin.</Text>
           </Text>

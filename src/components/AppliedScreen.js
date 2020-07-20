@@ -318,8 +318,8 @@ const AppliedScreen = (props) => {
             Tüm dijital adımları başarıyla tamamladın.
           </Text>
           <Text style={styles.message}>
-            Yüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içinde
-            artıracağız.
+            Yüklediğin tüm belgeleri kontrol edip limitini en geç 2 iş günü
+            içinde artıracağız.
           </Text>
           <Text style={styles.message}>Fiziksel sözleşme ile devam et.</Text>
         </View>

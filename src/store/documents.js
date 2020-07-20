@@ -355,7 +355,7 @@ export const initialDocuments = [
     },
     successTitle: 'Fiziksel sözleşmeni başarıyla yükledin.',
     successDescription:
-      'Tüm adımları tamamladın.\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 48 saat içerisinde artıracağız.',
+      'Tüm adımları tamamladın.\n\nYüklediğin tüm belgeleri kontrol edip limitini en geç 2 iş günü içerisinde artıracağız.',
     errorTitle: 'Sözleşmeni yüklerken bir hata oluştu.',
     errorDescription: 'Lütfen tekrar dene.',
   },
