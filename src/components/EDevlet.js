@@ -109,9 +109,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#263B5B',
   },
   topBar: {
-    paddingTop: height * 0.03,
-    paddingBottom: height * 0.02,
-    paddingHorizontal: width * 0.04,
+    marginBottom: height * 0.02,
+    marginHorizontal: width * 0.04,
   },
   scrollContainer: {
     paddingHorizontal: width * 0.04,

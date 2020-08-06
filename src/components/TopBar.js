@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import {
   View,
+  SafeAreaView,
   Text,
   StyleSheet,
   Image,
@@ -61,12 +62,16 @@ const TopBar = (props) => {
   );
 
   if (noBackground) {
-    return <View style={[styles.container, style]}>{topbarContent}</View>;
+    return (
+      <SafeAreaView style={[styles.container, style]}>
+        {topbarContent}
+      </SafeAreaView>
+    );
   }
 
   return (
     <View style={[styles.container, styles.withBackground, style]}>
-      {topbarContent}
+      <SafeAreaView style={styles.container}>{topbarContent}</SafeAreaView>
     </View>
   );
 };
@@ -82,13 +87,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingTop: 10,
+    marginTop: 20,
     width: '100%',
   },
   withBackground: {
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    marginTop: 0,
+    paddingBottom: 15,
     backgroundColor: '#13283d',
   },
   topBarIcon: {

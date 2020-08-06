@@ -13,7 +13,7 @@ export default PoweredBy;
 const styles = StyleSheet.create({
   poweredBy: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 15,
     height: 12,
     width: 104,
     alignSelf: 'center',
