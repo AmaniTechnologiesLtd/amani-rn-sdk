@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: Platform.OS === 'android' ? 20 : 30,
     width: '100%',
   },
   withBackground: {
