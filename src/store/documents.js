@@ -219,11 +219,7 @@ export const initialDocuments = [
     status: 'NOT_UPLOADED',
     steps: [
       {
-        title: 'Signature 1 / 2',
-        description: '',
-      },
-      {
-        title: 'Signature 2 / 2',
+        title: 'Sign the Contract',
         description: '',
       },
     ],
