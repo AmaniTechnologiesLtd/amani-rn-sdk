@@ -144,7 +144,7 @@ const MainScreen = (props) => {
 
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
-      (async function () {
+      (async function() {
         try {
           const loginResponse = await api.login({
             email: authData.appKey,
