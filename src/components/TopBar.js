@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 20,
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'ios' ? 10 : 0,
     width: '100%',
   },
   withBackground: {
