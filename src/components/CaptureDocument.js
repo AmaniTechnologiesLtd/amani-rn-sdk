@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import RNFS from 'react-native-fs';
@@ -18,6 +19,7 @@ import SelfieMask from './SelfieMask';
 import ImageCropper from './ImageCropper';
 import TopBar from './TopBar';
 import EDevlet from './EDevlet';
+import NFC from './NFC';
 import PoweredBy from './PoweredBy';
 import Loading from './Loading';
 import Button from './Button';
@@ -42,6 +44,7 @@ const CaptureDocument = (props) => {
     onSkipDocument,
     onActivity,
     onResetCapture,
+    onNFCRead,
     setSelectedDocumentVersion,
     customer,
     dispatch,
@@ -65,6 +68,8 @@ const CaptureDocument = (props) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessStarted, setIsProcessStarted] = useState(false);
   const [showEDevlet, setShowEDevlet] = useState(false);
+  const [showNFC, setShowNFC] = useState(false);
+  const [mrzData, setMRZData] = useState(false);
   const [imageCrop, setImageCrop] = useState(null);
   const [corners, setCorners] = useState(null);
   const [versionGroup, setVersionGroup] = useState('');
@@ -170,6 +175,15 @@ const CaptureDocument = (props) => {
       return;
     }
     setSelectedDocumentVersion(document.versions[versionGroup][groupIndex]);
+
+    if (
+      Platform.OS === 'android' &&
+      !!document.versions[versionGroup][groupIndex].nfc === true
+    ) {
+      setShowNFC(true);
+      return;
+    }
+
     if (!document.options.includes('async')) {
       setIsProcessStarted(true);
     }
@@ -271,6 +285,20 @@ const CaptureDocument = (props) => {
           setAutoCaptureError({
             code: res.data.errors[0].error_code,
             message: errorMessages[res.data.errors[0].error_code],
+          });
+        }
+
+        if (res.data.additional_data && res.data.additional_data.mrz) {
+          const {
+            MRZDocumentNumber,
+            MRZBirthDate,
+            MRZExpiryDate,
+          } = res.data.additional_data.mrz;
+
+          setMRZData({
+            documentNumber: MRZDocumentNumber,
+            dateOfExpiry: MRZExpiryDate,
+            dateOfBirth: MRZBirthDate,
           });
         }
 
@@ -377,6 +405,20 @@ const CaptureDocument = (props) => {
   if (showEDevlet) {
     return (
       <EDevlet onGoBack={() => setShowEDevlet(false)} onActivity={onActivity} />
+    );
+  }
+
+  if (showNFC) {
+    return (
+      <NFC
+        onActivity={onActivity}
+        onGoBack={onClearDocument}
+        mrzData={mrzData}
+        continueProcess={(data) => {
+          onNFCRead(data);
+          onStepsFinished(true);
+        }}
+      />
     );
   }
 

@@ -49,6 +49,7 @@ const MainScreen = (props) => {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null);
   const [showContract, setShowContract] = useState(false);
+  const [NFCData, setNFCData] = useState(false);
   const [corners, setCorners] = useState([]);
   const [files, setFiles] = useState([]);
   const [isStepsFinished, setIsStepsFinished] = useState(false);
@@ -147,7 +148,7 @@ const MainScreen = (props) => {
 
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
-      (async function () {
+      (async function() {
         try {
           const loginResponse = await api.login({
             email: authData.appKey,
@@ -298,6 +299,10 @@ const MainScreen = (props) => {
       corners.forEach((corner) =>
         requestData.append('corners[]', JSON.stringify(corner)),
       );
+    }
+
+    if (NFCData) {
+      requestData.append('nfc', JSON.stringify(NFCData));
     }
 
     if (selectedDocumentVersion.autoCrop) {
@@ -477,6 +482,7 @@ const MainScreen = (props) => {
     setCorners([]);
     setShowContract(false);
     setMessage({ ...initialMessage });
+    setNFCData(false);
   };
 
   const checkPreviousSteps = (index, statuses) => {
@@ -798,6 +804,7 @@ const MainScreen = (props) => {
         onResetCapture={() => {
           setFiles([]);
         }}
+        onNFCRead={setNFCData}
         onActivity={sendEvent}
         dispatch={dispatch}
       />

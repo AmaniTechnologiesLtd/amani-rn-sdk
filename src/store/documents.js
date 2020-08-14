@@ -37,6 +37,7 @@ export const initialDocuments = [
           captureTopBar: 'Kimliğini Yükle',
           confirmationTopBar: 'Kimliğini Kontrol Et',
           aspectRatio: 0.63,
+          nfc: true,
           crop: false,
           autoCrop: true,
           autoCapture: true,
