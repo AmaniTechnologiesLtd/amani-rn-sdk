@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  SafeAreaView,
   Image,
   Text,
   Dimensions,
@@ -91,13 +92,17 @@ const AppliedScreen = (props) => {
         source={mainBackground}
         style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
-          {(function () {
+          {(function() {
             if (customer.status === 'Temporarily Approved' && showMessage) {
               return (
                 <>
-                  <TouchableOpacity style={styles.closeButton} onPress={goBack}>
-                    <Image style={styles.closeIcon} source={closeIcon} />
-                  </TouchableOpacity>
+                  <SafeAreaView>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={goBack}>
+                      <Image style={styles.closeIcon} source={closeIcon} />
+                    </TouchableOpacity>
+                  </SafeAreaView>
                   <View style={styles.messageContainer}>
                     <Image
                       resizeMode="contain"
