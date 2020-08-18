@@ -31,17 +31,18 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 | lottie-react-native                  | 3.3.2               |
 | lottie-ios                           | 3.1.3               |
 | react-native-permissions             | 2.1.5               |
+| react-native-share                   | 3.7.0               |
 
 To install all of the dependencies run the following command:
 
 ```bash
-yarn add react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation lottie-react-native lottie-ios@3.1.3 react-native-permissions
+yarn add react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation lottie-react-native lottie-ios@3.1.3 react-native-permissions react-native-share
 ```
 
 or
 
 ```bash
-npm install react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation lottie-react-native lottie-ios@3.1.3 react-native-permissions
+npm install react-native-camera react-native-webview@8.2.1 react-native-svg@10.1.0 @react-native-community/image-editor react-native-document-picker react-native-fs react-native-device-info @react-native-community/geolocation lottie-react-native lottie-ios@3.1.3 react-native-permissions react-native-share
 ```
 
 If your React Native version is below the 0.60, please run command below.
