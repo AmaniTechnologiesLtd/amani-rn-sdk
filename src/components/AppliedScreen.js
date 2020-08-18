@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Text,
-  TextInput,
   Dimensions,
   StyleSheet,
   ImageBackground,
@@ -11,86 +10,19 @@ import {
   BackHandler,
   TouchableOpacity,
 } from 'react-native';
+import Share from 'react-native-share';
 
 import api from '../services/api';
 import TopBar from './TopBar';
-import Popup from './Popup';
 import backArrow from '../../assets/back-arrow.png';
 import Button from './Button';
 import mainBackground from '../../assets/main-bg.png';
 import successIcon from '../../assets/success-icon.png';
 import closeIcon from '../../assets/close-icon.png';
+import shareIcon from '../../assets/share-icon.png';
+import contractImage from '../../assets/ininal_contract.jpg';
 
 const { height, width } = Dimensions.get('window');
-
-const SendEmailContent = (props) => {
-  const { customer, onActivity } = props;
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState(false);
-
-  const sendContractEmail = async () => {
-    try {
-      await api.sendContractEmail(customer.id, { email });
-      // if (response.data.document_url) {
-      //   Linking.openURL(response.data.document_url);
-      // }
-    } catch (error) {}
-  };
-
-  if (message) {
-    return (
-      <View>
-        <Text
-          style={[
-            styles.popupHeaderWhite,
-            { textAlign: 'center', marginVertical: 20 },
-          ]}>
-          Sözleşmenin bir kopyası e-posta adresine gönderildi
-        </Text>
-      </View>
-    );
-  }
-
-  return (
-    <View>
-      <Text style={styles.popupHeaderWhite}>
-        Sözleşmeyi göndermek istediğin e-posta adresini gir
-      </Text>
-      <Text
-        style={[styles.message, { textAlign: 'left', marginHorizontal: 0 }]}>
-        Kayıtlı e-posta adresine sözleşmenin bir kopyasını gönderdik. Farklı bir
-        e-posta adresine yollamak istersen "e-posta ile gönder" seçeneğini
-        seçebilirsin.
-      </Text>
-      <TextInput
-        style={styles.textInput}
-        onChangeText={(val) => setEmail(val)}
-        placeholder="E-posta adresi"
-        placeholderTextColor="#CAE0F5"
-        autoCompleteType="email"
-        keyboardType="email-address"
-        returnKeyType="send"
-        onSubmitEditing={() => {
-          if (email) {
-            sendContractEmail();
-            setMessage(true);
-          }
-        }}
-        value={email}
-      />
-      <Button
-        disabled={!email}
-        text="GÖNDER"
-        style={{ marginVertical: 10 }}
-        onPress={() => {
-          onActivity('Fzk_Eposta_Gnd');
-          sendContractEmail();
-          setMessage(true);
-        }}
-      />
-    </View>
-  );
-};
 
 const dateParse = (date) => {
   const expiration_date = new Date(date);
@@ -99,8 +31,9 @@ const dateParse = (date) => {
 
 const AppliedScreen = (props) => {
   const { customer, goBack, takePhoto, onActivity } = props;
-  const [showPopup, setShowPopup] = useState(false);
-  const [customerData, setCustomerData] = useState({});
+  const [urlButtonLoading, setUrlButtonLoading] = useState(false);
+  const [contractUrl, setContractUrl] = useState(null);
+  const [showMessage, setShowMessage] = useState(true);
   const [showTakePhoto, setShowTakePhoto] = useState(
     [
       'Temporarily Approved',
@@ -113,7 +46,6 @@ const AppliedScreen = (props) => {
   );
 
   useEffect(() => {
-    getCustomerData();
     BackHandler.addEventListener('hardwareBackPressAppliedScreen', () => {
       goBack();
       return true;
@@ -122,31 +54,34 @@ const AppliedScreen = (props) => {
       BackHandler.removeEventListener('hardwareBackPressAppliedScreen');
   }, []);
 
-  const getCustomerData = async () => {
-    try {
-      const response = await api.getCustomer(customer.id);
-
-      setCustomerData(response.data);
-    } catch (error) {}
-  };
-
   const getContractURL = async () => {
     onActivity('Fzk_Ind');
+    if (contractUrl) {
+      return contractUrl;
+    }
     try {
+      setUrlButtonLoading(true);
       const response = await api.getContractURL(customer.id);
       if (response.data.document_url) {
-        Linking.openURL(response.data.document_url);
+        setContractUrl(response.data.document_url);
+        setUrlButtonLoading(false);
+        return response.data.document_url;
       }
-    } catch (error) {}
+    } catch (error) {
+      setUrlButtonLoading(false);
+    }
   };
 
-  if (showPopup) {
-    return (
-      <Popup onClose={() => setShowPopup(false)} onActivity={onActivity}>
-        {showPopup}
-      </Popup>
-    );
-  }
+  const shareOpen = async () => {
+    const url = await getContractURL();
+    try {
+      await Share.open({
+        title: 'İninal Limit Artırım Kullanıcı Sözleşmesi',
+        message: 'İninal Limit Artırım Kullanıcı Sözleşmesi',
+        url,
+      });
+    } catch (error) {}
+  };
 
   // This will be shown for returning customers
   // and who clicked continue on previous screen
@@ -157,7 +92,7 @@ const AppliedScreen = (props) => {
         style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
           {(function () {
-            if (customer.status === 'Temporarily Approved') {
+            if (customer.status === 'Temporarily Approved' && showMessage) {
               return (
                 <>
                   <TouchableOpacity style={styles.closeButton} onPress={goBack}>
@@ -172,24 +107,35 @@ const AppliedScreen = (props) => {
                     <Text style={styles.header}>Başvurun onaylandı.</Text>
                     <Text style={styles.header}>Limitin artık 50.000 TL.</Text>
                     <Text style={styles.message}>
-                      Limit artışının kalıcı olması için ininal kullanıcı
-                      sözleşmesini yazdırıp, imzalayıp
+                      ininal kullanıcı sözleşmesinin fotoğrafını en geç
                       <Text style={{ fontWeight: 'bold' }}>
                         {` ${dateParse(
                           customer.approval_expiration,
                         )} tarihine kadar `}
                       </Text>
-                      fotoğrafını yüklemen gerekiyor. Eğer imzalı sözleşmeni
-                      yüklemezsen, limitin tekrar{' '}
+                      yüklemen gerekiyor. Eğer imzalı sözleşmen bize ulaşmazsa,
+                      limitin tekrar{' '}
                       <Text style={{ fontWeight: 'bold' }}>750 TL</Text>'ye
                       düşecek.
                     </Text>
+                  </View>
+                  <View style={{ marginBottom: 10 }}>
+                    <Button
+                      onPress={() => {
+                        setShowMessage(false);
+                      }}
+                      text="DEVAM ET"
+                      style={styles.buttonStyle}
+                    />
                   </View>
                 </>
               );
             }
 
-            if (customer.status === 'Temporary Approval Expired') {
+            if (
+              customer.status === 'Temporary Approval Expired' &&
+              showMessage
+            ) {
               return (
                 <>
                   <TopBar
@@ -213,6 +159,15 @@ const AppliedScreen = (props) => {
                       yüklemen gerekiyor.
                     </Text>
                   </View>
+                  <View style={{ marginBottom: 10 }}>
+                    <Button
+                      onPress={() => {
+                        setShowMessage(false);
+                      }}
+                      text="DEVAM ET"
+                      style={styles.buttonStyle}
+                    />
+                  </View>
                 </>
               );
             }
@@ -222,74 +177,85 @@ const AppliedScreen = (props) => {
                 <TopBar
                   onLeftButtonPressed={goBack}
                   leftButtonIcon={backArrow}
+                  onRightButtonPressed={shareOpen}
+                  rightButtonIcon={shareIcon}
                   style={{ paddingHorizontal: 20 }}
                   title="Fiziksel Sözleşmeni Yükle"
                 />
                 <View
                   style={[
                     styles.messageContainer,
-                    { justifyContent: 'flex-start', alignItems: 'baseline' },
+                    { justifyContent: 'flex-start', paddingTop: 10 },
                   ]}>
-                  <Text
-                    style={[
-                      styles.message,
-                      { textAlign: 'left', marginTop: 20 },
-                    ]}>
-                    Limit artışının kalıcı olması için aşağıda yer alan ininal
-                    kullanıcı sözleşmesini yazdırıp. İmzalayıp, fotoğrafını
-                    yüklemen gerekiyor.
-                  </Text>
-
-                  <Text style={[styles.message, { textAlign: 'left' }]}>
-                    En geç
-                    <Text style={{ fontWeight: 'bold' }}>
-                      {customer.status === 'Temporarily Approved'
-                        ? ` ${dateParse(
-                            customer.approval_expiration,
-                          )} tarihine kadar `
-                        : ` iki hafta içinde `}
+                  <Image
+                    resizeMode="contain"
+                    style={styles.successIcon}
+                    source={contractImage}
+                  />
+                  <View style={{ alignItems: 'baseline' }}>
+                    <Text
+                      style={[
+                        styles.message,
+                        { textAlign: 'left', marginTop: 10 },
+                      ]}>
+                      Limit artışının kalıcı olması için aşağıdaki adımları
+                      tamamla
                     </Text>
-                    fiziksel sözleşmeni yüklemezsen, limitin tekrar{' '}
-                    <Text style={{ fontWeight: 'bold' }}>750 TL</Text>'ye
-                    düşecek.
-                  </Text>
+
+                    <Text
+                      style={[
+                        styles.message,
+                        { textAlign: 'left', marginTop: 20 },
+                      ]}>
+                      <Text style={{ fontWeight: 'bold' }}>1) </Text>
+                      Yukarıda yer alan ininal sözleşmesini indir ve yazıcıda
+                      yazdır
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.message,
+                        { textAlign: 'left', marginTop: 10 },
+                      ]}>
+                      <Text style={{ fontWeight: 'bold' }}>2) </Text>
+                      Sözleşmede bulunan 6 adet alanı imzala
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.message,
+                        { textAlign: 'left', marginTop: 10 },
+                      ]}>
+                      <Text style={{ fontWeight: 'bold' }}>3) </Text>
+                      İmzalı sözleşmenin fotoğrafını çek yükle
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ marginBottom: 10 }}>
+                  {takePhoto && (
+                    <Button
+                      onPress={() => {
+                        onActivity('Fzk_FotoCek');
+                        takePhoto();
+                      }}
+                      noBackground
+                      text="İMZALI SÖZLEŞMENİ YÜKLE"
+                      style={styles.buttonStyle}
+                    />
+                  )}
+                  <Button
+                    onPress={async () => {
+                      const url = await getContractURL();
+                      Linking.openURL(url);
+                    }}
+                    text="SÖZLEŞMENİ İNDİR"
+                    style={styles.buttonStyle}
+                    disabled={urlButtonLoading}
+                  />
                 </View>
               </>
             );
           })()}
-
-          <View style={{ marginBottom: 10 }}>
-            <Button
-              onPress={getContractURL}
-              text="Sözleşmeyi İndir"
-              style={styles.buttonStyle}
-              noBackground
-            />
-            <Button
-              onPress={() => {
-                onActivity('Fzk_Eposta');
-                setShowPopup(
-                  <SendEmailContent
-                    customer={customerData}
-                    onActivity={onActivity}
-                  />,
-                );
-              }}
-              text="Sözleşmeni E-posta ile Gönder"
-              style={styles.buttonStyle}
-              noBackground
-            />
-            {takePhoto && (
-              <Button
-                onPress={() => {
-                  onActivity('Fzk_FotoCek');
-                  takePhoto();
-                }}
-                text="Sözleşmenin Fotoğrafını Çek"
-                style={styles.buttonStyle}
-              />
-            )}
-          </View>
         </View>
       </ImageBackground>
     );

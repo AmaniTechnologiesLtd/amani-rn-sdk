@@ -7,6 +7,8 @@ import {
   Dimensions,
   TouchableOpacity,
   ImageBackground,
+  Image,
+  Modal,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import RNFS from 'react-native-fs';
@@ -27,6 +29,7 @@ import api from '../services/api';
 import backArrow from '../../assets/back-arrow.png';
 import blueBackground from '../../assets/btn-blue.png';
 import darkBlueBackground from '../../assets/btn-dark-blue.png';
+import warningIcon from '../../assets/warning-icon.png';
 import { backdropColor } from '../constants';
 import { errorMessages } from '../constants';
 
@@ -73,6 +76,9 @@ const CaptureDocument = (props) => {
   const [capturedImageUrl, setCapturedImageUrl] = useState(null);
   const [autoCapturedImage, setAutoCapturedImage] = useState(null);
   const [autoCaptureError, setAutoCaptureError] = useState(null);
+  const [showModal, setShowModal] = useState(
+    document.id === 'CO' ? true : false,
+  );
 
   const camera = useRef(null);
 
@@ -551,6 +557,35 @@ const CaptureDocument = (props) => {
                 )}
               </View>
 
+              <Modal
+                transparent
+                animationType="none"
+                style={{ flex: 1 }}
+                visible={showModal}>
+                <View style={styles.modal}>
+                  <View style={styles.popup}>
+                    <Image
+                      resizeMode="contain"
+                      style={styles.warningIcon}
+                      source={warningIcon}
+                    />
+                    <Text style={styles.popupHeader}>Dikkat!</Text>
+                    <Text style={styles.popupText}>
+                      Islak imza ile imzaladığın fiziksel sözleşmeni
+                      yüklediğinden emin ol.
+                    </Text>
+
+                    <Button
+                      onPress={() => {
+                        setShowModal(false);
+                      }}
+                      text="TAMAM"
+                      style={styles.popupButton}
+                    />
+                  </View>
+                </View>
+              </Modal>
+
               <TouchableOpacity
                 style={[
                   styles.takePhotoButtonCircle,
@@ -710,5 +745,33 @@ const styles = StyleSheet.create({
   backDrop: {
     backgroundColor: backdropColor,
     flex: 1,
+  },
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popup: {
+    width: '85%',
+    backgroundColor: 'rgba(38, 59, 91, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  popupHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginVertical: 20,
+  },
+  popupText: {
+    color: 'white',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  popupButton: {
+    width: '90%',
   },
 });
