@@ -10,8 +10,9 @@ import {
   Linking,
   BackHandler,
   TouchableOpacity,
+  Share,
+  Platform,
 } from 'react-native';
-import Share from 'react-native-share';
 
 import api from '../services/api';
 import TopBar from './TopBar';
@@ -75,12 +76,14 @@ const AppliedScreen = (props) => {
 
   const shareOpen = async () => {
     const url = await getContractURL();
+    let message = 'İninal Limit Artırım Kullanıcı Sözleşmesi';
+
+    if (Platform.OS === 'android') {
+      message += `\n\n ${url}`;
+    }
+
     try {
-      await Share.open({
-        title: 'İninal Limit Artırım Kullanıcı Sözleşmesi',
-        message: 'İninal Limit Artırım Kullanıcı Sözleşmesi',
-        url,
-      });
+      await Share.share({ message, url }, { subject: message });
     } catch (error) {}
   };
 
