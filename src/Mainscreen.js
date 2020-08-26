@@ -658,13 +658,6 @@ const MainScreen = (props) => {
       }
     }
 
-    // If physical contract is rejected we do not show customer main screen
-    // when customer clicks to the contact we show the applied screen
-    if (document.id === 'CO' && document.status === 'REJECTED') {
-      setShowAppliedScreen(true);
-      return;
-    }
-
     // If no message directly go to document
     goToDocument(document);
   };
@@ -681,6 +674,11 @@ const MainScreen = (props) => {
     // Go to document capture page
     if (document.id === 'SG') {
       setShowContract(true);
+
+      // If physical contract is rejected we do not show customer main screen
+      // when customer clicks to the contact we show the applied screen
+    } else if (document.id === 'CO' && document.status === 'REJECTED') {
+      setShowAppliedScreen(true);
     } else {
       setSelectedDocument(document);
     }
@@ -788,7 +786,7 @@ const MainScreen = (props) => {
             }
           }}
           takePhoto={() => {
-            goToDocument(contract);
+            setSelectedDocument(contract);
           }}
           onActivity={sendEvent}
         />
