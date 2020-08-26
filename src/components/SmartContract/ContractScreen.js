@@ -99,7 +99,11 @@ const ContractScreen = (props) => {
 
   // Wait for address document to be processed on the server
   useEffect(() => {
-    if (addressDocument.status !== 'PROCESSING') {
+    if (addressDocument) {
+      if (addressDocument.status !== 'PROCESSING') {
+        getCustomerData();
+      }
+    } else {
       getCustomerData();
     }
   }, [addressDocument]);
