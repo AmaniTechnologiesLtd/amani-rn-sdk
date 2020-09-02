@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 import topbarBackground from '../../assets/topbar-bg.png';
@@ -92,12 +93,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    marginTop: Platform.OS === 'android' ? 20 : 30,
     width: '100%',
   },
   withBackground: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    marginTop: 0,
+    paddingBottom: 15,
   },
   topBarIcon: {
     width: width * 0.055,

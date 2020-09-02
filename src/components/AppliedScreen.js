@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  ScrollView,
   SafeAreaView,
   Image,
   Text,
@@ -95,7 +96,7 @@ const AppliedScreen = (props) => {
         source={mainBackground}
         style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
-          {(function () {
+          {(function() {
             if (customer.status === 'Temporarily Approved' && showMessage) {
               return (
                 <>
@@ -190,77 +191,83 @@ const AppliedScreen = (props) => {
                   style={{ paddingHorizontal: 20 }}
                   title="Fiziksel Sözleşmeni Yükle"
                 />
-                <View
-                  style={[
-                    styles.messageContainer,
-                    { justifyContent: 'flex-start', paddingTop: 10 },
-                  ]}>
-                  <Image
-                    resizeMode="contain"
-                    style={styles.successIcon}
-                    source={contractImage}
-                  />
-                  <View style={{ alignItems: 'baseline' }}>
-                    <Text
-                      style={[
-                        styles.message,
-                        { textAlign: 'left', marginTop: 10 },
-                      ]}>
-                      Limit artışının kalıcı olması için aşağıdaki adımları
-                      tamamla
-                    </Text>
-
-                    <Text
-                      style={[
-                        styles.message,
-                        { textAlign: 'left', marginTop: 20 },
-                      ]}>
-                      <Text style={{ fontWeight: 'bold' }}>1) </Text>
-                      Yukarıda yer alan ininal sözleşmesini indir ve yazıcıda
-                      yazdır
-                    </Text>
-
-                    <Text
-                      style={[
-                        styles.message,
-                        { textAlign: 'left', marginTop: 10 },
-                      ]}>
-                      <Text style={{ fontWeight: 'bold' }}>2) </Text>
-                      Sözleşmede bulunan 6 adet alanı imzala
-                    </Text>
-
-                    <Text
-                      style={[
-                        styles.message,
-                        { textAlign: 'left', marginTop: 10 },
-                      ]}>
-                      <Text style={{ fontWeight: 'bold' }}>3) </Text>
-                      İmzalı sözleşmenin fotoğrafını çek yükle
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ marginBottom: 10 }}>
-                  {takePhoto && (
-                    <Button
-                      onPress={() => {
-                        onActivity('Fzk_FotoCek');
-                        takePhoto();
-                      }}
-                      noBackground
-                      text="İMZALI SÖZLEŞMENİ YÜKLE"
-                      style={styles.buttonStyle}
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                  <View
+                    style={[
+                      {
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingTop: 10,
+                        flex: 1,
+                      },
+                    ]}>
+                    <Image
+                      resizeMode="contain"
+                      style={styles.successIcon}
+                      source={contractImage}
                     />
-                  )}
-                  <Button
-                    onPress={async () => {
-                      const url = await getContractURL();
-                      Linking.openURL(url);
-                    }}
-                    text="SÖZLEŞMENİ İNDİR"
-                    style={styles.buttonStyle}
-                    disabled={urlButtonLoading}
-                  />
-                </View>
+                    <View style={{ alignItems: 'baseline' }}>
+                      <Text
+                        style={[
+                          styles.message,
+                          { textAlign: 'left', marginTop: 10 },
+                        ]}>
+                        Limit artışının kalıcı olması için aşağıdaki adımları
+                        tamamla
+                      </Text>
+
+                      <Text
+                        style={[
+                          styles.message,
+                          { textAlign: 'left', marginTop: 20 },
+                        ]}>
+                        <Text style={{ fontWeight: 'bold' }}>1) </Text>
+                        Yukarıda yer alan ininal sözleşmesini indir ve yazıcıda
+                        yazdır
+                      </Text>
+
+                      <Text
+                        style={[
+                          styles.message,
+                          { textAlign: 'left', marginTop: 10 },
+                        ]}>
+                        <Text style={{ fontWeight: 'bold' }}>2) </Text>
+                        Sözleşmede bulunan 6 adet alanı imzala
+                      </Text>
+
+                      <Text
+                        style={[
+                          styles.message,
+                          { textAlign: 'left', marginTop: 10 },
+                        ]}>
+                        <Text style={{ fontWeight: 'bold' }}>3) </Text>
+                        İmzalı sözleşmenin fotoğrafını çek yükle
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={{ marginBottom: 10 }}>
+                    {takePhoto && (
+                      <Button
+                        onPress={() => {
+                          onActivity('Fzk_FotoCek');
+                          takePhoto();
+                        }}
+                        noBackground
+                        text="İMZALI SÖZLEŞMENİ YÜKLE"
+                        style={styles.buttonStyle}
+                      />
+                    )}
+                    <Button
+                      onPress={async () => {
+                        const url = await getContractURL();
+                        Linking.openURL(url);
+                      }}
+                      text="SÖZLEŞMENİ İNDİR"
+                      style={styles.buttonStyle}
+                      disabled={urlButtonLoading}
+                    />
+                  </View>
+                </ScrollView>
               </>
             );
           })()}
