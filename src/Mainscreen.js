@@ -144,7 +144,7 @@ const MainScreen = (props) => {
 
     if (isLoading) {
       api.setBaseUrl(server ? server.toLowerCase() : 'tr');
-      (async function() {
+      (async function () {
         try {
           const loginResponse = await api.login({
             email: authData.appKey,
@@ -158,21 +158,49 @@ const MainScreen = (props) => {
           try {
             const customerResponse = await api.createCustomer(customerData);
             setCustomer(customerResponse.data);
-
-            // Prepare available documents from company rules
-            const available_documents = customerResponse.data.rules.reduce(
-              (currentValue, rule) => [
-                ...currentValue,
-                ...rule.document_classes,
-              ],
-              [],
+            const companyDocuments = await api.getCompanyDocuments(
+              loginResponse.data.company_id,
             );
 
-            // Filter documents that company needs
-            dispatch({
-              type: 'FILTER_DOCUMENTS',
-              document_types: available_documents,
-            });
+            let available_documents = [];
+
+            if (Object.keys(companyDocuments).length) {
+              for (const step of companyDocuments.data.step_configs) {
+                Object.keys(step.documents)
+                  .filter((key) => step.documents[key] !== null)
+                  .map((key) => {
+                    available_documents.push(step.documents[key]);
+                  });
+              }
+
+              console.log(available_documents);
+
+              if (available_documents.length) {
+                dispatch({
+                  type: 'IMPORT_DOCUMENTS',
+                  documents: available_documents,
+                });
+              }
+            }
+
+            // -- Old version support
+            // For supporting old versions remove in the future
+            if (available_documents.length === 0) {
+              available_documents = customerResponse.data.rules.reduce(
+                (currentValue, rule) => [
+                  ...currentValue,
+                  ...rule.document_classes,
+                ],
+                [],
+              );
+
+              // Filter documents that company needs
+              dispatch({
+                type: 'FILTER_DOCUMENTS',
+                document_types: available_documents,
+              });
+            }
+            // -- Old version support
 
             // Check for missing documents and set statuses for documents
             documents.map((doc) => {

@@ -1,7 +1,6 @@
 export const initialDocuments = [
   {
     id: 'ID',
-    secondary_id: ['DL'],
     title: 'Upload your ID',
     status: 'NOT_UPLOADED',
     steps: [
@@ -314,17 +313,15 @@ export const initialDocuments = [
 
 export const documentsReducer = (state, action) => {
   switch (action.type) {
+    case 'IMPORT_DOCUMENTS':
+      return action.documents;
     case 'FILTER_DOCUMENTS':
       return state.filter((document) =>
         action.document_types.includes(document.id),
       );
     case 'CHANGE_STATUS':
       return state.map((document) => {
-        if (
-          action.document_id === document.id ||
-          (document.secondary_id &&
-            document.secondary_id.includes(action.document_id))
-        ) {
+        if (action.document_id === document.id) {
           return { ...document, status: action.status };
         }
         return document;

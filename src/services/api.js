@@ -12,6 +12,7 @@ export default {
     (axios.defaults.headers.common.Authorization = `TOKEN ${token}`),
   login: (param) => axios.post('user/login/', param),
   createCustomer: (param) => axios.post('customer', param),
+  getCompanyDocuments: (id) => axios.get(`company/${id}/app_configs`),
   getCustomer: (id) => axios.get(`customer/detail/${id}`),
   getContractURL: (id) => axios.get(`company_forms/2/customer/${id}/file`),
   sendContractEmail: (id, email) =>
