@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import LottieView from 'lottie-react-native';
+// import LottieView from 'lottie-react-native';
 
 // Local files
 import TopBar from '../TopBar';
@@ -211,7 +211,7 @@ const SignatureDraw = (props) => {
         title={document.steps[currentStep].title}
       />
 
-      <Modal transparent animationType="none" visible={showAnimation}>
+      {/* <Modal transparent animationType="none" visible={showAnimation}>
         <LottieView
           style={[height < 600 ? { height: height * 0.78 } : {}]}
           source={animationSignature}
@@ -219,7 +219,7 @@ const SignatureDraw = (props) => {
           loop={false}
           onAnimationFinish={() => setShowAnimation(false)}
         />
-      </Modal>
+      </Modal> */}
 
       <SafeAreaView style={{ flex: 1 }}>
         <SignatureScreen

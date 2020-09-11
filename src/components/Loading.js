@@ -1,20 +1,20 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import LottieView from 'lottie-react-native';
+// import LottieView from 'lottie-react-native';
 
-import animationID from '../../assets/animation_id.json';
-import animationSE from '../../assets/animation_se.json';
+// import animationID from '../../assets/animation_id.json';
+// import animationSE from '../../assets/animation_se.json';
 
 const Loading = (props) => {
   const animationType = () => {
-    const { type } = props;
-    if (type === 'ID') {
-      return <LottieView source={animationID} autoPlay loop />;
-    }
+    // const { type } = props;
+    // if (type === 'ID') {
+    //   return <LottieView source={animationID} autoPlay loop />;
+    // }
 
-    if (type === 'SE') {
-      return <LottieView source={animationSE} autoPlay loop />;
-    }
+    // if (type === 'SE') {
+    //   return <LottieView source={animationSE} autoPlay loop />;
+    // }
 
     return <ActivityIndicator color="white" size="large" />;
   };
