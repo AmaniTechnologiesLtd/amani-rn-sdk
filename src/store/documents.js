@@ -84,6 +84,61 @@ export const initialDocuments = [
     errorDescription: 'Lütfen tekrar dene.',
   },
   {
+    id: 'PA',
+    title: 'Pasaportunu Yükle',
+    status: 'NOT_UPLOADED',
+    steps: [
+      {
+        title: 'Pasaportunun fotoğrafını çek',
+        description:
+          'Fotoğrafı aydınlık bir alanda çek.\nPasaportunun işaretli alana tam oturduğundan ve okunaklı olduğundan emin ol.',
+        confirmationTitle: 'Pasaport',
+        confirmationDescription:
+          'Pasaportunun bütünüyle gözüktüğünden ve okunaklı olduğundan emin ol.',
+      },
+    ],
+    attempt: 1,
+    maxAttempt: 2,
+    options: ['takePicture', 'async'],
+    captureVideo: false,
+    cameraFacing: 'environment',
+    versionTitle: 'Pasaport Tipini Seçin',
+    versionDescription:
+      'Lütfen doğrulama işlemi için kullanacağın pasaportun tipini seç',
+    versions: {
+      '': [
+        {
+          title: 'Pasaport',
+          captureTopBar: 'Pasaportunu Yükle',
+          confirmationTopBar: 'Pasaportunu Kontrol Et',
+          aspectRatio: 0.7042,
+          nfc: false,
+          crop: false,
+          autoCrop: true,
+          autoCapture: true,
+          eventName: 'PASelection',
+        },
+      ],
+    },
+    messages: {
+      NOT_UPLOADED: 'Pasaportunu Doğrula',
+      PENDING_REVIEW: 'Pasaportun Yüklendi Kontrol Ediliyor...',
+      PROCESSING: 'Pasaportun Kontrol Ediliyor...',
+      APPROVED: 'Pasaportun Onaylandı',
+      REJECTED: `Pasaportun onaylanmadı\nLütfen tekrar dene`,
+      AUTOMATICALLY_REJECTED: `Pasaportun onaylanmadı\nLütfen tekrar dene`,
+    },
+    events: {
+      clickName: 'PA',
+      success: 'PA_Success_Dvm',
+      capture: ['PA_On'],
+    },
+    successTitle: 'Pasaportunu başarıyla yükledin.',
+    successDescription: '',
+    errorTitle: 'Pasaportunu yüklerken bir hata oluştu.',
+    errorDescription: 'Lütfen tekrar dene.',
+  },
+  {
     id: 'SE',
     title: 'Selfie Çek',
     status: 'NOT_UPLOADED',
