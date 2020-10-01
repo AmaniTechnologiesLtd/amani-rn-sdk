@@ -48,7 +48,7 @@ const NFC = (props) => {
       console.log(error.code, error.message);
       // If NFC is not supported continue
       if (error.code === 'E_NOT_SUPPORTED') {
-        continueProcess({ status: 'not_supported' });
+        continueProcess(false);
       } else if (error.code === 'E_NOT_ENABLED') {
         setErrorMessage(
           'Lütfen telefonunuzun NFC özelliğinin açık olduğundan emin olun',
@@ -134,12 +134,7 @@ const NFC = (props) => {
             <View style={styles.bottomBar}>
               <Button
                 text="DEVAM ET"
-                onPress={() =>
-                  continueProcess({
-                    status: 'read_failed',
-                    attempts: attempts - 1,
-                  })
-                }
+                onPress={() => continueProcess(false)}
                 style={styles.bottomButtons}
               />
             </View>
