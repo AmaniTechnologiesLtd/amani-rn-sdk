@@ -517,28 +517,22 @@ const MainScreen = (props) => {
   const checkIsNextStepDisabled = (document) => {
     const index = documents.findIndex((doc) => doc.id === document.id);
 
-    // Accessibility check for only physical contract
+    // Accessibility check for all documents. Previous document should be uploaded
     return Boolean(
-      document.id === 'CO' &&
-        checkPreviousSteps(index, [
-          'NOT_UPLOADED',
-          'REJECTED',
-          'AUTOMATICALLY_REJECTED',
-        ]),
+      //document.id === 'CO' && // Accessibility check for only physical contract
+      checkPreviousSteps(index, [
+        'NOT_UPLOADED',
+        'REJECTED',
+        'AUTOMATICALLY_REJECTED',
+      ]),
     );
-
-    // Accessibility check for all documents
-    // return Boolean(
-    //   (index !== 0 &&
-    //     checkPreviousSteps(index, ['NOT_UPLOADED', 'REJECTED'])) ||
-    //     ['APPROVED', 'PENDING_REVIEW'].includes(document.status),
-    // );
   };
 
   const moduleStatusBackground = (document, index) => {
     const status = documentStatus(document);
     if (
-      document.id === 'CO' && // Opacity for only physical contract
+      // Removed for uploading step by step. Previously it was only for Physical Contract
+      //document.id === 'CO' &&
       !['APPROVED', 'PENDING_REVIEW'].includes(status) &&
       checkPreviousSteps(index, [
         'NOT_UPLOADED',
@@ -870,7 +864,7 @@ const MainScreen = (props) => {
                   if (checkIsNextStepDisabled(document)) {
                     Alert.alert(
                       '',
-                      'Bu adıma geçebilmek için önce üstteki adımları tamamlamalısın',
+                      'Bu adıma geçebilmek için önceki adımları tamamlamalısın',
                       [{ text: 'Devam' }],
                       {
                         cancelable: true,

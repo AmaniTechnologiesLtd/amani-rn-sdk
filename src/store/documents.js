@@ -24,7 +24,7 @@ export const initialDocuments = [
     ],
     attempt: 1,
     maxAttempt: 3,
-    options: ['takePicture', 'async'],
+    options: ['takePicture'],
     captureVideo: false,
     cameraFacing: 'environment',
     versionTitle: 'Kimlik Tipini Seçin',

@@ -6,6 +6,7 @@ export const errorMessages = {
   1003: 'Fotoğrafta parlama tespit edildi.\n\nLütfen belgenin üstüne doğrudan ışık gelmemesine dikkat et',
   1004: 'Belgeyi arka plandan ayrıştıramadık.\n\nLütfen tek renk bir yüzey üzerinde tekrar dene',
   1005: 'Bu belge tipi desteklenmiyor.\n\nLütfen tekrar dene',
+  1006: 'Üzerinde fotoğraf bulunan bir kimlik kullanmalısın.\n\nLütfen tekrar dene',
   1008: 'Bu kimlik sana ait değil.\n\nLütfen kendine ait bir kimlik kullan',
   1009: '*** Bu hata kodu checker mesajı için ayrıldı ***',
   2001: 'Selfie kimlik belgendeki fotoğrafla uyuşmuyor.\n\nLütfen tekrar dene',

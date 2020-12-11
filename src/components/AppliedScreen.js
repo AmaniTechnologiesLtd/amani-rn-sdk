@@ -96,7 +96,7 @@ const AppliedScreen = (props) => {
         source={mainBackground}
         style={[styles.container, { paddingTop: 0 }]}>
         <View style={{ flex: 1 }} onTouchStart={() => onActivity('TouchEvent')}>
-          {(function() {
+          {(function () {
             if (customer.status === 'Temporarily Approved' && showMessage) {
               return (
                 <>
