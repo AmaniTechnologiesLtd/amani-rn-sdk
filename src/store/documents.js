@@ -146,7 +146,7 @@ export const initialDocuments = [
     ],
     attempt: 1,
     maxAttempt: 3,
-    options: ['takePicture', 'fileUpload', 'skipDocument', 'async'],
+    options: ['takePicture', 'fileUpload', 'async'],
     type: 'image',
     captureVideo: false,
     cameraFacing: 'environment',

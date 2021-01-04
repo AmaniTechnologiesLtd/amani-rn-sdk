@@ -17,7 +17,6 @@ import TopBar from './TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import searchIcon from '../../assets/search-icon.png';
-import itemBackground from '../../assets/select-bg.png';
 import forwardArrrow from '../../assets/forward-arrow.png';
 
 const ModalPicker = (props) => {
@@ -143,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topbar: {
-    paddingVertical: 10,
+    paddingBottom: 15,
     paddingHorizontal: 20,
     backgroundColor: 'red',
     marginBottom: 10,
