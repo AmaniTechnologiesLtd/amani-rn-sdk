@@ -31,6 +31,7 @@ npm install https://git@github.com/AmaniTechnologiesLtd/amani-rn-sdk
 | lottie-react-native                  | 3.3.2               |
 | lottie-ios                           | 3.1.3               |
 | react-native-permissions             | 2.1.5               |
+| jwt-decode                           | 3.1.2               |
 
 To install all of the dependencies run the following command:
 
@@ -118,38 +119,36 @@ cd ios && pod install
 ## Integration
 
 | Available props | Required | Type              | Default |
-| --------------- | -------- | ----------------- | ------- |
-| authData        | true     | object            | -       |
-| customerData    | true     | object            | -       |
-| onExit          | true     | callback function | -       |
-| server          | false    | string            | tr      |
-| onError         | false    | callback function | -       |
-| onActivity      | false    | callback function | -       |
+| --------------- | -------- | ----------------- | ----------------------------|
+| token           | true     | string            | -                           |
+| onExit          | true     | callback function | -                           |
+| server          | false    | string            | https://tr.amani.ai/api/v1/ |
+| onError         | false    | callback function | -                           |
+| onActivity      | false    | callback function | -                           |
 
 ```js
+// On server side login to Amani backend and get a token for future requests
+// API Key and Secret should be kept at your server  
+curl --location --request POST 'https://tr.amani.ai/api/v1/user/login/' \
+  --form 'email="exampleAPIKEY"' \
+  --form 'password="exampleAPISECRET"'
+
+// Using the token above create a customer and get a customer token
+// Customer tokens are valid for only one customer and they have short lifespan
+curl --location --request POST 'https://tr.amani.ai/api/v1/customer' \
+  --header 'Authorization: TOKEN YOUR_TOKEN_ABOVE' \
+  --form 'id_card_number="0000000000"' \
+  --form 'name="Example Name"' \
+  --form 'email="example@mail.com"' \
+  --form 'phone="+905321111111"'
+
+// On your application import AmaniAi SDK
 import AmaniAi from 'amani-rn-sdk';
-
-// These given values are all fake, they all just to show usage of this package.
-const authValues = {
-  appKey: 'exampleAppKey',
-  appPassword: 'exampleAppPasword',
-};
-
-const customer = {
-  id_card_number: '00000000000', // If you have a customer that already exists in Amani Service, pass the id here,
-
-  // Or create a new customer
-  id_card_number: '00000000000', // Like TC Number
-  name: 'example name',
-  email: 'example@mail.com',
-  phone: '+905321111111',
-};
 
 return (
   <AmaniAi
-    server="tr"
-    authData={authValues}
-    customerData={customer}
+    server="https://tr.amani.ai/api/v1/"
+    token={token}
     onError={(error) => console.log(error)}
     onExit={(values) => console.log(values)}
     onActivity={(event) => console.log(event)} // Fired on every screen touch and other specific events

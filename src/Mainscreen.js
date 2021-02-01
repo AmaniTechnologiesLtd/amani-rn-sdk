@@ -22,6 +22,7 @@ import {
   PERMISSIONS,
   RESULTS,
 } from 'react-native-permissions';
+import jwt_decode from 'jwt-decode';
 
 // Local files
 import CaptureDocument from './components/CaptureDocument';
@@ -44,7 +45,7 @@ import { errorMessages, eventDescriptions } from './constants';
 const { width, height } = Dimensions.get('window');
 
 const MainScreen = (props) => {
-  const { onActivity, onError, onExit, server, authData, customerData } = props;
+  const { onActivity, onError, onExit, server, token } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -148,23 +149,19 @@ const MainScreen = (props) => {
     handlePermissions();
 
     if (isLoading) {
-      api.setBaseUrl(server ? server.toLowerCase() : 'tr');
+      api.setBaseUrl(server ? server : 'https://tr.amani.ai/api/v1/');
       (async function () {
         try {
-          const loginResponse = await api.login({
-            email: authData.appKey,
-            password: authData.appPassword,
-          });
-
-          if (loginResponse.data) {
-            api.setToken(loginResponse.data.token);
-          }
+          api.setToken(token);
 
           try {
-            const customerResponse = await api.createCustomer(customerData);
+            const jwt = jwt_decode(token);
+            const customerResponse = await api.getCustomer(jwt.customer_id);
+
             setCustomer(customerResponse.data);
+
             const companyDocuments = await api.getCompanyDocuments(
-              loginResponse.data.company_id,
+              jwt.company_id,
             );
 
             let available_documents = [];
@@ -183,25 +180,6 @@ const MainScreen = (props) => {
                 });
               }
             }
-
-            // -- Old version support
-            // For supporting old versions remove in the future
-            if (available_documents.length === 0) {
-              available_documents = customerResponse.data.rules.reduce(
-                (currentValue, rule) => [
-                  ...currentValue,
-                  ...rule.document_classes,
-                ],
-                [],
-              );
-
-              // Filter documents that company needs
-              dispatch({
-                type: 'FILTER_DOCUMENTS',
-                document_types: available_documents,
-              });
-            }
-            // -- Old version support
 
             // Check for missing documents and set statuses for documents
             documents.map((doc) => {
