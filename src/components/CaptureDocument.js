@@ -637,10 +637,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  signatureContainer: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
   manualCropContainer: {
     flex: 1,
     backgroundColor: 'black',

@@ -28,6 +28,7 @@ import jwt_decode from 'jwt-decode';
 import CaptureDocument from './components/CaptureDocument';
 import MessageScreen from './components/MessageScreen';
 import ContractScreen from './components/SmartContract/ContractScreen';
+import AddressScreen from './components/AddressScreen';
 import Loading from './components/Loading';
 import PoweredBy from './components/PoweredBy';
 import { initialDocuments, documentsReducer } from './store/documents';
@@ -45,13 +46,22 @@ import { errorMessages, eventDescriptions } from './constants';
 const { width, height } = Dimensions.get('window');
 
 const MainScreen = (props) => {
-  const { onActivity, onError, onExit, server, token } = props;
+  const {
+    onActivity,
+    onError,
+    onExit,
+    server,
+    token: customerToken,
+    authData,
+    customerData,
+  } = props;
   const [documents, dispatch] = useReducer(documentsReducer, initialDocuments);
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentVersion, setSelectedDocumentVersion] = useState(null);
   const [showContract, setShowContract] = useState(false);
+  const [showAddress, setShowAddress] = useState(false);
   const [corners, setCorners] = useState([]);
   const [files, setFiles] = useState([]);
   const [isStepsFinished, setIsStepsFinished] = useState(false);
@@ -152,57 +162,72 @@ const MainScreen = (props) => {
       api.setBaseUrl(server ? server : 'https://tr.amani.ai/api/v1/');
       (async function () {
         try {
-          api.setToken(token);
+          let customerResponse;
+          let company_id;
 
-          try {
-            const jwt = jwt_decode(token);
-            const customerResponse = await api.getCustomer(jwt.customer_id);
+          if (customerToken) {
+            api.setToken(customerToken);
+            const jwt = jwt_decode(customerToken);
+            customerResponse = await api.getCustomer(jwt.customer_id);
+            company_id = jwt.company_id;
 
-            setCustomer(customerResponse.data);
-
-            const companyDocuments = await api.getCompanyDocuments(
-              jwt.company_id,
-            );
-
-            let available_documents = [];
-
-            if (Object.keys(companyDocuments).length) {
-              available_documents = Object.keys(companyDocuments.data)
-                .filter((key) => companyDocuments.data[key] !== null)
-                .map((key) => {
-                  return companyDocuments.data[key];
-                });
-
-              if (available_documents.length) {
-                dispatch({
-                  type: 'IMPORT_DOCUMENTS',
-                  documents: available_documents,
-                });
-              }
-            }
-
-            // Check for missing documents and set statuses for documents
-            documents.map((doc) => {
-              const rule = customerResponse.data.rules.find((element) =>
-                element.document_classes.includes(doc.id),
-              );
-
-              if (rule) {
-                dispatch({
-                  type: 'CHANGE_STATUS',
-                  document_id: doc.id,
-                  status: rule.status,
-                });
-              }
+            // Added for back compatibility
+          } else {
+            const loginResponse = await api.login({
+              email: authData.appKey,
+              password: authData.appPassword,
             });
 
-            findIncompleteDocument(customerResponse.data);
-          } catch (error) {
-            handleError(error);
+            if (loginResponse.data) {
+              api.setToken(loginResponse.data.token);
+              company_id = loginResponse.data.company_id;
+              customerResponse = await api.createCustomer(customerData);
+            } else {
+              throw 'login error';
+            }
           }
+
+          setCustomer(customerResponse.data);
+
+          const companyDocuments = await api.getCompanyDocuments(company_id);
+
+          let available_documents = [];
+
+          if (Object.keys(companyDocuments).length) {
+            available_documents = Object.keys(companyDocuments.data)
+              .filter((key) => companyDocuments.data[key] !== null)
+              .map((key) => {
+                return companyDocuments.data[key];
+              });
+
+            if (available_documents.length) {
+              dispatch({
+                type: 'IMPORT_DOCUMENTS',
+                documents: available_documents,
+              });
+            }
+          }
+
+          // Check for missing documents and set statuses for documents
+          documents.map((doc) => {
+            const rule = customerResponse.data.rules.find((element) =>
+              element.document_classes.includes(doc.id),
+            );
+
+            if (rule) {
+              dispatch({
+                type: 'CHANGE_STATUS',
+                document_id: doc.id,
+                status: rule.status,
+              });
+            }
+          });
+
+          findIncompleteDocument(customerResponse.data);
         } catch (error) {
           handleError(error);
         }
+
         setIsLoading(false);
       })();
     }
@@ -480,6 +505,7 @@ const MainScreen = (props) => {
     setFiles([]);
     setCorners([]);
     setShowContract(false);
+    setShowAddress(false);
     setMessage({ ...initialMessage });
   };
 
@@ -646,6 +672,8 @@ const MainScreen = (props) => {
     // Go to document capture page
     if (document.id === 'SG') {
       setShowContract(true);
+    } else if (document.id === 'UB' || document.id === 'IB') {
+      setShowAddress(true);
 
       // If physical contract is rejected we do not show customer main screen
       // when customer clicks to the contact we show the applied screen
@@ -675,11 +703,15 @@ const MainScreen = (props) => {
       return;
     }
 
-    const incompleteRules = currentCustomer.rules.filter((doc) =>
-      ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
-        doc.status,
-      ),
-    );
+    const incompleteRules = currentCustomer.rules
+      .filter((doc) =>
+        ['NOT_UPLOADED', 'REJECTED', 'AUTOMATICALLY_REJECTED'].includes(
+          doc.status,
+        ),
+      )
+      .sort((a, b) => {
+        return parseInt(a.sort_order, 10) - parseInt(b.sort_order, 10);
+      });
 
     if (incompleteRules.length) {
       const startDoc = documents.find((doc) =>
@@ -802,10 +834,31 @@ const MainScreen = (props) => {
         onContractDecline={() => setShowContract(false)}
         location={locationData}
         currentDocument={documents.find((document) => document.id === 'SG')}
-        addressDocument={documents.find((document) => document.id === 'UB')}
         dispatch={dispatch}
         customer={customer}
         updateCustomerRules={updateCustomerRules}
+        onActivity={sendEvent}
+      />
+    );
+  }
+
+  if (showAddress) {
+    return (
+      <AddressScreen
+        onGoBack={() => setShowAddress(false)}
+        onAddressVerified={() => {
+          dispatch({
+            type: 'CHANGE_STATUS',
+            document_id: 'UB',
+            status: 'APPROVED',
+          });
+          updateCustomerRules('UB', 'APPROVED');
+          setShowAddress(false);
+          showSuccessMessage(
+            documents.find((document) => document.id === 'UB'),
+          );
+        }}
+        customer={customer}
         onActivity={sendEvent}
       />
     );

@@ -10,6 +10,7 @@ import {
   BackHandler,
   Modal,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 
 import { strNormalize } from '../helpers';
@@ -93,6 +94,12 @@ const ModalPicker = (props) => {
                 style={styles.searchIcon}
                 source={searchIcon}
               />
+            </View>
+          )}
+
+          {items.length === 0 && (
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ActivityIndicator color="white" size="large" />
             </View>
           )}
 

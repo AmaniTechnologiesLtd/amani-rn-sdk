@@ -64,7 +64,8 @@ const AppliedScreen = (props) => {
     }
     try {
       setUrlButtonLoading(true);
-      const response = await api.getContractURL(customer.id);
+      const response = await api.getContractURL(2, customer.id);
+
       if (response.data.document_url) {
         setContractUrl(response.data.document_url);
         setUrlButtonLoading(false);
@@ -260,6 +261,7 @@ const AppliedScreen = (props) => {
                     <Button
                       onPress={async () => {
                         const url = await getContractURL();
+                        console.log(url);
                         Linking.openURL(url);
                       }}
                       text="SÖZLEŞMENİ İNDİR"

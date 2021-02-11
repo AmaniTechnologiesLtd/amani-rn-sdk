@@ -1,7 +1,7 @@
 // source https://gist.github.com/ugurozpinar/9682734
 const trCompare = (a, b) => {
   const alphabets =
-    'AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz0123456789';
+    '0123456789AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz';
   if (a.length === 0 || b.length === 0) {
     return a.length - b.length;
   }

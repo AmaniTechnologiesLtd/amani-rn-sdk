@@ -21,7 +21,6 @@ import api from '../../services/api';
 import TopBar from '../TopBar';
 import mainBackground from '../../../assets/main-bg.png';
 import backArrow from '../../../assets/back-arrow.png';
-import blueBackground from '../../../assets/btn-blue.png';
 import checkboxEmpty from '../../../assets/checkbox_empty.png';
 import checkboxChecked from '../../../assets/checkbox_checked.png';
 import Button from '../Button';
@@ -29,15 +28,12 @@ import Loading from '../Loading';
 import ModalPicker from '../ModalPicker';
 import { content } from './View/html';
 import SignatureDraw from '../SignatureDraw/SignatureDraw';
-import cities from '../../store/cities.json';
-import { trCompare, capitalizeFirstLetters } from '../../helpers';
 const { height } = Dimensions.get('window');
 
 const ContractScreen = (props) => {
   const {
     onContractDecline,
     currentDocument,
-    addressDocument,
     customer,
     location,
     dispatch,
@@ -48,14 +44,9 @@ const ContractScreen = (props) => {
   const [showContract, setShowContract] = useState(false);
   const [showSignatureScreen, setShowSignatureScreen] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
-  const [addressHeight, setAddressHeight] = useState(0);
   const [otherJob, setOtherJob] = useState(null);
-  const [showMessage, setShowMessage] = useState(false);
   const [formData, setFormData] = useState({
     job: null,
-    city: null,
-    district: null,
-    address: null,
   });
   const [formErrors, setFormErrors] = useState(false);
 
@@ -69,65 +60,23 @@ const ContractScreen = (props) => {
     { name: 'Diğer' },
   ];
 
-  const sortCities = (toBeSorted) => {
-    return toBeSorted.sort((a, b) => {
-      const topCities = ['İstanbul', 'Ankara', 'İzmir'];
-
-      if (topCities.includes(a.name) && topCities.includes(b.name)) {
-        return topCities.indexOf(a.name) - topCities.indexOf(b.name);
-      } else if (topCities.includes(a.name)) {
-        return -1;
-      } else if (topCities.includes(b.name)) {
-        return 1;
-      } else {
-        return trCompare(a.name, b.name);
-      }
-    });
-  };
-
-  const sortProvinces = (provinces) => {
-    return provinces.sort((a, b) => trCompare(a.name, b.name));
-  };
-
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPressContractScreen', () => {
       onContractDecline();
       return true;
     });
+    getCustomerData();
     return () =>
       BackHandler.removeEventListener('hardwareBackPressContractScreen');
   }, []);
-
-  // Wait for address document to be processed on the server
-  useEffect(() => {
-    if (addressDocument.status !== 'PROCESSING') {
-      getCustomerData();
-    }
-  }, [addressDocument]);
 
   const getCustomerData = async () => {
     try {
       const response = await api.getCustomer(customer.id);
 
-      if (response.data.address) {
-        if (
-          response.data.address.address &&
-          response.data.address.address.length > 0
-        ) {
-          setShowMessage(true);
-        }
-
+      if (response.data) {
         setFormData({
           ...formData,
-          city: response.data.address.city
-            ? capitalizeFirstLetters(response.data.address.city)
-            : null,
-          district: response.data.address.province
-            ? capitalizeFirstLetters(response.data.address.province)
-            : null,
-          address: response.data.address.address
-            ? response.data.address.address
-            : null,
           job: response.data.occupation ? response.data.occupation : null,
         });
         setOtherJob(response.data.occupation);
@@ -159,10 +108,6 @@ const ContractScreen = (props) => {
     setShowContract(true);
   };
 
-  const charsLeft = (max) => {
-    return formData.address ? max - formData.address.length : max;
-  };
-
   const selectJobView = (disabled, selected, showModal) => (
     <TouchableOpacity
       disabled={disabled}
@@ -175,42 +120,6 @@ const ContractScreen = (props) => {
             formErrors && !formData.job ? styles.inputError : {},
           ]}>
           {formData.job || 'Meslek'}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const selectCityView = (disabled, selected, showModal) => (
-    <TouchableOpacity
-      disabled={disabled}
-      onPress={showModal}
-      style={{ width: '100%' }}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            { color: formData.city ? 'white' : '#CAE0F5' },
-            formErrors && !formData.city ? styles.inputError : {},
-          ]}>
-          {formData.city || 'İl'}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const selectProvinceView = (disabled, selected, showModal) => (
-    <TouchableOpacity
-      style={{ width: '100%' }}
-      disabled={disabled}
-      onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            {
-              color: formData.district ? 'white' : '#CAE0F5',
-            },
-            formErrors && !formData.district ? styles.inputError : {},
-          ]}>
-          {formData.district || 'İlçe'}
         </Text>
       </View>
     </TouchableOpacity>
@@ -282,80 +191,6 @@ const ContractScreen = (props) => {
                 />
               )}
             </View>
-
-            <View style={styles.contactFormView}>
-              <ModalPicker
-                selectView={selectCityView}
-                items={sortCities(cities)}
-                title="İl Seç"
-                onSelected={(val) =>
-                  setFormData({
-                    ...formData,
-                    city: (val && val.name) || null,
-                    district: null,
-                  })
-                }
-              />
-            </View>
-
-            <View style={styles.contactFormView}>
-              <ModalPicker
-                disabled={!formData.city}
-                selectView={selectProvinceView}
-                title="İlçe Seç"
-                items={
-                  cities.find(
-                    (city) => city.name === (formData.city || 'Adana'),
-                  )
-                    ? sortProvinces(
-                        cities.find(
-                          (city) => city.name === (formData.city || 'Adana'),
-                        ).district,
-                      )
-                    : []
-                }
-                onSelected={(val) =>
-                  setFormData({
-                    ...formData,
-                    district: (val && val.name) || null,
-                  })
-                }
-              />
-            </View>
-
-            <View style={styles.contactFormView}>
-              <TextInput
-                style={[styles.multilineFormInput, { height: addressHeight }]}
-                onChangeText={(val) =>
-                  setFormData({ ...formData, address: val })
-                }
-                onContentSizeChange={(e) => {
-                  const textAreaHeight =
-                    e.nativeEvent.contentSize.height +
-                    (Platform.OS === 'ios' ? 10 : 0);
-                  setAddressHeight(textAreaHeight);
-                }}
-                placeholder="Açık Adres"
-                placeholderTextColor={
-                  formErrors && !formData.address ? '#FF5C65' : '#CAE0F5'
-                }
-                multiline
-                maxLength={150}
-                value={formData.address}
-              />
-              <Text style={styles.charCount}>{charsLeft(150)} / 150</Text>
-            </View>
-
-            {showMessage && (
-              <ImageBackground
-                source={blueBackground}
-                style={styles.addresNoteBackground}>
-                <Text style={styles.addressNote}>
-                  Adres bilgisini yüklediğin belgeden aldık. Eksik veya yanlış
-                  kısımlar varsa tıklayıp düzenleyebilirsin.
-                </Text>
-              </ImageBackground>
-            )}
 
             <Button
               onPress={handleFormSubmit}
@@ -481,15 +316,6 @@ const styles = StyleSheet.create({
     width: height * 0.03,
     height: height * 0.03,
     marginRight: 10,
-  },
-  addressNote: {
-    color: 'white',
-  },
-  addresNoteBackground: {
-    margin: 20,
-    padding: 15,
-    borderRadius: 10,
-    overflow: 'hidden',
   },
   bottomBar: {
     paddingBottom: 20,
