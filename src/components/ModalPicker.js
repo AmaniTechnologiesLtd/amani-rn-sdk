@@ -23,6 +23,7 @@ import forwardArrrow from '../../assets/forward-arrow.png';
 const ModalPicker = (props) => {
   const {
     onClose,
+    onShow,
     onSelected,
     items,
     selectView,
@@ -70,6 +71,7 @@ const ModalPicker = (props) => {
         animationType={animation}
         visible={show}
         onRequestClose={closeModal}
+        onShow={onShow}
         onDismiss={closeModal}>
         <ImageBackground source={mainBackground} style={styles.container}>
           <TopBar
@@ -137,6 +139,9 @@ ModalPicker.defaultProps = {
   selected: false,
   searchable: true,
   onClose: () => {
+    return null;
+  },
+  onShow: () => {
     return null;
   },
   onSelected: () => {

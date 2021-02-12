@@ -156,11 +156,11 @@ const CaptureDocument = (props) => {
     onActivity(event);
 
     DocumentPicker.pick({
-      type: [DocumentPicker.types.pdf],
+      type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
     })
       .then((file) => {
         RNFS.readFile(file.uri, 'base64').then((source) => {
-          onCapture(`data:application/pdf;base64,${source}`);
+          onCapture(`data:${file.type};base64,${source}`);
           calculateNextStep();
         });
       })

@@ -382,7 +382,7 @@ const AddressScreen = (props) => {
 
         <View style={styles.contactFormView}>
           <ModalPicker
-            disabled={!formData.district}
+            disabled={!formData.district || districts.length === 0}
             selectView={selectNeighborhoodView}
             title="Mahalle Seç"
             items={sortNames(neighborhoods)}
@@ -402,7 +402,7 @@ const AddressScreen = (props) => {
 
         <View style={styles.contactFormView}>
           <ModalPicker
-            disabled={!formData.neighborhood}
+            disabled={!formData.neighborhood || neighborhoods.length === 0}
             selectView={selectStreetView}
             title="Cadde/Sokak Seç"
             items={sortNames(streets)}
@@ -421,7 +421,7 @@ const AddressScreen = (props) => {
 
         <View style={styles.contactFormView}>
           <ModalPicker
-            disabled={!formData.street}
+            disabled={!formData.street || buildings.length === 0}
             selectView={selectBuildingView}
             title="Bina Numarası"
             items={sortNames(buildings)}
@@ -433,7 +433,7 @@ const AddressScreen = (props) => {
 
         <View style={styles.contactFormView}>
           <ModalPicker
-            disabled={!formData.building}
+            disabled={!formData.building || flats.length === 0}
             selectView={selectFlatView}
             title="Kapı Numarası"
             items={sortNumbers(flats)}
