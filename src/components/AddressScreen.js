@@ -172,8 +172,10 @@ const AddressScreen = (props) => {
         formData,
       );
       if (data?.data) {
+        onActivity('Adres_Succ');
         onAddressVerified();
       } else {
+        onActivity('Adres_Fail', 'TCKN adress uyumsuzlugu');
         Alert.alert(
           '',
           'Adresiniz doğrulanamadı. Lütfen gerekli alanları seçerek tekrar deneyin.',
@@ -354,6 +356,7 @@ const AddressScreen = (props) => {
                 flat: null,
                 addressNumber: null,
               });
+              onActivity('Adres_1');
               getDistricts(city.code);
             }}
           />
@@ -375,6 +378,7 @@ const AddressScreen = (props) => {
                 flat: null,
                 addressNumber: null,
               });
+              onActivity('Adres_2');
               getNeighborhoods(district.code);
             }}
           />
@@ -395,6 +399,7 @@ const AddressScreen = (props) => {
                 flat: null,
                 addressNumber: null,
               });
+              onActivity('Adres_3');
               getStreets(neighborhood.code);
             }}
           />
@@ -414,6 +419,7 @@ const AddressScreen = (props) => {
                 flat: null,
                 addressNumber: null,
               });
+              onActivity('Adres_4');
               getBuildings(street.code);
             }}
           />
@@ -426,6 +432,7 @@ const AddressScreen = (props) => {
             title="Bina Numarası"
             items={sortNames(buildings)}
             onSelected={(building) => {
+              onActivity('Adres_5');
               getFlats(building);
             }}
           />
@@ -438,6 +445,7 @@ const AddressScreen = (props) => {
             title="Kapı Numarası"
             items={sortNumbers(flats)}
             onSelected={(flat) => {
+              onActivity('Adres_6');
               setFormData({
                 ...formData,
                 flat: flat || null,

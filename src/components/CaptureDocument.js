@@ -272,6 +272,11 @@ const CaptureDocument = (props) => {
             res.data.errors[0].error_code === 1008
           ) {
             onActivity('ID_On_Err_TCKN');
+          } else if (document.id === 'SE') {
+            onActivity(
+              'Selfie_Err_Auto',
+              errorMessages[res.data.errors[0].error_code],
+            );
           }
 
           setAutoCaptureError({

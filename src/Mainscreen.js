@@ -381,6 +381,15 @@ const MainScreen = (props) => {
               sendEvent('ID_Err_Expiry');
               break;
 
+            case 2001:
+            case 2002:
+            case 2003:
+              sendEvent(
+                'Selfie_Err',
+                errorMessages[res.data.errors[0].error_code],
+              );
+              break;
+
             default:
               break;
           }
