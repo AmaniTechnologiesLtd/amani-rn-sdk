@@ -233,7 +233,7 @@ const AppliedScreen = (props) => {
                           { textAlign: 'left', marginTop: 10 },
                         ]}>
                         <Text style={{ fontWeight: 'bold' }}>2) </Text>
-                        Sözleşmede bulunan 6 adet alanı imzala
+                        Sözleşmede bulunan 2 adet alanı imzala
                       </Text>
 
                       <Text
