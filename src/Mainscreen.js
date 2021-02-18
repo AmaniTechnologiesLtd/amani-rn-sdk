@@ -189,24 +189,26 @@ const MainScreen = (props) => {
 
           setCustomer(customerResponse.data);
 
-          const companyDocuments = await api.getCompanyDocuments(company_id);
+          try {
+            const companyDocuments = await api.getCompanyDocuments(company_id);
 
-          let available_documents = [];
+            let available_documents = [];
 
-          if (Object.keys(companyDocuments).length) {
-            available_documents = Object.keys(companyDocuments.data)
-              .filter((key) => companyDocuments.data[key] !== null)
-              .map((key) => {
-                return companyDocuments.data[key];
-              });
+            if (Object.keys(companyDocuments).length) {
+              available_documents = Object.keys(companyDocuments.data)
+                .filter((key) => companyDocuments.data[key] !== null)
+                .map((key) => {
+                  return companyDocuments.data[key];
+                });
 
-            if (available_documents.length) {
-              dispatch({
-                type: 'IMPORT_DOCUMENTS',
-                documents: available_documents,
-              });
+              if (available_documents.length) {
+                dispatch({
+                  type: 'IMPORT_DOCUMENTS',
+                  documents: available_documents,
+                });
+              }
             }
-          }
+          } catch (err) {}
 
           // Check for missing documents and set statuses for documents
           documents.map((doc) => {

@@ -4,7 +4,9 @@ export default {
   autoCapture: (documentData) => axios.post('engine/autocapture', documentData),
   createCustomer: (param) => axios.post('customer', param),
   setBaseUrl: (server) => (axios.defaults.baseURL = server),
-  getCompanyDocuments: (id) => axios.get(`company/${id}/document_configs`),
+  // getCompanyDocuments: (id) => axios.get(`company/${id}/document_configs`),
+  getCompanyDocuments: (id) =>
+    axios.get(`https://tr.amani.ai/media/cv/document_configs/${id}.json`),
   getContractURL: (form_id, id) =>
     axios.get(`company_forms/${form_id}/customer/${id}/file`),
   getCustomer: (id) => axios.get(`customer/detail/${id}`),
