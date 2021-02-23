@@ -105,7 +105,7 @@ const ModalPicker = (props) => {
             </View>
           )}
 
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps="always">
             {items
               .filter((item) => {
                 return strNormalize(item.name).toLowerCase().includes(filter);
@@ -180,8 +180,7 @@ const styles = StyleSheet.create({
   searchArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 10,
-    marginBottom: 20,
+    margin: 10,
     borderBottomWidth: 2,
     borderColor: 'rgba(255, 255, 255, .3)',
     paddingBottom: 5,

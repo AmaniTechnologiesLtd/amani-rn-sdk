@@ -4,6 +4,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  Image,
   ImageBackground,
   Alert,
   StyleSheet,
@@ -16,6 +17,7 @@ import api from '../services/api';
 import TopBar from './TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
+import downArrow from '../../assets/down-arrow.png';
 
 import ModalPicker from './ModalPicker';
 import { trCompare } from '../helpers';
@@ -198,14 +200,15 @@ const AddressScreen = (props) => {
       disabled={disabled}
       onPress={showModal}
       style={{ width: '100%' }}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            styles.contactFormInputText,
-            disabled ? { opacity: 0.5 } : '',
-          ]}>
+      <View style={[styles.contactFormInput, disabled ? { opacity: 0.5 } : '']}>
+        <Text style={styles.contactFormInputText}>
           {formData.city?.name || 'İl'}
         </Text>
+        <Image
+          style={styles.contactFormInputImage}
+          resizeMode="contain"
+          source={downArrow}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -215,14 +218,15 @@ const AddressScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            styles.contactFormInputText,
-            disabled ? { opacity: 0.5 } : '',
-          ]}>
+      <View style={[styles.contactFormInput, disabled ? { opacity: 0.5 } : '']}>
+        <Text style={styles.contactFormInputText}>
           {formData.district?.name || 'İlçe'}
         </Text>
+        <Image
+          style={styles.contactFormInputImage}
+          resizeMode="contain"
+          source={downArrow}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -232,14 +236,15 @@ const AddressScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            styles.contactFormInputText,
-            disabled ? { opacity: 0.5 } : '',
-          ]}>
+      <View style={[styles.contactFormInput, disabled ? { opacity: 0.5 } : '']}>
+        <Text style={styles.contactFormInputText}>
           {formData.neighborhood?.name || 'Mahalle / Köy / Mezra / Mevki'}
         </Text>
+        <Image
+          style={styles.contactFormInputImage}
+          resizeMode="contain"
+          source={downArrow}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -249,14 +254,15 @@ const AddressScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            styles.contactFormInputText,
-            disabled ? { opacity: 0.5 } : '',
-          ]}>
+      <View style={[styles.contactFormInput, disabled ? { opacity: 0.5 } : '']}>
+        <Text style={styles.contactFormInputText}>
           {formData.street?.name || 'Cadde / Sokak'}
         </Text>
+        <Image
+          style={styles.contactFormInputImage}
+          resizeMode="contain"
+          source={downArrow}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -266,14 +272,15 @@ const AddressScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            styles.contactFormInputText,
-            disabled ? { opacity: 0.5 } : '',
-          ]}>
+      <View style={[styles.contactFormInput, disabled ? { opacity: 0.5 } : '']}>
+        <Text style={styles.contactFormInputText}>
           {formData.building?.name || 'Bina Numarası'}
         </Text>
+        <Image
+          style={styles.contactFormInputImage}
+          resizeMode="contain"
+          source={downArrow}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -283,14 +290,15 @@ const AddressScreen = (props) => {
       style={{ width: '100%' }}
       disabled={disabled}
       onPress={showModal}>
-      <View style={styles.contactFormInput}>
-        <Text
-          style={[
-            styles.contactFormInputText,
-            disabled ? { opacity: 0.5 } : '',
-          ]}>
+      <View style={[styles.contactFormInput, disabled ? { opacity: 0.5 } : '']}>
+        <Text style={styles.contactFormInputText}>
           {formData.flat?.name || 'Kapı Numarası'}
         </Text>
+        <Image
+          style={styles.contactFormInputImage}
+          resizeMode="contain"
+          source={downArrow}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -477,7 +485,7 @@ const styles = StyleSheet.create({
   },
   contactFormView: {
     alignItems: 'center',
-    paddingBottom: 10,
+    paddingBottom: 20,
     paddingHorizontal: 20,
   },
   contactFormTitle: {
@@ -493,73 +501,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'rgba(255, 255, 255, .3)',
     color: '#FFFFFF',
+    flexDirection: 'row',
   },
   inputError: {
     color: '#FF5C65',
   },
+  contactFormInputImage: {
+    width: 20,
+    height: 20,
+  },
   contactFormInputText: {
     color: '#FFFFFF',
+    flex: 1,
   },
   contactFormInputDisabled: {
     opacity: 0.5,
-  },
-  charCount: {
-    color: '#76889B',
-    fontSize: height * 0.02,
-    marginTop: 3,
-    alignSelf: 'flex-start',
-  },
-  customCheckboxOutline: {
-    borderColor: 'white',
-    borderWidth: 1,
-    borderRadius: 50,
-    width: height * 0.035,
-    height: height * 0.035,
-    marginLeft: 5,
-  },
-  customCheckboxInline: {
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkboxIOS: {
-    width: height * 0.03,
-    height: height * 0.03,
-    marginRight: 10,
-  },
-  addressNote: {
-    color: 'white',
-  },
-  addresNoteBackground: {
-    margin: 20,
-    padding: 15,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  bottomBar: {
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    backgroundColor: '#263B5B',
-  },
-  approveButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  approveButtonText: {
-    color: 'white',
-    paddingRight: 20,
-  },
-  bottomBarButton: {
-    width: '100%',
-    justifyContent: 'center',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  bottomBarButtonBackground: {
-    paddingVertical: 20,
-    resizeMode: 'cover',
-    alignItems: 'center',
   },
 });
