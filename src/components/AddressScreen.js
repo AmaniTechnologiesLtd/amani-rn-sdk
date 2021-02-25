@@ -18,6 +18,7 @@ import TopBar from './TopBar';
 import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import downArrow from '../../assets/down-arrow.png';
+import Loading from './Loading';
 
 import ModalPicker from './ModalPicker';
 import { trCompare } from '../helpers';
@@ -25,6 +26,7 @@ const { height } = Dimensions.get('window');
 
 const AddressScreen = (props) => {
   const { onGoBack, customer, onAddressVerified, onActivity } = props;
+  const [loading, setLoading] = useState(false);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [neighborhoods, setNeighborhoods] = useState([]);
@@ -141,12 +143,20 @@ const AddressScreen = (props) => {
   };
 
   const getFlats = async (building) => {
+    setFlats([]);
     try {
       const {
         data: { data },
       } = await api.getFlats(building.code);
 
-      if (data.length === 1 && data[0].address_no) {
+      if (data.length === 0) {
+        Alert.alert(
+          '',
+          'Bu binada mesken olarak kullanılabilir bir daire bulunamadı.',
+          [{ text: 'Anladım' }],
+          { cancelable: false },
+        );
+      } else if (data.length === 1 && data[0].address_no) {
         setFormData({
           ...formData,
           building,
@@ -154,18 +164,13 @@ const AddressScreen = (props) => {
           addressNumber: data[0].address_no,
         });
       } else {
-        setFormData({
-          ...formData,
-          building: building || null,
-          flat: null,
-          addressNumber: null,
-        });
         setFlats(data);
       }
     } catch (error) {}
   };
 
   const verifyAddress = async () => {
+    setLoading(true);
     try {
       const { data } = await api.verifyAddress(
         customer.id,
@@ -173,6 +178,8 @@ const AddressScreen = (props) => {
         formData.district.code,
         formData,
       );
+      setLoading(false);
+
       if (data?.data) {
         onActivity('Adres_Succ');
         onAddressVerified();
@@ -186,6 +193,7 @@ const AddressScreen = (props) => {
         );
       }
     } catch (error) {
+      setLoading(false);
       Alert.alert(
         '',
         'Bir hata oluştu. Lütfen tekrar deneyin.',
@@ -302,6 +310,10 @@ const AddressScreen = (props) => {
       </View>
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <ImageBackground source={mainBackground} style={styles.container}>
@@ -440,6 +452,12 @@ const AddressScreen = (props) => {
             title="Bina Numarası"
             items={sortNames(buildings)}
             onSelected={(building) => {
+              setFormData({
+                ...formData,
+                building: building || null,
+                flat: null,
+                addressNumber: null,
+              });
               onActivity('Adres_5');
               getFlats(building);
             }}

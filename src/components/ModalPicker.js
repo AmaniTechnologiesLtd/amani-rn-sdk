@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
   topbar: {
     paddingBottom: 15,
     paddingHorizontal: 20,
-    backgroundColor: 'red',
     marginBottom: 10,
   },
   item: {
