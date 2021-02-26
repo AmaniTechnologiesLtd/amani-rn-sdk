@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  Alert,
   StyleSheet,
   BackHandler,
   Dimensions,
@@ -19,6 +18,7 @@ import mainBackground from '../../assets/main-bg.png';
 import backArrow from '../../assets/back-arrow.png';
 import downArrow from '../../assets/down-arrow.png';
 import Loading from './Loading';
+import MessageScreen from './MessageScreen';
 
 import ModalPicker from './ModalPicker';
 import { trCompare } from '../helpers';
@@ -27,6 +27,7 @@ const { height } = Dimensions.get('window');
 const AddressScreen = (props) => {
   const { onGoBack, customer, onAddressVerified, onActivity } = props;
   const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(null);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [neighborhoods, setNeighborhoods] = useState([]);
@@ -90,6 +91,7 @@ const AddressScreen = (props) => {
   }, [formData]);
 
   const getCities = async () => {
+    setCities([]);
     setDistricts([]);
     setNeighborhoods([]);
     setStreets([]);
@@ -98,10 +100,14 @@ const AddressScreen = (props) => {
     try {
       const response = await api.getCities();
       setCities(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const getDistricts = async (city) => {
+    setDistricts([]);
     setNeighborhoods([]);
     setStreets([]);
     setBuildings([]);
@@ -109,20 +115,28 @@ const AddressScreen = (props) => {
     try {
       const response = await api.getDistricts(city);
       setDistricts(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const getNeighborhoods = async (district) => {
+    setNeighborhoods([]);
     setStreets([]);
     setBuildings([]);
     setFlats([]);
     try {
       const response = await api.getNeighborhoods(district);
       setNeighborhoods(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const getStreets = async (neighborhood) => {
+    setStreets([]);
     setBuildings([]);
     setFlats([]);
     try {
@@ -131,15 +145,22 @@ const AddressScreen = (props) => {
         neighborhood,
       );
       setStreets(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const getBuildings = async (street) => {
+    setBuildings([]);
     setFlats([]);
     try {
       const response = await api.getBuildings(street);
       setBuildings(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const getFlats = async (building) => {
@@ -150,11 +171,8 @@ const AddressScreen = (props) => {
       } = await api.getFlats(building.code);
 
       if (data.length === 0) {
-        Alert.alert(
-          '',
+        setShowError(
           'Bu binada mesken olarak kullanılabilir bir daire bulunamadı.',
-          [{ text: 'Anladım' }],
-          { cancelable: false },
         );
       } else if (data.length === 1 && data[0].address_no) {
         setFormData({
@@ -166,7 +184,10 @@ const AddressScreen = (props) => {
       } else {
         setFlats(data);
       }
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const verifyAddress = async () => {
@@ -185,21 +206,13 @@ const AddressScreen = (props) => {
         onAddressVerified();
       } else {
         onActivity('Adres_Fail', 'TCKN adress uyumsuzlugu');
-        Alert.alert(
-          '',
+        setShowError(
           'Adresiniz doğrulanamadı. Lütfen gerekli alanları seçerek tekrar deneyin.',
-          [{ text: 'Anladım' }],
-          { cancelable: false },
         );
       }
     } catch (error) {
       setLoading(false);
-      Alert.alert(
-        '',
-        'Bir hata oluştu. Lütfen tekrar deneyin.',
-        [{ text: 'Anladım' }],
-        { cancelable: false },
-      );
+      setShowError('Bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -313,6 +326,18 @@ const AddressScreen = (props) => {
 
   if (loading) {
     return <Loading />;
+  }
+
+  if (showError) {
+    return (
+      <MessageScreen
+        type="error"
+        header="Dikkat!"
+        title={showError}
+        buttonText="DEVAM"
+        onClick={() => setShowError(null)}
+      />
+    );
   }
 
   return (
