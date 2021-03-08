@@ -162,11 +162,6 @@ const SignatureDraw = (props) => {
     const customerData = {
       id: customer.id,
       occupation: formData.job,
-      address: {
-        city: formData.city,
-        province: formData.district,
-        address: formData.address,
-      },
     };
 
     await api.createCustomer(customerData);
