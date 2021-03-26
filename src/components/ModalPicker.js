@@ -108,7 +108,9 @@ const ModalPicker = (props) => {
           <ScrollView keyboardShouldPersistTaps="always">
             {items
               .filter((item) => {
-                return strNormalize(item.name).toLowerCase().includes(filter);
+                return strNormalize(item.name ? item.name : 'Null')
+                  .toLowerCase()
+                  .includes(filter);
               })
               .map((item) => {
                 return (
@@ -116,7 +118,9 @@ const ModalPicker = (props) => {
                     key={item.code || item.address_no}
                     onPress={() => selectItem(item)}>
                     <View style={styles.item}>
-                      <Text style={styles.itemText}>{item.name}</Text>
+                      <Text style={styles.itemText}>
+                        {item.name ? item.name : 'Null'}
+                      </Text>
                       <Image source={forwardArrrow} style={styles.itemArrow} />
                     </View>
                   </TouchableOpacity>
