@@ -115,7 +115,7 @@ const ModalPicker = (props) => {
               .map((item) => {
                 return (
                   <TouchableOpacity
-                    key={item.code || item.address_no}
+                    key={item.name || item.code || item.address_no}
                     onPress={() => selectItem(item)}>
                     <View style={styles.item}>
                       <Text style={styles.itemText}>

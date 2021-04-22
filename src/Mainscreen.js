@@ -857,17 +857,24 @@ const MainScreen = (props) => {
     return (
       <AddressScreen
         onGoBack={() => setShowAddress(false)}
-        onAddressVerified={() => {
+        onUploadDocument={() => {
+          setShowAddress(false);
+          setSelectedDocument(
+            documents.find((document) => document.id === 'UB'),
+          );
+        }}
+        onAddressSaved={(address) => {
           dispatch({
             type: 'CHANGE_STATUS',
             document_id: 'UB',
-            status: 'APPROVED',
+            status: 'PENDING_REVIEW',
           });
-          updateCustomerRules('UB', 'APPROVED');
+          updateCustomerRules('UB', 'PENDING_REVIEW');
           setShowAddress(false);
-          showSuccessMessage(
-            documents.find((document) => document.id === 'UB'),
-          );
+          setCustomer({ ...customer, address });
+          // showSuccessMessage(
+          //   documents.find((document) => document.id === 'UB'),
+          // );
         }}
         customer={customer}
         onActivity={sendEvent}
