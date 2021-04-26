@@ -183,7 +183,7 @@ const AddressScreen = (props) => {
       neighborhood: formData.neighborhood ? formData.neighborhood : '',
       street: formData.street ? formData.street : '',
       buildingNumber: formData.building ? formData.building : '',
-      flatNumner: formData.flat ? formData.flat : '',
+      flatNumber: formData.flat ? formData.flat : '',
       address: '',
     };
 
