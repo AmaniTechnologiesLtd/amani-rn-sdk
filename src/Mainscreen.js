@@ -683,7 +683,10 @@ const MainScreen = (props) => {
     // Go to document capture page
     if (document.id === 'SG') {
       setShowContract(true);
-    } else if (document.id === 'UB' || document.id === 'IB') {
+    } else if (
+      document?.manualAddressFields &&
+      (document.id === 'UB' || document.id === 'IB')
+    ) {
       setShowAddress(true);
 
       // If physical contract is rejected we do not show customer main screen
