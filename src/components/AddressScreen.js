@@ -203,7 +203,7 @@ const AddressScreen = (props) => {
 
     try {
       const response = await api.createCustomer({
-        id_card_number: customer.id_card_number,
+        id: customer.id,
         address: compositeAddress,
       });
       if (response.status === 200) {
