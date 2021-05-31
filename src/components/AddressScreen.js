@@ -40,6 +40,9 @@ const AddressScreen = (props) => {
   const [cityError, setCityError] = useState(false);
   const [districtError, setDistrictError] = useState(false);
   const [neighborhoodError, setNeighborhoodError] = useState(false);
+  const [streetError, setStreetError] = useState(false);
+  const [buildingNumberError, setBuildingNumberError] = useState(false);
+  const [flatNumberError, setFlatNumberError] = useState(false);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [formData, setFormData] = useState({
@@ -177,6 +180,21 @@ const AddressScreen = (props) => {
       return;
     }
 
+    if (!formData.street) {
+      setStreetError(true);
+      return;
+    }
+
+    if (!formData.building) {
+      setBuildingNumberError(true);
+      return;
+    }
+
+    if (!formData.flat) {
+      setFlatNumberError(true);
+      return;
+    }
+
     const compositeAddress = {
       city: formData.city,
       province: formData.district,
@@ -305,14 +323,16 @@ const AddressScreen = (props) => {
             style={[
               styles.contactFormInput,
               formData.district === null ? { opacity: 0.5 } : '',
+              streetError ? { borderColor: '#FF5C65' } : '',
             ]}>
             <TextInput
               style={styles.contactFormInputText}
-              onChangeText={(text) =>
-                setFormData({ ...formData, street: text })
-              }
+              onChangeText={(text) => {
+                setFormData({ ...formData, street: text });
+                setStreetError(false);
+              }}
               placeholder="Cadde / Sokak"
-              placeholderTextColor="#FFF"
+              placeholderTextColor={streetError ? '#FF5C65' : '#FFF'}
               value={formData.street}
             />
           </View>
@@ -323,14 +343,16 @@ const AddressScreen = (props) => {
             style={[
               styles.contactFormInput,
               formData.district === null ? { opacity: 0.5 } : '',
+              buildingNumberError ? { borderColor: '#FF5C65' } : '',
             ]}>
             <TextInput
               style={styles.contactFormInputText}
-              onChangeText={(text) =>
-                setFormData({ ...formData, building: text })
-              }
+              onChangeText={(text) => {
+                setFormData({ ...formData, building: text });
+                setBuildingNumberError(false);
+              }}
               placeholder="Bina Numarası"
-              placeholderTextColor="#FFF"
+              placeholderTextColor={buildingNumberError ? '#FF5C65' : '#FFF'}
               value={formData.building}
             />
           </View>
@@ -341,12 +363,16 @@ const AddressScreen = (props) => {
             style={[
               styles.contactFormInput,
               formData.district === null ? { opacity: 0.5 } : '',
+              flatNumberError ? { borderColor: '#FF5C65' } : '',
             ]}>
             <TextInput
               style={styles.contactFormInputText}
-              onChangeText={(text) => setFormData({ ...formData, flat: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, flat: text });
+                setFlatNumberError(false);
+              }}
               placeholder="Kapı Numarası"
-              placeholderTextColor="#FFF"
+              placeholderTextColor={flatNumberError ? '#FF5C65' : '#FFF'}
               value={formData.flat}
             />
           </View>
